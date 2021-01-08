@@ -1,0 +1,27 @@
+#!/bin/sh
+
+rcuserialpath=/usr/bin/rcu-serial
+tdxserialpath=/proc/device-tree/serial-number
+
+#set serial to Apalis SOM serial number
+if [ -f ${tdxserialpath} ]; then
+    serial=$(tr -d '\0' <${tdxserialpath})
+fi
+
+#if RCU serial exists, we prefer the RCU serial number
+if [ -f ${rcuserialpath} ]; then
+    serial=$(tr -d '\0' <${rcuserialpath})
+fi
+
+#if serial number is still empty
+if [ -z "$serial" -a "$serial" != " "  ]; then
+    serial="EMPTYSERIAL"
+fi
+
+hostname="NI-RCU-"${serial}
+
+if [ -f /usr/bin/hostnamectl ]; then
+    /usr/bin/hostnamectl set-hostname ${hostname}
+else
+    hostname ${hostname}
+fi
