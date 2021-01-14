@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# This script is responsible for reading the RCU serial and setting the RCU hostname accordingly. Paired with avahi-daemon which enables mDNS, this provides an option for clients to communicate with the RCU just by knowing its serial (instead of IP address).
+
+# TODO: Change RCU serial placeholder path
 rcuserialpath=/usr/bin/rcu-serial
 tdxserialpath=/proc/device-tree/serial-number
 
@@ -18,7 +21,7 @@ if [ -z "$serial" -a "$serial" != " "  ]; then
     serial="EMPTYSERIAL"
 fi
 
-hostname="NI-RCU-"${serial}
+hostname="NI-SmartRack-"${serial}
 
 if [ -f /usr/bin/hostnamectl ]; then
     /usr/bin/hostnamectl set-hostname ${hostname}
