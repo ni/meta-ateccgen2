@@ -27,7 +27,7 @@ IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
 CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-plugin-wifi connman-client"
-SMARTRACKPKGS ?= "i2c-tools vsftpd python3 rauc dtc rcu-hostname hello"
+SMARTRACKPKGS ?= "i2c-tools vsftpd python3 rauc dtc rcu-hostname coreutils hello"
 
 IMAGE_INSTALL += " \
     packagegroup-boot \
