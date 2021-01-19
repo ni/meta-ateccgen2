@@ -2,7 +2,9 @@
 
 # This script is responsible for reading the RCU serial number and setting the RCU hostname accordingly. Paired with avahi-daemon which enables mDNS, this provides an option for clients to communicate with the RCU just by knowing its serial number (instead of IP address).
 
-# TODO: Change RCU serial placeholder path
+# TODO: 
+# 1. Change RCU serial placeholder path
+# 2. Alter rcuhostname service to include option for clients to customize hostname 
 rcuserialpath=/usr/bin/rcu-serial
 tdxserialpath=/proc/device-tree/serial-number
 
