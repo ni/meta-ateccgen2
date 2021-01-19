@@ -1,0 +1,25 @@
+#!/bin/sh
+ECHO=$(env which echo)
+BUILDDIR="../../build"
+FIRST_TIME=0
+cd layers/openembedded-core
+if [ ! -f ${BUILDDIR}/conf/local.conf ]; then
+	FIRST_TIME=1
+fi
+
+. ./oe-init-build-env ${BUILDDIR}
+
+echo ""
+echo "NI SmartRack targets are:"
+echo "    smartrack-minimal-image"
+echo ""
+echo "To build an image, execute: 'bitbake <supported_image_target>'"
+
+if [ $FIRST_TIME -eq 1 ]; then
+	mkdir -p conf
+	cp ../layers/meta-smartrack/buildconf/*.conf conf/
+
+	echo ""
+	$ECHO -e "\033[1mA sample conf/local.conf file has been created"
+	$ECHO -e "Check and edit the file to adapt to your local needs\033[0m"
+fi
