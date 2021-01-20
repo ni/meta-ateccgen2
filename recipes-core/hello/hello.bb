@@ -8,7 +8,7 @@ SYSTEMD_AUTO_ENABLE = "enable"
 SYSTEMD_SERVICE_${PN} = "hello.service"
 
 SRCREV = "${AUTOREV}"
-SRC_URI = "git://github.com/NI-SmartRack/rcu-software.git;branch=main"
+SRC_URI = "git://github.com/NI-SmartRack/rcu-service.git;branch=main"
 FILES_${PN} += "${systemd_unitdir}/system/hello.service"
 S = "${WORKDIR}/git"
 TARGET_CC_ARCH += "${LDFLAGS}"
