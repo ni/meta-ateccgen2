@@ -1,7 +1,7 @@
 SUMMARY = "SmartRack device tree overlays"
 DESCRIPTION = "SmartRack device tree overlays from within the layer."
 
-SRC_URI = "file://apalis-imx8x_smartrack_overlay.dts file://template_overlay.dts"
+SRC_URI = "file://smartrack_overlay.dts file://template_overlay.dts"
 
 inherit devicetree
 
