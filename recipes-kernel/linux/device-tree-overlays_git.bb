@@ -7,7 +7,7 @@ inherit devicetree
 
 S = "${WORKDIR}"
 
-COMPATIBLE_MACHINE = ".*(mx[678]).*"
+COMPATIBLE_MACHINE = "apalis-imx8x-smartrack"
 
 # we have dtbo's in arm and arm64 architecture, set the include paths
 # to include both architectures.
