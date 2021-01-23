@@ -7,8 +7,10 @@ inherit systemd
 SYSTEMD_AUTO_ENABLE = "enable"
 SYSTEMD_SERVICE_${PN} = "hello.service"
 
-SRCREV = "${AUTOREV}"
+# TODO: Alter SRC_URI location once rcu-service repo is moved to either AzDO or GitHub/NI
 SRC_URI = "git://github.com/NI-SmartRack/rcu-service.git;branch=main"
+SRCREV = "${AUTOREV}"
+
 FILES_${PN} += "${systemd_unitdir}/system/hello.service"
 S = "${WORKDIR}/git"
 TARGET_CC_ARCH += "${LDFLAGS}"
