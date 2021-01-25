@@ -23,7 +23,7 @@ if [ -z "$serial" -a "$serial" != " "  ]; then
     serial="EMPTYSERIAL"
 fi
 
-hostname="NI-SmartRack-"${serial}
+hostname="NI-SmartRacks-"${serial}
 
 if [ -f /usr/bin/hostnamectl ]; then
     /usr/bin/hostnamectl set-hostname ${hostname}

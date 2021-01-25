@@ -1,13 +1,13 @@
-SUMMARY = "SmartRack device tree overlays"
-DESCRIPTION = "SmartRack device tree overlays from within the layer."
+SUMMARY = "SmartRacks device tree overlays"
+DESCRIPTION = "SmartRacks device tree overlays from within the layer."
 
-SRC_URI = "file://smartrack_overlay.dts file://template_overlay.dts"
+SRC_URI = "file://smartracks_overlay.dts file://template_overlay.dts"
 
 inherit devicetree
 
 S = "${WORKDIR}"
 
-COMPATIBLE_MACHINE = "apalis-imx8x-smartrack"
+COMPATIBLE_MACHINE = "apalis-imx8x-smartracks"
 
 # we have dtbo's in arm and arm64 architecture, set the include paths
 # to include both architectures.
