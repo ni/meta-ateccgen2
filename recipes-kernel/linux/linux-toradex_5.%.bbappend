@@ -1,3 +1,3 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
-SRC_URI += "file://defconfig"
+SRC_URI += "file://smartrack.cfg"
