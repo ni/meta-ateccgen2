@@ -23,7 +23,7 @@ do_compile() {
 
 do_install() {
          install -d ${D}${bindir}
-         install -m 0755 hello ${D}${bindir}
+         install -m 0755 rcu-service ${D}${bindir}
          install -d ${D}/${systemd_unitdir}/system
          install -m 0644 ${WORKDIR}/git/rcu-service.service ${D}/${systemd_unitdir}/system
 }
