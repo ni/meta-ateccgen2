@@ -1,6 +1,6 @@
 inherit core-image
 
-SUMMARY = "Smart Rack Linux Reference Minimal Image"
+SUMMARY = "Smart Racks Linux Reference Minimal Image"
 DESCRIPTION = "Minimal image without graphical interface that just boots"
 
 LICENSE = "MIT"
@@ -27,7 +27,7 @@ IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
 CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-plugin-wifi connman-client"
-SMARTRACKPKGS ?= "i2c-tools vsftpd python3 rauc dtc rcu-hostname coreutils hello"
+SMARTRACKSPKGS ?= "i2c-tools vsftpd python3 rauc dtc rcu-hostname coreutils rcu-service"
 
 IMAGE_INSTALL += " \
     packagegroup-boot \
@@ -38,6 +38,6 @@ IMAGE_INSTALL += " \
     packagegroup-wifi-fw-tdx-cli \
     udev-extraconf \
     ${CONMANPKGS} \
-    ${SMARTRACKPKGS} \
+    ${SMARTRACKSPKGS} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'timestamp-service systemd-analyze', '', d)} \
 "

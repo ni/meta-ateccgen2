@@ -1,0 +1,180 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/pinctrl/pads-imx8qxp.h>
+
+/ {
+    compatible = "toradex,apalis-imx8x";
+
+    /* This fragment disables the adc0 interface and frees up pinctrl_adc0 */
+    /* pinctrl_adc0 contains 4 pins, MXM3 305, 307, 309, 311, all of which will be muxed to GPIO */
+    fragment@0 {
+        target = <&adc0>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
+
+    /* This fragment disables the lcdif interface and frees up pinctrl_lcdif */
+    /* pinctrl_lcdif contains 22 pins, among which 8 pins will be muxed to GPIO and 14 will not */
+    /* GPIO: MXM3 243, 245, 247, 255, 257, 259, 261, 265 */
+    /* NOT GPIO: MXM3 249, 263, 273, 275, 277, 279, 281, 283, 291, 293, 295, 297, 299, 301 */
+    fragment@1 {
+        target = <&display_lcdif>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
+
+    /* This fragment disables the pwm2 interface and frees up pinctrl_pwm2 */
+    /* pinctrl_pwm2 contains 1 pin, MXM3 2, which will be muxed to GPIO */
+    fragment@2 {
+        target = <&pwm2>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
+
+    /* This fragment disables the pwm_mipi_lvds0 interface and frees up pinctrl_pwm_mipi_lvds0 */
+    /* pinctrl_pwm_mipi_lvds0 contains 1 pin, MXM3 4, which will not be muxed to GPIO */
+    fragment@3 {
+        target = <&pwm_mipi_lvds0>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
+
+    /* This fragment disables the pwm_mipi_lvds1 interface and frees up pinctrl_pwm_mipi_lvds1 */
+    /* pinctrl_pwm_mipi_lvds1 contains 1 pin, MXM3 239, which will not be muxed to GPIO */
+    fragment@4 {
+        target = <&pwm_mipi_lvds1>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
+
+    /* This fragment disables the backlight interface and frees up pinctrl_gpio_bkl_on */
+    /* pinctrl_gpio_bkl_on contains 1 pin, MXM3 286, which will be muxed to GPIO */
+    fragment@5 {
+        target = <&backlight>;
+        __overlay__ {
+            status = "disabled";
+        };
+    };
+
+    /* This is the fragment which alters the pin configuration of muxable pins */
+    /* By declaring new pinctrl group, we can then assign these pinctrl to interfaces we wish to enable */
+    /* We can also mux certain pins to GPIO by appending these pinctrl groups to the pinctrl-0 attribute of iomuxc */
+    fragment@6 {
+        target = <&iomuxc>;
+        __overlay__ {
+            pinctrl-names = "default";
+            pinctrl-0 = <&pinctrl_test>;
+            apalis-imx8qxp {
+                pinctrl_test: gpiomuxgrp {
+                    fsl,pins = <
+                        IMX8QXP_ADC_IN0_LSIO_GPIO1_IO10        0x60 /* MXM3 305 */
+                        IMX8QXP_ADC_IN1_LSIO_GPIO1_IO09        0x60 /* MXM3 307 */
+                        IMX8QXP_ADC_IN4_LSIO_GPIO1_IO14        0x60 /* MXM3 309 */
+                        IMX8QXP_ADC_IN5_LSIO_GPIO1_IO13        0x60 /* MXM3 311 */
+                        IMX8QXP_MCLK_OUT0_LSIO_GPIO0_IO20      0x60 /* MXM3 243 */
+                        IMX8QXP_MCLK_IN0_LSIO_GPIO0_IO19       0x60 /* MXM3 245 */
+                        IMX8QXP_SPI3_CS0_LSIO_GPIO0_IO16       0x60 /* MXM3 247 */
+                        IMX8QXP_SPDIF0_EXT_CLK_LSIO_GPIO0_IO12 0x60 /* MXM3 255 */
+                        IMX8QXP_SPI3_SCK_LSIO_GPIO0_IO13       0x60 /* MXM3 257 */
+                        IMX8QXP_SPI3_SDO_LSIO_GPIO0_IO14       0x60 /* MXM3 259 */
+                        IMX8QXP_SPI3_SDI_LSIO_GPIO0_IO15       0x60 /* MXM3 261 */
+                        IMX8QXP_UART1_CTS_B_LSIO_GPIO0_IO24    0x60 /* MXM3 265 */
+                        IMX8QXP_QSPI0A_DQS_LSIO_GPIO3_IO13     0x21 /* MXM3 286 */
+                    >;
+                };
+                pinctrl_lpi2c4: lpi2c4grp {
+                    fsl,pins = <
+                        IMX8QXP_MIPI_DSI1_GPIO0_00_ADMA_I2C2_SCL 0xc6000020 /* MXM3 239 */
+                        IMX8QXP_MIPI_DSI1_GPIO0_01_ADMA_I2C2_SDA 0xc6000020 /* MXM3 8 */
+                    >;
+                };
+                pinctrl_lpi2c5: lpi2c5grp {
+                    fsl,pins = <
+                        IMX8QXP_CSI_PCLK_MIPI_CSI0_I2C0_SCL 0xc6000020 /* MXM3 191 */
+                        IMX8QXP_CSI_MCLK_MIPI_CSI0_I2C0_SDA 0xc6000020 /* MXM3 193 */
+                    >;
+                };
+                pinctrl_i2c0_mipi_lvds0: mipilvds0i2c0grp {
+                    fsl,pins = <
+                        IMX8QXP_MIPI_DSI0_I2C0_SCL_MIPI_DSI0_I2C0_SCL 0xc6000020 /* MXM3 35 */
+                        IMX8QXP_MIPI_DSI0_I2C0_SDA_MIPI_DSI0_I2C0_SDA 0xc6000020 /* MXM3 37 */
+                    >;
+                };
+            };
+        };
+    };
+
+    /* I2C2: MXM3 205, 207 */
+    /* This fragment enables the i2c0_mipi_lvds1 interface. Bus number: 56246000.i2c */
+    fragment@7 {
+        target = <&i2c0_mipi_lvds1>;
+        __overlay__ {
+            status = "okay";
+        };
+    };
+
+    /* I2C3: MXM3 203, 201 */
+    /* This fragment enables the i2c3 interface. Bus number: 5a830000.i2c */
+    fragment@8 {
+        target = <&i2c3>;
+        __overlay__ {
+            status = "okay";
+        };
+    };
+
+    /* I2C4: MXM3 239, 8 */
+    /* This fragment enables the i2c2 interface (which is known as I2C4 in Toradex Pinout Designer...). Bus number: 5a820000.i2c */
+    fragment@9 {
+        target = <&i2c2>;
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            pinctrl-names = "default";
+            pinctrl-0 = <&pinctrl_lpi2c4>;
+            clock-frequency = <100000>;
+            status = "okay";
+        };
+    };
+
+    /* I2C6: MXM3 35, 37 */
+    /* This fragment enables the i2c0_mipi_lvds0 interface. Bus number: 56226000.i2c */
+    fragment@10 {
+        target = <&i2c0_mipi_lvds0>;
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            pinctrl-names = "default";
+            pinctrl-0 = <&pinctrl_i2c0_mipi_lvds0>;
+            clock-frequency = <100000>;
+            status = "okay";
+        };
+    };
+
+    /* I2C5: MXM3 191, 193 */
+    /* This fragment enables the i2c_mipi_csi0 interface. Bus number: 58226000.i2c */
+    fragment@11 {
+        target = <&i2c_mipi_csi0>;
+        __overlay__ {
+            #address-cells = <1>;
+            #size-cells = <0>;
+            pinctrl-names = "default";
+            pinctrl-0 = <&pinctrl_lpi2c5>;
+            clock-frequency = <100000>;
+            status = "okay";
+        };
+    };
+
+    /* Enable interrupt parent for i2c_mipi_csi0 */
+    fragment@12 {
+        target = <&irqsteer_csi0>;
+        __overlay__ {
+            status = "okay";
+        };
+    };
+};
