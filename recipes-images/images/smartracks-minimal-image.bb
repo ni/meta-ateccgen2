@@ -14,6 +14,10 @@ IMAGE_NAME = "${MACHINE_NAME}_${IMAGE_BASENAME}"
 COPY_LIC_MANIFEST ?= "1"
 COPY_LIC_DIRS ?= "1"
 
+# Configure base image root account default password
+inherit extrausers
+EXTRA_USERS_PARAMS = "usermod -P ni root;"
+
 add_rootfs_version () {
     printf "${DISTRO_NAME} ${DISTRO_VERSION} (${DISTRO_CODENAME}) \\\n \\\l\n" > ${IMAGE_ROOTFS}/etc/issue
     printf "${DISTRO_NAME} ${DISTRO_VERSION} (${DISTRO_CODENAME}) %%h\n" > ${IMAGE_ROOTFS}/etc/issue.net
@@ -27,7 +31,7 @@ IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
 CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-plugin-wifi connman-client"
-SMARTRACKSPKGS ?= "i2c-tools vsftpd python3 rauc dtc rcu-hostname coreutils rcu-service"
+SMARTRACKSPKGS ?= "i2c-tools vsftpd rauc rcu-hostname coreutils rcu-service"
 
 IMAGE_INSTALL += " \
     packagegroup-boot \
