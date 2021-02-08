@@ -7,7 +7,7 @@ inherit systemd
 SYSTEMD_AUTO_ENABLE = "enable"
 SYSTEMD_SERVICE_${PN} = "rcu-service.service"
 
-SRC_URI = "git://git@github.com/ni/rcu-service.git;branch=main;protocol=ssh"
+SRC_URI = "git://github.com/ni/rcu-service.git;branch=main"
 
 # TODO: AUTOREV will no longer be used once User Story 1240399 is completed
 # https://dev.azure.com/ni/DevCentral/_workitems/edit/1240399/
