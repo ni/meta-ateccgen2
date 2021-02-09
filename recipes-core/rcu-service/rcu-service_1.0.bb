@@ -9,7 +9,7 @@ SYSTEMD_SERVICE_${PN} = "rcu-service.service"
 
 # TODO: Point to release branch when it is ready.
 # If EXTERNAL_SRC was specified, it will take precedence of SRC_URI and SRC_REV
-SRC_URI = "git://github.com/ni/rcu-service.git;branch=main"
+SRC_URI = "git://github.com/ni/rcu-service.git;branch=main;protocol=https"
 
 # TODO: Assign to a fixed revision after release
 SRCREV = "${AUTOREV}"
