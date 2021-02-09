@@ -7,10 +7,11 @@ inherit systemd
 SYSTEMD_AUTO_ENABLE = "enable"
 SYSTEMD_SERVICE_${PN} = "rcu-service.service"
 
+# TODO: Point to release branch when it is ready.
+# If EXTERNAL_SRC was specified, it will take precedence of SRC_URI and SRC_REV
 SRC_URI = "git://github.com/ni/rcu-service.git;branch=main"
 
-# TODO: AUTOREV will no longer be used once User Story 1240399 is completed
-# https://dev.azure.com/ni/DevCentral/_workitems/edit/1240399/
+# TODO: Assign to a fixed revision after release
 SRCREV = "${AUTOREV}"
 
 FILES_${PN} += "${systemd_unitdir}/system/rcu-service.service"
@@ -18,12 +19,12 @@ S = "${WORKDIR}/git"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_compile() {
-         ${CXX} rcu-service.cpp -o rcu-service
+         ${CXX} ${S}/rcu-service.cpp -o rcu-service
 }
 
 do_install() {
          install -d ${D}${bindir}
          install -m 0755 rcu-service ${D}${bindir}
          install -d ${D}/${systemd_unitdir}/system
-         install -m 0644 ${WORKDIR}/git/rcu-service.service ${D}/${systemd_unitdir}/system
+         install -m 0644 ${S}/rcu-service.service ${D}/${systemd_unitdir}/system
 }
