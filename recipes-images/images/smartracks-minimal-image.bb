@@ -45,3 +45,6 @@ IMAGE_INSTALL += " \
     ${SMARTRACKSPKGS} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'timestamp-service systemd-analyze', '', d)} \
 "
+
+# Required to append protobuf and grpc dependencies to SDK
+TOOLCHAIN_HOST_TASK_append += " nativesdk-protobuf-compiler nativesdk-grpc-dev "
