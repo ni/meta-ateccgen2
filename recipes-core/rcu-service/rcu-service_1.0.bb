@@ -22,9 +22,11 @@ DEPENDS = " protobuf-native grpc grpc-native "
 
 inherit cmake
 
-# Workaround for grpc cross-compilation. This issue was reported in: https://github.com/grpc/grpc/issues/17708
-# Remove grpc installation .cmake files in target sysroot to allow cmake to locate grpc_cpp_plugin in sysroot-native
-# Then, manually copy five aarch64 .so files required to build RCU Service to x86 sysroot
+# Workaround for gRPC cross-compilation. This issue was reported in: https://github.com/grpc/grpc/issues/17708
+# We remove gRPC installation .cmake files in target sysroot (aarch64) to allow cmake to locate grpc_cpp_plugin in sysroot-native (x86_64)
+# Now that cmake locates gPRC installation in sysroot-native, the linker looks for _GRPC_GRPCPP, _REFLECTION .so files in sysroot-native lib directory
+# However, compiling RCU Service for ARM-based target requires these .so files to be built for aarch64
+# Hence, we solve this by copying the five aarch64 .so files below from target sysroot to sysroot-native, replacing their x86 counterpart. 
 
 do_configure_prepend() {
          rm -rf ${WORKDIR}/recipe-sysroot/usr/lib/cmake/grpc
@@ -38,7 +40,6 @@ do_configure_prepend() {
 do_install() {
          install -d ${D}${bindir}
          install -m 0755 rcu-service ${D}${bindir}
-         install -m 0755 rcu-service-cpp-test-client ${D}${bindir}
          install -d ${D}/${systemd_unitdir}/system
          install -m 0644 ${S}/rcu-service.service ${D}/${systemd_unitdir}/system
 }
