@@ -20,12 +20,11 @@ TARGET_CC_ARCH += "${LDFLAGS}"
 
 DEPENDS = " protobuf-native grpc grpc-native "
 
-inherit cmake pkgconfig
+inherit cmake
 
-# A hacky way to get grpc dependencies to work in order to build RCU service
-# Remove grpc installation .cmake files to allow cmake to find grpc-native 
-# this allows cmake to find grpc_cpp_plugin
-# Then, manually copy five aarch64 .so files required to build RCU service to x86 sysroot
+# Workaround for grpc cross-compilation. This issue was reported in: https://github.com/grpc/grpc/issues/17708
+# Remove grpc installation .cmake files in target sysroot to allow cmake to locate grpc_cpp_plugin in sysroot-native
+# Then, manually copy five aarch64 .so files required to build RCU Service to x86 sysroot
 
 do_configure_prepend() {
          rm -rf ${WORKDIR}/recipe-sysroot/usr/lib/cmake/grpc
@@ -44,3 +43,8 @@ do_install() {
          install -m 0644 ${S}/rcu-service.service ${D}/${systemd_unitdir}/system
 }
 
+EXTRA_OECMAKE = " \
+         -DCMAKE_SKIP_BUILD_RPATH=TRUE \
+         -DCMAKE_BUILD_WITH_INSTALL_RPATH=FALSE \
+         -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=FALSE \
+         "
