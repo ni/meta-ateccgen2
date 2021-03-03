@@ -4,7 +4,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
 # TODO: Point to release branch when it is ready.
-# If EXTERNAL_SRC was specified, it will take precedence of SRC_URI and SRC_REV
+# If EXTERNALSRC was specified, it will take precedence of SRC_URI and SRCREV
 SRC_URI = "git://github.com/ni/rcu-service.git;branch=main;protocol=https"
 
 # TODO: Assign to a fixed revision after release
