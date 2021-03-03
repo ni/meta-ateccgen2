@@ -1,8 +1,3 @@
-SUMMARY = "RCU Service CPP Test Client"
-DESCRIPTION = "Recipe to install RCU Service CPP Test Client into RCU image"
-LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
-
 # TODO: Point to release branch when it is ready.
 # If EXTERNALSRC was specified, it will take precedence of SRC_URI and SRCREV
 SRC_URI = "git://github.com/ni/rcu-service.git;branch=main;protocol=https"
@@ -38,9 +33,3 @@ do_configure_prepend() {
          cp ${WORKDIR}/recipe-sysroot/usr/lib/libgpr.so.6.0.0 ${WORKDIR}/recipe-sysroot-native/usr/lib/
          cp ${WORKDIR}/recipe-sysroot/usr/lib/libaddress_sorting.so.6.0.0 ${WORKDIR}/recipe-sysroot-native/usr/lib/
 }
-
-do_install() {
-         install -d ${D}${bindir}
-         install -m 0755 rcu-service-cpp-test-client ${D}${bindir}
-}
-
