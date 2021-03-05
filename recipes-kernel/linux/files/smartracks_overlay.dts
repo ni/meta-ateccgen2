@@ -69,12 +69,7 @@
         target = <&iomuxc>;
         __overlay__ {
             pinctrl-names = "default";
-            /* Adding all existing GPIO pin groups to the overlay, except pinctrl_sata1_act (MXM3 35) */
-            /* MXM3 35 has to be freed up to allow bus 56226000.i2c to be enumerated */
-            pinctrl-0 = <&pinctrl_test>, <&pinctrl_dap1_gpios>, <&pinctrl_gpio1>, <&pinctrl_gpio2>, 
-                        <&pinctrl_gpio3>, <&pinctrl_gpio4>, <&pinctrl_gpio5>, <&pinctrl_gpio6>, 
-                        <&pinctrl_mmc1_gpios>, <&pinctrl_qspi0a_gpios>, <&pinctrl_usbh_oc_n>, 
-                        <&pinctrl_usbo1oc>, <&pinctrl_wifi_sclk>;
+            pinctrl-0 = <&pinctrl_test>;
             apalis-imx8qxp {
                 pinctrl_test: gpiomuxgrp {
                     fsl,pins = <

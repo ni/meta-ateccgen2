@@ -4,4 +4,14 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 # as specified in the linux-toradex recipe in meta-toradex-nxp
 # https://git.toradex.com/cgit/meta-toradex-nxp.git/tree/recipes-kernel/linux/linux-toradex_5.4-2.1.x.bb?h=dunfell-5.x.y
 
-SRC_URI += "file://smartracks.cfg"
+SRC_URI += " \
+    file://smartracks.cfg \
+    file://imx8qxp-apalis-smartracks.dtsi \
+    file://imx8qxp-apalis-smartracks.dts \
+    "
+
+# Inject SmartRacks custom board device tree to kernel source device tree location
+do_configure_prepend() {
+    cp ${WORKDIR}/imx8qxp-apalis-smartracks.dtsi ${WORKDIR}/git/arch/arm64/boot/dts/freescale
+    cp ${WORKDIR}/imx8qxp-apalis-smartracks.dts ${WORKDIR}/git/arch/arm64/boot/dts/freescale
+}
