@@ -7,6 +7,7 @@
 
 if [ "$ACTION" = "add" ]; then
 	# Start vsftpd.service
+	mount /dev/mmcblk1p1 /var/lib/ftp/upload
 	systemctl start vsftpd
 
 elif [ "$ACTION" = "remove" ]; then

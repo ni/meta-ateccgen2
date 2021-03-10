@@ -1,5 +1,7 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
+SYSTEMD_AUTO_ENABLE_${PN} = "disable"
+
 do_install_append(){
 
     install -d ${D}${localstatedir}/lib/ftp
