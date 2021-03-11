@@ -6,14 +6,32 @@
 
 
 if [ "$ACTION" = "add" ]; then
-	# Start vsftpd.service
+	# Attempt to mount SD card to FTP writable location
 	mount /dev/mmcblk1p1 /var/lib/ftp/upload
-	systemctl start vsftpd
+	retcode=$?
+	if [ $retcode -eq 0 ]; then
+		logger "Mount success."
+		# Attempt to start vsftpd.service if mount success
+		systemctl start vsftpd
+		retcode=$?
+		if [ $retcode -eq 0 ]; then
+			logger "vsftpd.service has been started by udev."
+		else
+			logger "vsftpd.service failed to start with code: " $retcode
+		fi
+	else
+		logger "Mount failed with code: " $retcode
+	fi
 
 elif [ "$ACTION" = "remove" ]; then
-	# Stop vsftpd.service
+	# Attempt to stop vsftpd.service
 	systemctl stop vsftpd
-
+	retcode=$?
+	if [ $retcode -eq 0 ]; then
+		logger "vsftpd.service has been stopped by udev."
+	else
+		logger "vsftpd.service failed to stop with code: " $retcode
+	fi
 else
 	# Handling edge case if something unexpected happens
 	logger "Unknown action: $ACTION triggered"

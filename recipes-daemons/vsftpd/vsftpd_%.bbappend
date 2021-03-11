@@ -1,5 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
+# vsftpd service availability is handled using udev rules
 SYSTEMD_AUTO_ENABLE_${PN} = "disable"
 
 do_install_append(){
