@@ -1,0 +1,3 @@
+# Configurations to handle starting and stopping vsftpd.service on SD card hotplug
+KERNEL=="mmcblk1", ACTION=="add"    RUN+="/etc/udev/scripts/vsftpd-sd.sh"
+KERNEL=="mmcblk1", ACTION=="remove"    RUN+="/etc/udev/scripts/vsftpd-sd.sh"

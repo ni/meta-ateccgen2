@@ -1,8 +1,0 @@
-/dts-v1/;
-/plugin/;
-
-/* This is a Device Tree Overlay template which can be used to create additional overlays if required */
-
-/ {
-    compatible = "toradex,apalis-imx8x";
-};
