@@ -15,4 +15,6 @@ do_install()
 {
 	install -d ${D}${bindir}
 	install -m 0755 ${S}/tests/rcu-service-python-test-client.py ${D}${bindir}
+	install -m 0755 ${S}/tests/rcu_service_pb2.py ${D}${bindir}
+	install -m 0755 ${S}/tests/rcu_service_pb2_grpc.py ${D}${bindir}
 }
