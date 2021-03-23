@@ -55,7 +55,31 @@
 
 &fec1 {
 	status = "okay";
+	/delete-property/ phy-reset-duration;
+	/delete-property/ phy-reset-gpios;
+
+	mdio {
+		ethphy0: ethernet-phy@4 {
+			/delete-property/ interrupt-parent;
+			/delete-property/ interrupts;
+		};
+		ethphy1: ethernet-phy@7 {
+			compatible = "ethernet-phy-ieee802.3-c22";
+			micrel,led-mode = <0>;
+			reg = <7>;
+		};
+	};
 };
+
+/* Apalis Second Gigabit Ethernet */
+&fec2 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_fec2>;
+	fsl,magic-packet;
+	phy-handle = <&ethphy1>;
+	phy-mode = "rgmii-id";
+}; 
 
 /* Apalis CAN1 */
 &flexcan2 {
@@ -84,6 +108,12 @@
 
 /* Apalis I2C2 (56246000.i2c) MXM3 205, 207 */
 &i2c0_mipi_lvds1 {
+	status = "okay";
+};
+&mipi1_dphy {
+	status = "okay";
+};
+&mipi1_dsi_host {
 	status = "okay";
 };
 
@@ -121,6 +151,13 @@
 	clock-frequency = <100000>;
 	status = "okay";
 };
+&mipi0_dphy {
+	status = "okay";
+};
+&mipi0_dsi_host {
+	status = "okay";
+};
+
 
 /* Enable interrupt parent for i2c_mipi_csi0 */
 &irqsteer_csi0 {
@@ -366,6 +403,23 @@
 			fsl,pins = <
 				IMX8QXP_MIPI_DSI0_I2C0_SCL_MIPI_DSI0_I2C0_SCL 0xc6000020 /* MXM3 35 */
 				IMX8QXP_MIPI_DSI0_I2C0_SDA_MIPI_DSI0_I2C0_SDA 0xc6000020 /* MXM3 37 */
+			>;
+		};
+		/* External Gigabit Ethernet PHY Micrel KSZ9031 */
+		pinctrl_fec2: fec2grp {
+			fsl,pins = <
+				IMX8QXP_ESAI0_TX0_CONN_ENET1_RGMII_RXC		0x61
+				IMX8QXP_SPDIF0_RX_CONN_ENET1_RGMII_RXD0		0x61
+				IMX8QXP_ESAI0_TX3_RX2_CONN_ENET1_RGMII_RXD1	0x61
+				IMX8QXP_ESAI0_TX2_RX3_CONN_ENET1_RGMII_RXD2	0x61
+				IMX8QXP_ESAI0_TX1_CONN_ENET1_RGMII_RXD3		0x61
+				IMX8QXP_SPDIF0_TX_CONN_ENET1_RGMII_RX_CTL       0x61
+				IMX8QXP_ESAI0_FSR_CONN_ENET1_RGMII_TXC		0x61
+				IMX8QXP_ESAI0_TX4_RX1_CONN_ENET1_RGMII_TXD0	0x61
+				IMX8QXP_ESAI0_TX5_RX0_CONN_ENET1_RGMII_TXD1	0x61
+				IMX8QXP_ESAI0_FST_CONN_ENET1_RGMII_TXD2		0x61
+				IMX8QXP_ESAI0_SCKT_CONN_ENET1_RGMII_TXD3	0x61
+				IMX8QXP_ESAI0_SCKR_CONN_ENET1_RGMII_TX_CTL	0x61
 			>;
 		};
 	};
