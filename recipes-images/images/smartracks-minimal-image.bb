@@ -31,7 +31,7 @@ IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
 CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-plugin-wifi connman-client"
-SMARTRACKSPKGS ?= "i2c-tools vsftpd rauc rcu-hostname coreutils rcu-service"
+SMARTRACKSPKGS ?= "i2c-tools vsftpd rauc rcu-hostname coreutils rcu-service udev-ni-rules"
 
 IMAGE_INSTALL += " \
     packagegroup-boot \
