@@ -95,18 +95,18 @@
 &flexcan2 {
     /* define the following property to disable CAN-FD mode */
     /* disable-fd-mode; */
-    status = "okay";
+    status = "disabled";
 };
 
 /* Apalis CAN2 */
 &flexcan3 {
     /* define the following property to disable CAN-FD mode */
     /* disable-fd-mode; */
-    status = "okay";
+    status = "disabled";
 };
 
 /* Apalis on-module I2C0 */
-/* Rename GPIO expander line names */
+/* Rename GPIO expander line names to allow RCU Service to access GPIO using MXM3 pin number */
 &i2c0 {
     pcal6416_1: gpio@20 {
         gpio-line-names = "MXM3_220", "MXM3_217", "MXM3_215",
@@ -313,8 +313,10 @@
 };
 
 /* Apalis PCIE1 */
+/* The PCIE interface has to be disabled to safely free up the GPIO pin held by regulator-pcie-switch */
+/* Disabling regulator-pcie-switch without disabling pcieb will cause SOM to fail to boot */
 &pcieb {
-        status = "disabled";
+    status = "disabled";
 };
 
 /* Apalis PWM2 */
@@ -430,24 +432,24 @@
         /* External Gigabit Ethernet PHY Micrel KSZ9031 */
         pinctrl_fec2: fec2grp {
             fsl,pins = <
-                IMX8QXP_ESAI0_TX0_CONN_ENET1_RGMII_RXC		0x61
-                IMX8QXP_SPDIF0_RX_CONN_ENET1_RGMII_RXD0		0x61
-                IMX8QXP_ESAI0_TX3_RX2_CONN_ENET1_RGMII_RXD1	0x61
-                IMX8QXP_ESAI0_TX2_RX3_CONN_ENET1_RGMII_RXD2	0x61
-                IMX8QXP_ESAI0_TX1_CONN_ENET1_RGMII_RXD3		0x61
-                IMX8QXP_SPDIF0_TX_CONN_ENET1_RGMII_RX_CTL       0x61
-                IMX8QXP_ESAI0_FSR_CONN_ENET1_RGMII_TXC		0x61
-                IMX8QXP_ESAI0_TX4_RX1_CONN_ENET1_RGMII_TXD0	0x61
-                IMX8QXP_ESAI0_TX5_RX0_CONN_ENET1_RGMII_TXD1	0x61
-                IMX8QXP_ESAI0_FST_CONN_ENET1_RGMII_TXD2		0x61
-                IMX8QXP_ESAI0_SCKT_CONN_ENET1_RGMII_TXD3	0x61
-                IMX8QXP_ESAI0_SCKR_CONN_ENET1_RGMII_TX_CTL	0x61
+                IMX8QXP_ESAI0_TX0_CONN_ENET1_RGMII_RXC      0x61
+                IMX8QXP_SPDIF0_RX_CONN_ENET1_RGMII_RXD0     0x61
+                IMX8QXP_ESAI0_TX3_RX2_CONN_ENET1_RGMII_RXD1 0x61
+                IMX8QXP_ESAI0_TX2_RX3_CONN_ENET1_RGMII_RXD2 0x61
+                IMX8QXP_ESAI0_TX1_CONN_ENET1_RGMII_RXD3     0x61
+                IMX8QXP_SPDIF0_TX_CONN_ENET1_RGMII_RX_CTL   0x61
+                IMX8QXP_ESAI0_FSR_CONN_ENET1_RGMII_TXC      0x61
+                IMX8QXP_ESAI0_TX4_RX1_CONN_ENET1_RGMII_TXD0 0x61
+                IMX8QXP_ESAI0_TX5_RX0_CONN_ENET1_RGMII_TXD1 0x61
+                IMX8QXP_ESAI0_FST_CONN_ENET1_RGMII_TXD2     0x61
+                IMX8QXP_ESAI0_SCKT_CONN_ENET1_RGMII_TXD3    0x61
+                IMX8QXP_ESAI0_SCKR_CONN_ENET1_RGMII_TX_CTL  0x61
             >;
         };
     };
 };
 
-/* Renamed Apalis GPIO1 to GPIO8 lines */
+/* Renamed Apalis GPIO1 to GPIO8 lines, as SmartRacks RCU Service relies on the MXM3 pin number to access GPIOs */
 &lsio_gpio3 {
     gpio-line-names = "MXM3_191",
                       "MXM3_193",
