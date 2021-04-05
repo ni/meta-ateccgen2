@@ -1,6 +1,5 @@
 # Content in this file is derived from examples provided in udev-toradex-rules.bb in meta-toradex-bsp-common
 
-ACTION=="add", KERNEL=="i2c-[0-9]*", ATTRS{name}=="5a800000.i2c", SYMLINK+="I2C0"
 ACTION=="add", KERNEL=="i2c-[0-9]*", ATTRS{name}=="5a810000.i2c", SYMLINK+="I2C1"
 ACTION=="add", KERNEL=="i2c-[0-9]*", ATTRS{name}=="56246000.i2c", SYMLINK+="I2C2"
 ACTION=="add", KERNEL=="i2c-[0-9]*", ATTRS{name}=="5a830000.i2c", SYMLINK+="I2C3"
