@@ -111,7 +111,7 @@
     pcal6416_1: gpio@20 {
         gpio-line-names = "MXM3_220", "MXM3_217", "MXM3_215",
             "UART4_TXD", "MXM3_124", "MXM3_122", "MXM3_120",
-            "UART1_DTR", "MXM3_2", "Wi-Fi_WKUP_WLAN",
+            "MXM3_110", "MXM3_2", "Wi-Fi_WKUP_WLAN",
             "Wi-Fi_W_DISABLE", "Wi-Fi_WKUP_BT", "Wi-Fi_PDn",
             "Wi-Fi_WKUP_HOST", "DSI_SW_SEL", "MXM3_232";
     };
@@ -197,11 +197,11 @@
     status = "okay";
 
         cap_device {
-                status = "okay";
+            status = "okay";
         };
 
         m2m_device {
-                status = "okay";
+            status = "okay";
         };
 };
 
@@ -284,21 +284,26 @@
 /* Apalis UART1 */
 &lpuart1 {
     status = "okay";
+    linux,rs485-enabled-at-boot-time;
 };
 
 /* Apalis UART2 */
 &lpuart0 {
     status = "okay";
+    pinctrl-0 = <&pinctrl_lpuart0_fix>;
+    linux,rs485-enabled-at-boot-time;
 };
 
 /* Apalis UART3 */
 &lpuart2 {
     status = "okay";
+    linux,rs485-enabled-at-boot-time;
 };
 
 /* Apalis UART4 */
 &lpuart3 {
     status = "okay";
+    linux,rs485-enabled-at-boot-time;
 };
 
 &lsio_gpio1 {
@@ -392,23 +397,26 @@
         pinctrl-0 = <&pinctrl_test>, <&pinctrl_dap1_gpios>, <&pinctrl_gpio1>, <&pinctrl_gpio2>, 
                     <&pinctrl_gpio3>, <&pinctrl_gpio4>, <&pinctrl_gpio5>, <&pinctrl_gpio6>, 
                     <&pinctrl_mmc1_gpios>, <&pinctrl_qspi0a_gpios>, <&pinctrl_usbh_oc_n>, 
-                    <&pinctrl_usbo1oc>, <&pinctrl_wifi_sclk>;
+                    <&pinctrl_usbo1oc>, <&pinctrl_wifi_sclk>, <&pinctrl_gpio7>, <&pinctrl_gpio8>;
     apalis-imx8qxp {
         pinctrl_test: gpiomuxgrp {
             fsl,pins = <
-                IMX8QXP_ADC_IN0_LSIO_GPIO1_IO10        0x60 /* MXM3 305 */
-                IMX8QXP_ADC_IN1_LSIO_GPIO1_IO09        0x60 /* MXM3 307 */
-                IMX8QXP_ADC_IN4_LSIO_GPIO1_IO14        0x60 /* MXM3 309 */
-                IMX8QXP_ADC_IN5_LSIO_GPIO1_IO13        0x60 /* MXM3 311 */
-                IMX8QXP_MCLK_OUT0_LSIO_GPIO0_IO20      0x60 /* MXM3 243 */
-                IMX8QXP_MCLK_IN0_LSIO_GPIO0_IO19       0x60 /* MXM3 245 */
-                IMX8QXP_SPI3_CS0_LSIO_GPIO0_IO16       0x60 /* MXM3 247 */
-                IMX8QXP_SPDIF0_EXT_CLK_LSIO_GPIO0_IO12 0x60 /* MXM3 255 */
-                IMX8QXP_SPI3_SCK_LSIO_GPIO0_IO13       0x60 /* MXM3 257 */
-                IMX8QXP_SPI3_SDO_LSIO_GPIO0_IO14       0x60 /* MXM3 259 */
-                IMX8QXP_SPI3_SDI_LSIO_GPIO0_IO15       0x60 /* MXM3 261 */
-                IMX8QXP_UART1_CTS_B_LSIO_GPIO0_IO24    0x60 /* MXM3 265 */
-                IMX8QXP_QSPI0A_DQS_LSIO_GPIO3_IO13     0x21 /* MXM3 286 */
+                IMX8QXP_ADC_IN0_LSIO_GPIO1_IO10            0x60 /* MXM3 305 */
+                IMX8QXP_ADC_IN1_LSIO_GPIO1_IO09            0x60 /* MXM3 307 */
+                IMX8QXP_ADC_IN4_LSIO_GPIO1_IO14            0x60 /* MXM3 309 */
+                IMX8QXP_ADC_IN5_LSIO_GPIO1_IO13            0x60 /* MXM3 311 */
+                IMX8QXP_MCLK_OUT0_LSIO_GPIO0_IO20          0x60 /* MXM3 243 */
+                IMX8QXP_MCLK_IN0_LSIO_GPIO0_IO19           0x60 /* MXM3 245 */
+                IMX8QXP_SPI3_CS0_LSIO_GPIO0_IO16           0x60 /* MXM3 247 */
+                IMX8QXP_SPDIF0_EXT_CLK_LSIO_GPIO0_IO12     0x60 /* MXM3 255 */
+                IMX8QXP_SPI3_SCK_LSIO_GPIO0_IO13           0x60 /* MXM3 257 */
+                IMX8QXP_SPI3_SDO_LSIO_GPIO0_IO14           0x60 /* MXM3 259 */
+                IMX8QXP_SPI3_SDI_LSIO_GPIO0_IO15           0x60 /* MXM3 261 */
+                IMX8QXP_UART1_CTS_B_LSIO_GPIO0_IO24        0x60 /* MXM3 265 */
+                IMX8QXP_QSPI0A_DQS_LSIO_GPIO3_IO13         0x60 /* MXM3 286 */
+                IMX8QXP_FLEXCAN0_TX_LSIO_GPIO1_IO16        0x60 /* MXM3 130 */
+                IMX8QXP_FLEXCAN0_RX_LSIO_GPIO1_IO15        0x60 /* MXM3 128 */
+                IMX8QXP_MIPI_DSI0_GPIO0_01_LSIO_GPIO1_IO28 0x60 /* MXM3 6   */
             >;
         };
         pinctrl_lpi2c4: lpi2c4grp {
@@ -432,24 +440,33 @@
         /* External Gigabit Ethernet PHY Micrel KSZ9031 */
         pinctrl_fec2: fec2grp {
             fsl,pins = <
-                IMX8QXP_ESAI0_TX0_CONN_ENET1_RGMII_RXC      0x61
-                IMX8QXP_SPDIF0_RX_CONN_ENET1_RGMII_RXD0     0x61
-                IMX8QXP_ESAI0_TX3_RX2_CONN_ENET1_RGMII_RXD1 0x61
-                IMX8QXP_ESAI0_TX2_RX3_CONN_ENET1_RGMII_RXD2 0x61
-                IMX8QXP_ESAI0_TX1_CONN_ENET1_RGMII_RXD3     0x61
-                IMX8QXP_SPDIF0_TX_CONN_ENET1_RGMII_RX_CTL   0x61
-                IMX8QXP_ESAI0_FSR_CONN_ENET1_RGMII_TXC      0x61
-                IMX8QXP_ESAI0_TX4_RX1_CONN_ENET1_RGMII_TXD0 0x61
-                IMX8QXP_ESAI0_TX5_RX0_CONN_ENET1_RGMII_TXD1 0x61
-                IMX8QXP_ESAI0_FST_CONN_ENET1_RGMII_TXD2     0x61
-                IMX8QXP_ESAI0_SCKT_CONN_ENET1_RGMII_TXD3    0x61
-                IMX8QXP_ESAI0_SCKR_CONN_ENET1_RGMII_TX_CTL  0x61
+                IMX8QXP_COMP_CTL_GPIO_1V8_3V3_GPIORHB_PAD   0x514a0
+                IMX8QXP_ESAI0_TX0_CONN_ENET1_RGMII_RXC      0x60
+                IMX8QXP_SPDIF0_RX_CONN_ENET1_RGMII_RXD0     0x60
+                IMX8QXP_ESAI0_TX3_RX2_CONN_ENET1_RGMII_RXD1 0x60
+                IMX8QXP_ESAI0_TX2_RX3_CONN_ENET1_RGMII_RXD2 0x60
+                IMX8QXP_ESAI0_TX1_CONN_ENET1_RGMII_RXD3     0x60
+                IMX8QXP_SPDIF0_TX_CONN_ENET1_RGMII_RX_CTL   0x60
+                IMX8QXP_ESAI0_FSR_CONN_ENET1_RGMII_TXC      0x60
+                IMX8QXP_ESAI0_TX4_RX1_CONN_ENET1_RGMII_TXD0 0x60
+                IMX8QXP_ESAI0_TX5_RX0_CONN_ENET1_RGMII_TXD1 0x60
+                IMX8QXP_ESAI0_FST_CONN_ENET1_RGMII_TXD2     0x60
+                IMX8QXP_ESAI0_SCKT_CONN_ENET1_RGMII_TXD3    0x60
+                IMX8QXP_ESAI0_SCKR_CONN_ENET1_RGMII_TX_CTL  0x60
+            >;
+        };
+        /* Redefine lpuart0 pin group without RTS and CTS pins (muxed to GPIO) */
+        pinctrl_lpuart0_fix: lpuart0grpfix {
+            fsl,pins = <
+                IMX8QXP_UART0_TX_ADMA_UART0_TX 0x06000020 /* MXM3 126 */
+                IMX8QXP_UART0_RX_ADMA_UART0_RX 0x06000020 /* MXM3 132 */
             >;
         };
     };
 };
 
 /* Renamed Apalis GPIO1 to GPIO8 lines, as SmartRacks RCU Service relies on the MXM3 pin number to access GPIOs */
+/* Fix GPIO3.IO10 line name from MXM3_110 to MXM3_148 */
 &lsio_gpio3 {
     gpio-line-names = "MXM3_191",
                       "MXM3_193",
@@ -461,7 +478,7 @@
                       "",
                       "",
                       "MXM3_96",
-                      "MXM3_110",
+                      "MXM3_148",
                       "MXM3_114",
                       "MXM3_116",
                       "MXM3_286",
@@ -476,4 +493,40 @@
                       "MXM3_3",
                       "MXM3_5",
                       "MXM3_7";
+};
+
+/* Fix GPIO4.IO20 line name from MXM3_148 to nothing, as this line is not exposed on MXM3 connector */
+&lsio_gpio4 {
+    gpio-line-names = "",
+                      "",
+                      "",
+                      "MXM3_211",
+                      "MXM3_84",
+                      "MXM3_262",
+                      "MXM3_209",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "",
+                      "MXM3_152",
+                      "",
+                      "MXM3_156",
+                      "MXM3_164",
+                      "MXM3_154",
+                      "MXM3_150",
+                      "MXM3_160",
+                      "MXM3_162",
+                      "MXM3_144",
+                      "MXM3_146",
+                      "MXM3_77",
+                      "MXM3_79",
+                      "MXM3_65";
 };
