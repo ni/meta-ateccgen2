@@ -397,7 +397,7 @@
         pinctrl-0 = <&pinctrl_test>, <&pinctrl_dap1_gpios>, <&pinctrl_gpio1>, <&pinctrl_gpio2>, 
                     <&pinctrl_gpio3>, <&pinctrl_gpio4>, <&pinctrl_gpio5>, <&pinctrl_gpio6>, 
                     <&pinctrl_mmc1_gpios>, <&pinctrl_qspi0a_gpios>, <&pinctrl_usbh_oc_n>, 
-                    <&pinctrl_usbo1oc>, <&pinctrl_wifi_sclk>, <&pinctrl_gpio7>, <&pinctrl_gpio8>;
+                    <&pinctrl_wifi_sclk>, <&pinctrl_gpio7>, <&pinctrl_gpio8>;
     apalis-imx8qxp {
         pinctrl_test: gpiomuxgrp {
             fsl,pins = <
@@ -412,6 +412,7 @@
                 IMX8QXP_SPI3_SCK_LSIO_GPIO0_IO13           0x60 /* MXM3 257 */
                 IMX8QXP_SPI3_SDO_LSIO_GPIO0_IO14           0x60 /* MXM3 259 */
                 IMX8QXP_SPI3_SDI_LSIO_GPIO0_IO15           0x60 /* MXM3 261 */
+                IMX8QXP_USB_SS3_TC2_LSIO_GPIO4_IO05        0x60 /* MXM3 262 */
                 IMX8QXP_UART1_CTS_B_LSIO_GPIO0_IO24        0x60 /* MXM3 265 */
                 IMX8QXP_QSPI0A_DQS_LSIO_GPIO3_IO13         0x60 /* MXM3 286 */
                 IMX8QXP_FLEXCAN0_TX_LSIO_GPIO1_IO16        0x60 /* MXM3 130 */
