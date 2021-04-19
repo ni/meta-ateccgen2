@@ -8,14 +8,17 @@ require rcu-service-src.inc
 DEPENDS += " python3-grpcio-tools-native"
 RDEPENDS_${PN} += " python3 python3-grpcio "
 inherit python3native
+inherit python3-dir
+
+FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}"
 
 do_compile() {
 	python3 -m grpc_tools.protoc -I${S} --python_out=${S}/tests/python --grpc_python_out=${S}/tests/python ${S}/rcu-service.proto
 }
 
 do_install() {
-	install -d ${D}${bindir}
-	install -m 0755 ${S}/tests/python/rcupyclient.py ${D}${bindir}
-	install -m 0755 ${S}/tests/python/rcu_service_pb2.py ${D}${bindir}
-	install -m 0755 ${S}/tests/python/rcu_service_pb2_grpc.py ${D}${bindir}
+	install -d ${D}${PYTHON_SITEPACKAGES_DIR}
+	install -m 0755 ${S}/tests/python/rcupyclient.py ${D}${PYTHON_SITEPACKAGES_DIR}
+	install -m 0755 ${S}/tests/python/rcu_service_pb2.py ${D}${PYTHON_SITEPACKAGES_DIR}
+	install -m 0755 ${S}/tests/python/rcu_service_pb2_grpc.py ${D}${PYTHON_SITEPACKAGES_DIR}
 }
