@@ -30,19 +30,16 @@ ROOTFS_POSTPROCESS_COMMAND += " add_rootfs_version;"
 IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
-CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-plugin-wifi connman-client"
-SMARTRACKSPKGS ?= "i2c-tools vsftpd rauc rcu-hostname coreutils rcu-service udev-ni-rules"
+CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-client"
 
 IMAGE_INSTALL += " \
     packagegroup-boot \
     packagegroup-basic \
     packagegroup-base-tdx-cli \
     packagegroup-machine-tdx-cli \
-    packagegroup-wifi-tdx-cli \
-    packagegroup-wifi-fw-tdx-cli \
+    packagegroup-base-ni-cli \
     udev-extraconf \
     ${CONMANPKGS} \
-    ${SMARTRACKSPKGS} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'timestamp-service systemd-analyze', '', d)} \
 "
 
