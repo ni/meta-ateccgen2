@@ -40,7 +40,6 @@ IMAGE_INSTALL += " \
     packagegroup-base-ni-cli \
     udev-extraconf \
     ${CONMANPKGS} \
-    ${SMARTRACKSPKGS} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'timestamp-service systemd-analyze', '', d)} \
 "
 
