@@ -17,7 +17,6 @@ RDEPENDS_packagegroup-ni-cli = "\
 
 SUMMARY_packagegroup-base-ni-cli = "Packages preinstalled into SmartRacks RCU image"
 RRECOMMENDS_packagegroup-base-ni-cli = "\
-    i2c-tools \
     vsftpd \
     rauc \
     rcu-hostname \
