@@ -10,7 +10,7 @@ PACKAGES += " \
     packagegroup-devel-ni-cli \
 "
 
-RDEPENDS_packagegroup-tdx-cli = "\
+RDEPENDS_packagegroup-ni-cli = "\
     packagegroup-base-ni-cli \
     packagegroup-devel-ni-cli \
 "
