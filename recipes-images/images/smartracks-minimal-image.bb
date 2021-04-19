@@ -30,7 +30,7 @@ ROOTFS_POSTPROCESS_COMMAND += " add_rootfs_version;"
 IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
-CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-plugin-wifi connman-client"
+CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-client"
 
 IMAGE_INSTALL += " \
     packagegroup-boot \
