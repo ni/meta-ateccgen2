@@ -21,4 +21,5 @@ do_install() {
 	install -m 0755 ${S}/tests/python/rcupyclient.py ${D}${PYTHON_SITEPACKAGES_DIR}
 	install -m 0755 ${S}/tests/python/rcu_service_pb2.py ${D}${PYTHON_SITEPACKAGES_DIR}
 	install -m 0755 ${S}/tests/python/rcu_service_pb2_grpc.py ${D}${PYTHON_SITEPACKAGES_DIR}
+	install -m 0755 ${S}/tests/python/example.py ${D}${PYTHON_SITEPACKAGES_DIR}
 }
