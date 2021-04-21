@@ -1,4 +1,3 @@
-S = "${WORKDIR}/git"
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 DEPENDS = " protobuf-native grpc grpc-native libgpiod "
