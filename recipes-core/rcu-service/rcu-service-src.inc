@@ -4,3 +4,5 @@ SRC_URI = "git://github.com/ni/rcu-service.git;branch=main;protocol=https"
 
 # TODO: Assign to a fixed revision after release
 SRCREV = "${AUTOREV}"
+
+S = "${WORKDIR}/git"
