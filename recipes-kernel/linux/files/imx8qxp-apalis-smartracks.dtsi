@@ -52,7 +52,7 @@
         compatible = "i2c-mux-gpio";
         #address-cells = <1>;
         #size-cells = <0>;
-        mux-gpios = <&lsio_gpio3 21 0 &lsio_gpio3 22 0>;
+        mux-gpios = <&lsio_gpio0 24 0 &lsio_gpio3 15 0>;
         i2c-parent = <&i2c3>;
 
         i2c@0 {
