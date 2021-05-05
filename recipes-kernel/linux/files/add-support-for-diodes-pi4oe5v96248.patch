@@ -48,8 +48,7 @@
 -static int i2c_write_le8(struct i2c_client *client, unsigned data)
 +static int i2c_write_le8(struct i2c_client *client, u64 data)
  {
--	return i2c_smbus_write_byte(client, data);
-+	return (int)i2c_smbus_write_byte(client, data);
+ 	return i2c_smbus_write_byte(client, data);
  }
  
 -static int i2c_read_le8(struct i2c_client *client)
@@ -232,3 +231,4 @@
  
  	gpio->client = client;
  	i2c_set_clientdata(client, gpio);
+  
