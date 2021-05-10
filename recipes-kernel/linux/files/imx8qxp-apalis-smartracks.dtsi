@@ -48,11 +48,11 @@
     };
     
     /* I2C Analog Mux attached to Apalis I2C3 */
-    i2cmux {
+    i2cmux-5a830000.i2c {
         compatible = "i2c-mux-gpio";
         #address-cells = <1>;
         #size-cells = <0>;
-        mux-gpios = <&lsio_gpio0 24 GPIO_ACTIVE_HIGH &lsio_gpio3 15 GPIO_ACTIVE_HIGH>;
+        mux-gpios = <&lsio_gpio0 25 GPIO_ACTIVE_HIGH &lsio_gpio3 15 GPIO_ACTIVE_HIGH>;
         i2c-parent = <&i2c3>;
 
         i2c@0 {
