@@ -48,6 +48,7 @@
     };
     
     /* I2C Analog Mux attached to Apalis I2C3 */
+    /* MXM3 196 (lsio_gpio0 line 25) and MXM3 198 (lsio_gpio3 line 15) occupied by mux driver */
     i2cmux-5a830000.i2c {
         compatible = "i2c-mux-gpio";
         #address-cells = <1>;
