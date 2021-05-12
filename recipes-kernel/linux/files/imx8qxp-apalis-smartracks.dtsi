@@ -200,11 +200,6 @@
     pinctrl-0 = <&pinctrl_lpi2c4>;
     clock-frequency = <100000>;
     status = "okay";
-
-    fans@52 {
-            compatible = "maxim,max31785";
-            reg = <0x52>;
-    };
 };
 
 /* Apalis I2C5 (58226000.i2c) MXM3 191, 193 */
