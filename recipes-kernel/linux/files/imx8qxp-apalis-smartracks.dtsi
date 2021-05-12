@@ -46,7 +46,7 @@
         /* Apalis USBH_EN */
         gpio = <&lsio_gpio4 4 GPIO_ACTIVE_HIGH>;
     };
-    
+
     /* I2C Analog Mux attached to Apalis I2C3 */
     /* MXM3 196 (lsio_gpio0 line 25) and MXM3 198 (lsio_gpio3 line 15) occupied by mux driver */
     i2cmux-5a830000.i2c {
@@ -88,7 +88,7 @@
 };
 
 
-/* Disabling adc0 interface to free up pinctrl_adc0 */ 
+/* Disabling adc0 interface to free up pinctrl_adc0 */
 /* pinctrl_adc0 contains 4 pins, MXM3 305, 307, 309, 311, all of which will be muxed to GPIO */
 &adc0 {
     status = "disabled";
@@ -120,7 +120,7 @@
     fsl,magic-packet;
     phy-handle = <&ethphy1>;
     phy-mode = "rgmii-id";
-}; 
+};
 
 /* Apalis CAN1 */
 &flexcan2 {
@@ -158,7 +158,7 @@
         compatible = "st,m41t0";
         reg = <0x68>;
     };
-    
+
     /* 48-bit IO expander on fanout board */
     pi4ioe5v: pi4ioe5v@27 {
         compatible = "diodes,pi4ioe5v96248";
@@ -166,7 +166,7 @@
         gpio-controller;
         #gpio-cells = <2>;
         npgio=<48>;
-        gpio-line-names = 
+        gpio-line-names =
             "IOXPD1_IO0_0", "IOXPD1_IO0_1", "IOXPD1_IO0_2", "IOXPD1_IO0_3", "IOXPD1_IO0_4", "IOXPD1_IO0_5", "IOXPD1_IO0_6", "IOXPD1_IO0_7",
             "IOXPD1_IO1_0", "IOXPD1_IO1_1", "IOXPD1_IO1_2", "IOXPD1_IO1_3", "IOXPD1_IO1_4", "IOXPD1_IO1_5", "IOXPD1_IO1_6", "IOXPD1_IO1_7",
             "IOXPD1_IO2_0", "IOXPD1_IO2_1", "IOXPD1_IO2_2", "IOXPD1_IO2_3", "IOXPD1_IO2_4", "IOXPD1_IO2_5", "IOXPD1_IO2_6", "IOXPD1_IO2_7",
