@@ -446,7 +446,7 @@
         pinctrl-0 = <&pinctrl_test>, <&pinctrl_dap1_gpios>, <&pinctrl_gpio1>, <&pinctrl_gpio2>,
                     <&pinctrl_gpio3>, <&pinctrl_gpio4>, <&pinctrl_gpio5>, <&pinctrl_gpio6>,
                     <&pinctrl_mmc1_gpios>, <&pinctrl_qspi0a_gpios>, <&pinctrl_usbh_oc_n>,
-                    <&pinctrl_wifi_sclk>, <&pinctrl_gpio7>, <&pinctrl_gpio8>, <&pinctrl_flexcan3>;
+                    <&pinctrl_wifi_sclk>, <&pinctrl_gpio7>, <&pinctrl_gpio8>;
     apalis-imx8qxp {
         pinctrl_test: gpiomuxgrp {
             fsl,pins = <
@@ -471,7 +471,10 @@
                 IMX8QXP_FLEXCAN0_TX_LSIO_GPIO1_IO16        0x60 /* MXM3 130 */
                 IMX8QXP_FLEXCAN0_RX_LSIO_GPIO1_IO15        0x60 /* MXM3 128 */
                 IMX8QXP_MIPI_DSI0_GPIO0_01_LSIO_GPIO1_IO28 0x60 /* MXM3 6   */
-                IMX8QXP_FLEXCAN2_TX_ADMA_FLEXCAN2_TX       0x60 /* MXM3 18  */
+                IMX8QXP_FLEXCAN1_RX_LSIO_GPIO1_IO17        0x60 /* MXM3 12  */
+                IMX8QXP_FLEXCAN1_TX_LSIO_GPIO1_IO18        0x60 /* MXM3 14  */
+                IMX8QXP_FLEXCAN2_RX_LSIO_GPIO1_IO19        0x60 /* MXM3 16  */
+                IMX8QXP_FLEXCAN2_TX_LSIO_GPIO1_IO20        0x60 /* MXM3 18  */
             >;
         };
         pinctrl_lpi2c4: lpi2c4grp {
@@ -515,6 +518,12 @@
             fsl,pins = <
                 IMX8QXP_UART0_TX_ADMA_UART0_TX 0x06000020 /* MXM3 126 */
                 IMX8QXP_UART0_RX_ADMA_UART0_RX 0x06000020 /* MXM3 132 */
+            >;
+        };
+
+        pinctrl_flexcan3: flexcan3grp {
+            fsl,pins = <
+                IMX8QXP_FLEXCAN2_TX_ADMA_FLEXCAN2_TX 0x60 /* MXM3 18  */
             >;
         };
     };
