@@ -520,12 +520,6 @@
                 IMX8QXP_UART0_RX_ADMA_UART0_RX 0x06000020 /* MXM3 132 */
             >;
         };
-
-        pinctrl_flexcan3: flexcan3grp {
-            fsl,pins = <
-                IMX8QXP_FLEXCAN2_TX_ADMA_FLEXCAN2_TX 0x60 /* MXM3 18  */
-            >;
-        };
     };
 };
 
