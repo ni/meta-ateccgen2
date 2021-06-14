@@ -1,5 +1,5 @@
---- a/drivers/gpio/gpio-pcf857x.c	2021-05-02 05:15:14.347074972 -0700
-+++ b/drivers/gpio/gpio-pcf857x.c	2021-05-02 05:14:56.523219426 -0700
+--- a/drivers/gpio/gpio-pcf857x.c	2021-06-10 04:00:37.797098202 -0700
++++ b/drivers/gpio/gpio-pcf857x.c	2021-06-14 05:50:13.961515083 -0700
 @@ -17,6 +17,7 @@
  #include <linux/of_device.h>
  #include <linux/slab.h>
@@ -24,7 +24,7 @@
  	{ }
  };
  MODULE_DEVICE_TABLE(of, pcf857x_of_table);
-@@ -74,31 +77,41 @@
+@@ -74,31 +77,40 @@
  	struct irq_chip		irqchip;
  	struct i2c_client	*client;
  	struct mutex		lock;		/* protect 'out' */
@@ -64,7 +64,6 @@
 +		return status;
 +
 +	*data = buf[0];
-+
 +	return status;
  }
  
@@ -75,7 +74,7 @@
  {
  	u8 buf[2] = { word & 0xff, word >> 8, };
  	int status;
-@@ -107,7 +120,7 @@
+@@ -107,7 +119,7 @@
  	return (status < 0) ? status : 0;
  }
  
@@ -84,14 +83,13 @@
  {
  	u8 buf[2];
  	int status;
-@@ -115,7 +128,35 @@
+@@ -115,7 +127,33 @@
  	status = i2c_master_recv(client, buf, 2);
  	if (status < 0)
  		return status;
 -	return (buf[1] << 8) | buf[0];
 +
 +	*data = (buf[1] << 8) | buf[0];
-+
 +	return status;
 +}
 +
@@ -116,12 +114,11 @@
 +		return status;
 +
 +	*data = ((u64)buf[5] << 40) | ((u64)buf[4] << 32) | ((u64)buf[3] << 24) | ((u64)buf[2] << 16) | ((u64)buf[1] << 8) | (u64)buf[0];
-+
 +	return status;
  }
  
  /*-------------------------------------------------------------------------*/
-@@ -126,7 +167,7 @@
+@@ -126,7 +164,7 @@
  	int		status;
  
  	mutex_lock(&gpio->lock);
@@ -130,18 +127,18 @@
  	status = gpio->write(gpio->client, gpio->out);
  	mutex_unlock(&gpio->lock);
  
-@@ -136,16 +177,18 @@
+@@ -136,16 +174,18 @@
  static int pcf857x_get(struct gpio_chip *chip, unsigned offset)
  {
  	struct pcf857x	*gpio = gpiochip_get_data(chip);
 -	int		value;
 +	u64		value;
 +	int		status;
-+
-+	status = gpio->read(gpio->client, &value);
  
 -	value = gpio->read(gpio->client);
 -	return (value < 0) ? value : !!(value & (1 << offset));
++	status = gpio->read(gpio->client, &value);
++
 +	return (status < 0) ? status : !!(value & (1ULL << offset));
  }
  
@@ -153,7 +150,7 @@
  	int		status;
  
  	mutex_lock(&gpio->lock);
-@@ -169,17 +212,19 @@
+@@ -169,17 +209,19 @@
  static irqreturn_t pcf857x_irq(int irq, void *data)
  {
  	struct pcf857x  *gpio = data;
@@ -177,7 +174,7 @@
  	mutex_unlock(&gpio->lock);
  
  	for_each_set_bit(i, &change, gpio->chip.ngpio)
-@@ -204,14 +249,14 @@
+@@ -204,14 +246,14 @@
  {
  	struct pcf857x *gpio = irq_data_get_irq_chip_data(data);
  
@@ -194,15 +191,31 @@
  }
  
  static void pcf857x_irq_bus_lock(struct irq_data *data)
-@@ -238,6 +283,7 @@
+@@ -224,7 +266,7 @@
+ static void pcf857x_irq_bus_sync_unlock(struct irq_data *data)
+ {
+ 	struct pcf857x *gpio = irq_data_get_irq_chip_data(data);
+-
++	
+ 	mutex_unlock(&gpio->lock);
+ }
+ 
+@@ -236,11 +278,12 @@
+ 	struct pcf857x_platform_data	*pdata = dev_get_platdata(&client->dev);
+ 	struct device_node		*np = client->dev.of_node;
  	struct pcf857x			*gpio;
- 	unsigned int			n_latch = 0;
+-	unsigned int			n_latch = 0;
++	u64				n_latch = 0;
  	int				status;
 +	u64 value;
  
  	if (IS_ENABLED(CONFIG_OF) && np)
- 		of_property_read_u32(np, "lines-initial-states", &n_latch);
-@@ -301,7 +347,17 @@
+-		of_property_read_u32(np, "lines-initial-states", &n_latch);
++		of_property_read_u64(np, "lines-initial-states", &n_latch);
+ 	else if (pdata)
+ 		n_latch = pdata->n_latch;
+ 	else
+@@ -301,7 +344,17 @@
  
  		/* fail if there's no chip present */
  		else
@@ -221,7 +234,7 @@
  
  	} else {
  		dev_dbg(&client->dev, "unsupported number of gpios\n");
-@@ -311,7 +367,8 @@
+@@ -311,7 +364,8 @@
  	if (status < 0)
  		goto fail;
  
@@ -231,4 +244,3 @@
  
  	gpio->client = client;
  	i2c_set_clientdata(client, gpio);
-  
