@@ -47,14 +47,14 @@
         gpio = <&lsio_gpio4 4 GPIO_ACTIVE_HIGH>;
     };
 
-    /* I2C Analog Mux attached to Apalis I2C3 */
+    /* I2C Analog Mux attached to Apalis I2C5 */
     /* MXM3 196 (lsio_gpio0 line 25) and MXM3 198 (lsio_gpio3 line 15) occupied by mux driver */
-    i2cmux-5a830000.i2c {
+    i2cmux-58226000.i2c {
         compatible = "i2c-mux-gpio";
         #address-cells = <1>;
         #size-cells = <0>;
         mux-gpios = <&lsio_gpio0 25 GPIO_ACTIVE_HIGH &lsio_gpio3 15 GPIO_ACTIVE_HIGH>;
-        i2c-parent = <&i2c3>;
+        i2c-parent = <&i2c_mipi_csi0>;
 
         i2c@0 {
             reg = <0>;
@@ -158,22 +158,6 @@
         compatible = "st,m41t0";
         reg = <0x68>;
     };
-
-    /* 48-bit IO expander on fanout board */
-    pi4ioe5v: pi4ioe5v@27 {
-        compatible = "diodes,pi4ioe5v96248";
-        reg = <0x27>;
-        gpio-controller;
-        #gpio-cells = <2>;
-        npgio=<48>;
-        gpio-line-names =
-            "IOXPD1_IO0_0", "IOXPD1_IO0_1", "IOXPD1_IO0_2", "IOXPD1_IO0_3", "IOXPD1_IO0_4", "IOXPD1_IO0_5", "IOXPD1_IO0_6", "IOXPD1_IO0_7",
-            "IOXPD1_IO1_0", "IOXPD1_IO1_1", "IOXPD1_IO1_2", "IOXPD1_IO1_3", "IOXPD1_IO1_4", "IOXPD1_IO1_5", "IOXPD1_IO1_6", "IOXPD1_IO1_7",
-            "IOXPD1_IO2_0", "IOXPD1_IO2_1", "IOXPD1_IO2_2", "IOXPD1_IO2_3", "IOXPD1_IO2_4", "IOXPD1_IO2_5", "IOXPD1_IO2_6", "IOXPD1_IO2_7",
-            "IOXPD1_IO3_0", "IOXPD1_IO3_1", "IOXPD1_IO3_2", "IOXPD1_IO3_3", "IOXPD1_IO3_4", "IOXPD1_IO3_5", "IOXPD1_IO3_6", "IOXPD1_IO3_7",
-            "IOXPD1_IO4_0", "IOXPD1_IO4_1", "IOXPD1_IO4_2", "IOXPD1_IO4_3", "IOXPD1_IO4_4", "IOXPD1_IO4_5", "IOXPD1_IO4_6", "IOXPD1_IO4_7",
-            "IOXPD1_IO5_0", "IOXPD1_IO5_1", "IOXPD1_IO5_2", "IOXPD1_IO5_3", "IOXPD1_IO5_4", "IOXPD1_IO5_5", "IOXPD1_IO5_6", "IOXPD1_IO5_7";
-    };
 };
 
 /* Apalis I2C2 (56246000.i2c) MXM3 205, 207 */
@@ -200,6 +184,22 @@
     pinctrl-0 = <&pinctrl_lpi2c4>;
     clock-frequency = <100000>;
     status = "okay";
+    
+    /* 48-bit IO expander */
+    pi4ioe5v: pi4ioe5v@27 {
+        compatible = "diodes,pi4ioe5v96248";
+        reg = <0x27>;
+        gpio-controller;
+        #gpio-cells = <2>;
+        npgio=<48>;
+        gpio-line-names =
+            "IOXPD1_IO0_0", "IOXPD1_IO0_1", "IOXPD1_IO0_2", "IOXPD1_IO0_3", "IOXPD1_IO0_4", "IOXPD1_IO0_5", "IOXPD1_IO0_6", "IOXPD1_IO0_7",
+            "IOXPD1_IO1_0", "IOXPD1_IO1_1", "IOXPD1_IO1_2", "IOXPD1_IO1_3", "IOXPD1_IO1_4", "IOXPD1_IO1_5", "IOXPD1_IO1_6", "IOXPD1_IO1_7",
+            "IOXPD1_IO2_0", "IOXPD1_IO2_1", "IOXPD1_IO2_2", "IOXPD1_IO2_3", "IOXPD1_IO2_4", "IOXPD1_IO2_5", "IOXPD1_IO2_6", "IOXPD1_IO2_7",
+            "IOXPD1_IO3_0", "IOXPD1_IO3_1", "IOXPD1_IO3_2", "IOXPD1_IO3_3", "IOXPD1_IO3_4", "IOXPD1_IO3_5", "IOXPD1_IO3_6", "IOXPD1_IO3_7",
+            "IOXPD1_IO4_0", "IOXPD1_IO4_1", "IOXPD1_IO4_2", "IOXPD1_IO4_3", "IOXPD1_IO4_4", "IOXPD1_IO4_5", "IOXPD1_IO4_6", "IOXPD1_IO4_7",
+            "IOXPD1_IO5_0", "IOXPD1_IO5_1", "IOXPD1_IO5_2", "IOXPD1_IO5_3", "IOXPD1_IO5_4", "IOXPD1_IO5_5", "IOXPD1_IO5_6", "IOXPD1_IO5_7";
+    };
 };
 
 /* Apalis I2C5 (58226000.i2c) MXM3 191, 193 */
@@ -308,8 +308,9 @@
 };
 
 /* Apalis SPI1 */
+/* Disabled to free up MXM3 221, 223, 225, 227 for GPIO */
 &lpspi0 {
-    status = "okay";
+    status = "disabled";
 
     spidev0: spi@0 {
         compatible = "toradex,evalspi";
@@ -475,6 +476,10 @@
                 IMX8QXP_FLEXCAN1_TX_LSIO_GPIO1_IO18        0x60 /* MXM3 14  */
                 IMX8QXP_FLEXCAN2_RX_LSIO_GPIO1_IO19        0x60 /* MXM3 16  */
                 IMX8QXP_FLEXCAN2_TX_LSIO_GPIO1_IO20        0x60 /* MXM3 18  */
+                IMX8QXP_SPI0_CS0_LSIO_GPIO1_IO08           0x60 /* MXM3 227 */
+                IMX8QXP_SPI0_SDI_LSIO_GPIO1_IO05           0x60 /* MXM3 223 */
+                IMX8QXP_SPI0_SDO_LSIO_GPIO1_IO06           0x60 /* MXM3 225 */
+                IMX8QXP_SPI0_SCK_LSIO_GPIO1_IO04           0x60 /* MXM3 221 */
             >;
         };
         pinctrl_lpi2c4: lpi2c4grp {
