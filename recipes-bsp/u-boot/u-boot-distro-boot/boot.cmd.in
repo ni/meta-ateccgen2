@@ -101,22 +101,22 @@ env set bootcmd_boot 'echo "Bootargs: \${bootargs}" && @@KERNEL_BOOTCMD@@ ${kern
 env set bootcmd_prepare 'run set_bootcmd_kernel; run set_bootcmd_dtb; run set_load_overlays_file; run set_apply_overlays'
 env set bootcmd_run 'run m4boot; run bootcmd_dtb && run bootcmd_overlays && run bootcmd_args && run bootcmd_kernel && run bootcmd_unzip && run bootcmd_boot; echo "Booting from ${devtype} failed!" && false'
 
-# STATUS_LED_RED_PIN (MXM3_110)
+# STATUS_LED_RED_PIN (MXM3_110) - Set default direction: OUTPUT, default value: LOW
 gpio clear gpio9_7
 
-# STATUS_LED_GREEN_PIN (MXM3_18)
+# STATUS_LED_GREEN_PIN (MXM3_18) - Set default direction: OUTPUT, default value: LOW
 gpio clear gpio1_20
 
-# START_BUTTON_LED (MXM3_120)
+# START_BUTTON_LED (MXM3_120) - Set default direction: OUTPUT, default value: LOW
 gpio clear gpio9_6
 
-# UART_2_MUX_CTRL (MXM3_3)
+# UART_2_MUX_CTRL (MXM3_3) - Set default direction: OUTPUT, default value: LOW
 gpio clear gpio3_22
 
-# UART_3_MUX_CTRL (MXM3_5)
+# UART_3_MUX_CTRL (MXM3_5) - Set default direction: OUTPUT, default value: LOW
 gpio clear gpio3_23
 
-# UART_4_MUX_CTRL (MXM3_7)
+# UART_4_MUX_CTRL (MXM3_7) - Set default direction: OUTPUT, default value: LOW
 gpio clear gpio3_24
 
 run bootcmd_prepare
