@@ -1,5 +1,5 @@
---- a/drivers/gpio/gpio-pcf857x.c	2021-06-10 04:00:37.797098202 -0700
-+++ b/drivers/gpio/gpio-pcf857x.c	2021-06-14 05:50:13.961515083 -0700
+--- a.gpio-pcf857x.c	2021-06-10 04:00:37.797098202 -0700
++++ b.gpio-pcf857x.c	2021-06-16 01:06:23.203382752 -0700
 @@ -17,6 +17,7 @@
  #include <linux/of_device.h>
  #include <linux/slab.h>
@@ -155,7 +155,7 @@
  	struct pcf857x  *gpio = data;
 -	unsigned long change, i, status;
 +	u64 value;
-+	unsigned long change;
++	unsigned long change; // unsigned long is 8 bytes wide on ARM64
 +	int status, i;
  
 -	status = gpio->read(gpio->client);
