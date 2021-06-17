@@ -174,6 +174,16 @@
 /* Apalis I2C3 (5a830000.i2c) MXM3 203, 201 */
 &i2c3 {
     status = "okay";
+    
+    /* PCA9674 8-bit IO expander on I2C3 */
+    pca9674: gpio@20 {
+        compatible = "nxp,pca9674";
+        reg = <0x20>;
+        gpio-controller;
+        #gpio-cells = <2>;
+        gpio-line-names =
+            "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
+    };
 };
 
 /* Apalis I2C4 (5a820000.i2c) MXM3 239, 8 */
