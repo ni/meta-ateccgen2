@@ -1,5 +1,5 @@
---- a.in	2021-06-17 11:27:40.232320487 +0800
-+++ b.in	2021-06-17 11:29:01.165081020 +0800
+--- a/boot.cmd.in	2021-06-17 11:27:40.232320487 +0800
++++ b/boot.cmd.in	2021-06-17 11:29:01.165081020 +0800
 @@ -101,6 +101,27 @@
  env set bootcmd_prepare 'run set_bootcmd_kernel; run set_bootcmd_dtb; run set_load_overlays_file; run set_apply_overlays'
  env set bootcmd_run 'run m4boot; run bootcmd_dtb && run bootcmd_overlays && run bootcmd_args && run bootcmd_kernel && run bootcmd_unzip && run bootcmd_boot; echo "Booting from ${devtype} failed!" && false'
