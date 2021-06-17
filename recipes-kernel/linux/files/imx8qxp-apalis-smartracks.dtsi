@@ -181,6 +181,7 @@
         reg = <0x20>;
         gpio-controller;
         #gpio-cells = <2>;
+        label = "pca9674-5a830000.gpio";
         gpio-line-names =
             "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
     };
@@ -202,6 +203,7 @@
         gpio-controller;
         #gpio-cells = <2>;
         npgio=<48>;
+        label = "pi4ioe5v96248-5a820000.gpio";
         gpio-line-names =
             "IOXPD1_IO0_0", "IOXPD1_IO0_1", "IOXPD1_IO0_2", "IOXPD1_IO0_3", "IOXPD1_IO0_4", "IOXPD1_IO0_5", "IOXPD1_IO0_6", "IOXPD1_IO0_7",
             "IOXPD1_IO1_0", "IOXPD1_IO1_1", "IOXPD1_IO1_2", "IOXPD1_IO1_3", "IOXPD1_IO1_4", "IOXPD1_IO1_5", "IOXPD1_IO1_6", "IOXPD1_IO1_7",
