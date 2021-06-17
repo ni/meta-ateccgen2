@@ -204,7 +204,8 @@
         #gpio-cells = <2>;
         npgio=<48>;
         label = "pi4ioe5v96248-5a820000.gpio";
-        lines-initial-states = <0xC0000 0x0>;
+        /* IO1_5 and IO1_6 has to be in LOW state by default */
+        lines-initial-states = <0x00000000 0x00006000>;
         gpio-line-names =
             "IOXPD1_IO0_0", "IOXPD1_IO0_1", "IOXPD1_IO0_2", "IOXPD1_IO0_3", "IOXPD1_IO0_4", "IOXPD1_IO0_5", "IOXPD1_IO0_6", "IOXPD1_IO0_7",
             "IOXPD1_IO1_0", "IOXPD1_IO1_1", "IOXPD1_IO1_2", "IOXPD1_IO1_3", "IOXPD1_IO1_4", "IOXPD1_IO1_5", "IOXPD1_IO1_6", "IOXPD1_IO1_7",
