@@ -182,6 +182,8 @@
         gpio-controller;
         #gpio-cells = <2>;
         label = "pca9674-5a830000.gpio";
+        /* IO0 and IO1 has to be output low by default */
+        lines-initial-states = <0x03>;
         gpio-line-names =
             "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
     };
@@ -204,8 +206,19 @@
         #gpio-cells = <2>;
         npgio=<48>;
         label = "pi4ioe5v96248-5a820000.gpio";
-        /* IO1_5 and IO1_6 has to be in LOW state by default */
+
+        /* NOTE: lines-initial-states acts as a bitmask, i.e.                                                                              */
+        /* For a pin to be configured as output, the bit within the bitmask should be set to 1.                                            */
+        /* Likewise, for a pin to be configured as input or output high, the bit within the bitmask should be set to 0.                    */
+        /* IO0_0 is LSB (bit at rightmost corner), and as we move left from LSB, we approach IO5_7 at the 48th bit.                        */
+        /* Everything between the 48th bit to MSB (bit at leftmost corner) does not represent anything (since IO expander is 48 bit only). */
+        
+        /* This property holds two consecutive 32-bit value to represent a 64-bit value. */
+        /* In binary, the hex value 0x00000000 00006000 is written as:                   */
+        /* 00000000 00000000 00000000 00000000 00000000 00000000 01100000 00000000       */
+        /* where bit 1s target IO1_5 and IO1_6 to set them as default output LOW         */
         lines-initial-states = <0x00000000 0x00006000>;
+        
         gpio-line-names =
             "IOXPD1_IO0_0", "IOXPD1_IO0_1", "IOXPD1_IO0_2", "IOXPD1_IO0_3", "IOXPD1_IO0_4", "IOXPD1_IO0_5", "IOXPD1_IO0_6", "IOXPD1_IO0_7",
             "IOXPD1_IO1_0", "IOXPD1_IO1_1", "IOXPD1_IO1_2", "IOXPD1_IO1_3", "IOXPD1_IO1_4", "IOXPD1_IO1_5", "IOXPD1_IO1_6", "IOXPD1_IO1_7",
