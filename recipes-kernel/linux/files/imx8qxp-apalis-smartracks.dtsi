@@ -1,6 +1,5 @@
 / {
     aliases {
-        rtc0 = &rtc_i2c;
         rtc1 = &rtc;
     };
 
@@ -152,12 +151,6 @@
 &i2c1 {
     status = "okay";
     clock-frequency = <400000>;
-
-    /* M41T0M6 real time clock on carrier board */
-    rtc_i2c: rtc@68 {
-        compatible = "st,m41t0";
-        reg = <0x68>;
-    };
 };
 
 /* Apalis I2C2 (56246000.i2c) MXM3 205, 207 */
