@@ -5,13 +5,6 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 require rcu-service-src.inc
 
-DEPENDS += " python3-grpcio-tools-native"
-RDEPENDS_${PN} += " python3 python3-grpcio "
-inherit python3native
-inherit python3-dir
-
-FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}"
-
 do_compile() {
 	python3 -m grpc_tools.protoc -I${S} --python_out=${S}/tests/python --grpc_python_out=${S}/tests/python ${S}/rcu-service.proto
 }

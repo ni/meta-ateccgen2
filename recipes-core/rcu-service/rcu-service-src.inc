@@ -6,3 +6,10 @@ SRC_URI = "git://github.com/ni/rcu-service.git;branch=main;protocol=https"
 SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
+
+DEPENDS += " python3-grpcio-tools-native"
+RDEPENDS_${PN} += " python3 python3-grpcio "
+inherit python3native
+inherit python3-dir
+
+FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}"

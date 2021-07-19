@@ -1,6 +1,6 @@
 TARGET_CC_ARCH += "${LDFLAGS}"
 
-DEPENDS = " protobuf-native grpc grpc-native libgpiod "
+DEPENDS += " protobuf-native grpc grpc-native libgpiod "
 
 inherit cmake
 
