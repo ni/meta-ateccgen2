@@ -475,10 +475,10 @@
                 IMX8QXP_ADC_IN1_LSIO_GPIO1_IO09            0x60 /* MXM3 307 */
                 IMX8QXP_ADC_IN4_LSIO_GPIO1_IO14            0x60 /* MXM3 309 */
                 IMX8QXP_ADC_IN5_LSIO_GPIO1_IO13            0x60 /* MXM3 311 */
-                IMX8QXP_SPI2_CS0_LSIO_GPIO1_IO00           0x60 /* MXM3 235 */
-                IMX8QXP_SPI2_SDI_LSIO_GPIO1_IO02           0x60 /* MXM3 231 */
-                IMX8QXP_SPI2_SDO_LSIO_GPIO1_IO01           0x60 /* MXM3 233 */
-                IMX8QXP_SPI2_SCK_LSIO_GPIO1_IO03           0x60 /* MXM3 229 */
+                IMX8QXP_SPI2_CS0_LSIO_GPIO1_IO00           0x60 /* MXM3 233 */
+                IMX8QXP_SPI2_SDI_LSIO_GPIO1_IO02           0x60 /* MXM3 229 */
+                IMX8QXP_SPI2_SDO_LSIO_GPIO1_IO01           0x60 /* MXM3 231 */
+                IMX8QXP_SPI2_SCK_LSIO_GPIO1_IO03           0x60 /* MXM3 235 */
                 IMX8QXP_MCLK_OUT0_LSIO_GPIO0_IO20          0x60 /* MXM3 243 */
                 IMX8QXP_MCLK_IN0_LSIO_GPIO0_IO19           0x60 /* MXM3 245 */
                 IMX8QXP_SPI3_CS0_LSIO_GPIO0_IO16           0x60 /* MXM3 247 */
@@ -546,6 +546,47 @@
             >;
         };
     };
+};
+
+/* Fix Apalis iMX8X SPI2 pins MXM3 number mismatch */
+/*  - MXM3_233 corresponds to GPIO chip 1 line 0   */
+/*  - MXM3_231 corresponds to GPIO chip 1 line 1   */
+/*  - MXM3_229 corresponds to GPIO chip 1 line 2   */
+/*  - MXM3_235 corresponds to GPIO chip 1 line 3   */
+/*  Ref: AzDO 1565419                              */
+&lsio_gpio1 {
+    gpio-line-names = "MXM3_233",
+                      "MXM3_231",
+                      "MXM3_229",
+                      "MXM3_235",
+                      "MXM3_221",
+                      "MXM3_223",
+                      "MXM3_225",
+                      "MXM3_316",
+                      "MXM3_227",
+                      "MXM3_307",
+                      "MXM3_305",
+                      "MXM3_194",
+                      "",
+                      "MXM3_311",
+                      "MXM3_309",
+                      "MXM3_128",
+                      "MXM3_130",
+                      "MXM3_12",
+                      "MXM3_14",
+                      "MXM3_16",
+                      "MXM3_18",
+                      "MXM3_132",
+                      "MXM3_126",
+                      "MXM3_134",
+                      "MXM3_136",
+                      "MXM3_35",
+                      "MXM3_37",
+                      "MXM3_4",
+                      "MXM3_6",
+                      "MXM3_207",
+                      "MXM3_205",
+                      "MXM3_239";
 };
 
 /* Renamed Apalis GPIO1 to GPIO8 lines, as SmartRacks RCU Service relies on the MXM3 pin number to access GPIOs */
