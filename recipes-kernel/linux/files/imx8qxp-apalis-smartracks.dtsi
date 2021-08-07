@@ -554,6 +554,7 @@
 /*  - MXM3_229 corresponds to GPIO chip 1 line 2   */
 /*  - MXM3_235 corresponds to GPIO chip 1 line 3   */
 /*  Ref: AzDO 1565419                              */
+/* lsio_gpio1 introduced here to overwrite gpio-line-names introduced in imx8qxp-apalis.dtsi */
 &lsio_gpio1 {
     gpio-line-names = "MXM3_233",
                       "MXM3_231",
