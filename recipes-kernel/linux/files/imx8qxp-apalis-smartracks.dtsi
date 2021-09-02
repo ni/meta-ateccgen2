@@ -220,6 +220,11 @@
             "IOXPD1_IO4_0", "IOXPD1_IO4_1", "IOXPD1_IO4_2", "IOXPD1_IO4_3", "IOXPD1_IO4_4", "IOXPD1_IO4_5", "IOXPD1_IO4_6", "IOXPD1_IO4_7",
             "IOXPD1_IO5_0", "IOXPD1_IO5_1", "IOXPD1_IO5_2", "IOXPD1_IO5_3", "IOXPD1_IO5_4", "IOXPD1_IO5_5", "IOXPD1_IO5_6", "IOXPD1_IO5_7";
     };
+    
+    rtc_i2c: rtc@68 {
+		compatible = "st,m41t0";
+		reg = <0x68>;
+	};
 };
 
 /* Apalis I2C5 (58226000.i2c) MXM3 191, 193 */
