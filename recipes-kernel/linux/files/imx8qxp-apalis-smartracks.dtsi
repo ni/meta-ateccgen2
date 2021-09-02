@@ -222,7 +222,7 @@
     };
     
     rtc_i2c: rtc@68 {
-        compatible = "st,m41t0";
+        compatible = "dallas,ds3232";
         reg = <0x68>;
     };
 };
