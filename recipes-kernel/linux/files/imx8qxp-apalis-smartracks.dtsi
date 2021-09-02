@@ -222,9 +222,9 @@
     };
     
     rtc_i2c: rtc@68 {
-		compatible = "st,m41t0";
-		reg = <0x68>;
-	};
+        compatible = "st,m41t0";
+        reg = <0x68>;
+    };
 };
 
 /* Apalis I2C5 (58226000.i2c) MXM3 191, 193 */
