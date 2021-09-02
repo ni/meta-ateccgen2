@@ -1,5 +1,6 @@
 / {
     aliases {
+        rtc0 = &rtc_i2c;
         rtc1 = &rtc;
     };
 
