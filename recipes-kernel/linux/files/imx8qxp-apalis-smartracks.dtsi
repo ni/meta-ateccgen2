@@ -1,6 +1,7 @@
 / {
     aliases {
-        rtc1 = &rtc;
+        rtc1 = &rtc_i2c;
+        rtc0 = &rtc;
     };
 
     reg_3v3: regulator-3v3 {
@@ -219,6 +220,11 @@
             "IOXPD1_IO3_0", "IOXPD1_IO3_1", "IOXPD1_IO3_2", "IOXPD1_IO3_3", "IOXPD1_IO3_4", "IOXPD1_IO3_5", "IOXPD1_IO3_6", "IOXPD1_IO3_7",
             "IOXPD1_IO4_0", "IOXPD1_IO4_1", "IOXPD1_IO4_2", "IOXPD1_IO4_3", "IOXPD1_IO4_4", "IOXPD1_IO4_5", "IOXPD1_IO4_6", "IOXPD1_IO4_7",
             "IOXPD1_IO5_0", "IOXPD1_IO5_1", "IOXPD1_IO5_2", "IOXPD1_IO5_3", "IOXPD1_IO5_4", "IOXPD1_IO5_5", "IOXPD1_IO5_6", "IOXPD1_IO5_7";
+    };
+    
+    rtc_i2c: rtc@68 {
+        compatible = "dallas,ds3232";
+        reg = <0x68>;
     };
 };
 
