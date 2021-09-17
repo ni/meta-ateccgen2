@@ -1,3 +1,5 @@
+#include <dt-bindings/leds/leds-pca955x.h>
+
 / {
     aliases {
         rtc1 = &rtc_i2c;
