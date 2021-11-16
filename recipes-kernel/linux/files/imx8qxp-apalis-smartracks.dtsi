@@ -1,3 +1,5 @@
+#include <dt-bindings/leds/leds-pca955x.h>
+
 / {
     aliases {
         rtc1 = &rtc_i2c;
@@ -225,6 +227,79 @@
     rtc_i2c: rtc@68 {
         compatible = "dallas,ds3232";
         reg = <0x68>;
+    };
+    
+    /* 16-bit LED driver */
+    pca9552: pca9552@62 {
+        compatible = "nxp,pca9552";
+        #address-cells = <1>;
+        #size-cells = <0>;
+        reg = <0x62>;
+
+        led@0 {
+            reg = <0>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@1 {
+            reg = <1>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@2 {
+            reg = <2>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@3 {
+            reg = <3>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@4 {
+            reg = <4>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@5 {
+            reg = <5>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@6 {
+            reg = <6>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@7 {
+            reg = <7>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@8 {
+            reg = <8>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@9 {
+            reg = <9>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@10 {
+            reg = <10>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@11 {
+            reg = <11>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@12 {
+            reg = <12>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@13 {
+            reg = <13>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@14 {
+            reg = <14>;
+            type = <PCA955X_TYPE_LED>;
+        };
+        led@15 {
+            reg = <15>;
+            type = <PCA955X_TYPE_LED>;
+        };
     };
 };
 
