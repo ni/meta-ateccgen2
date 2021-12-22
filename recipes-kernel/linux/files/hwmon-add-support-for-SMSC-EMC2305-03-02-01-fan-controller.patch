@@ -53,6 +53,10 @@ index 000000000000..d0cebae09ffd
 +    Datasheet: Publicly available at the MICROCHIP website :
 +        http://ww1.microchip.com/downloads/en/DeviceDoc/2305.pdf
 +
++Authors:
++        Reinhard Pfau, Guntermann & Drunck GmbH <pfau@gdsys.de>
++        Biwen Li <biwen.li@nxp.com>
++
 +Description
 +-----------
 +
@@ -73,6 +77,25 @@ index 000000000000..d0cebae09ffd
 +
 +Configuration is also possible via devicetree:
 +Documentation/devicetree/bindings/hwmon/emc2305.txt
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b526b8a66f8a..a506e8071259 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15013,6 +15013,14 @@ S:	Maintained
+ F:	Documentation/hwmon/emc2103.rst
+ F:	drivers/hwmon/emc2103.c
+ 
++SMSC EMC2305 HARDWARE MONITOR DRIVER
++M:	Biwen Li <biwen.li@nxp.com>
++L:	lm-sensors@lm-sensors.org
++S:	Maintained
++F:	Documentation/hwmon/emc2305
++F:	Documentation/devicetree/bindings/hwmon/emc2305.txt
++F:	drivers/hwmon/emc2305.c
++
+ SMSC SCH5627 HARDWARE MONITOR DRIVER
+ M:	Hans de Goede <hdegoede@redhat.com>
+ L:	linux-hwmon@vger.kernel.org
 diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
 index 2fa4666d5b07..5ab3e975517a 100644
 --- a/drivers/hwmon/Kconfig
@@ -114,6 +137,10 @@ index 000000000000..d0c99f9b7434
 @@ -0,0 +1,689 @@
 +/*
 + * emc2305.c - hwmon driver for SMSC EMC2305 fan controller
++ * (C) Copyright 2013
++ * Copyright 2020 NXP
++ * Reinhard Pfau, Guntermann & Drunck GmbH <pfau@gdsys.de>
++ * Biwen Li <biwen.li@nxp.com>
 + *
 + * Based on emc2103 driver by SMSC.
 + *
@@ -125,6 +152,24 @@ index 000000000000..d0c99f9b7434
 + *
 + * Also supports EMC2302 (up to 2 fans) and EMC2301 (1 fan) fan controller.
 + *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++/*
++ * TODO / IDEAS:
++ * - expose more of the configuration and features
 + */
 +
 +#include <linux/module.h>
@@ -579,18 +624,18 @@ index 000000000000..d0c99f9b7434
 +static SENSOR_DEVICE_ATTR_RW(fan5_div, fan_div, 4);
 +static SENSOR_DEVICE_ATTR_RW(fan5_target, fan_target, 4);
 +static SENSOR_DEVICE_ATTR_RO(fan5_fault, fan_fault, 4);
-+static SENSOR_DEVICE_ATTR_RW(pwm1_enable, pwm_enable, 0);
-+static SENSOR_DEVICE_ATTR_RW(pwm2_enable, pwm_enable, 1);
-+static SENSOR_DEVICE_ATTR_RW(pwm3_enable, pwm_enable, 2);
-+static SENSOR_DEVICE_ATTR_RW(pwm4_enable, pwm_enable, 3);
-+static SENSOR_DEVICE_ATTR_RW(pwm5_enable, pwm_enable, 4);
++static SENSOR_DEVICE_ATTR_RW(pwm1, pwm_enable, 0);
++static SENSOR_DEVICE_ATTR_RW(pwm2, pwm_enable, 1);
++static SENSOR_DEVICE_ATTR_RW(pwm3, pwm_enable, 2);
++static SENSOR_DEVICE_ATTR_RW(pwm4, pwm_enable, 3);
++static SENSOR_DEVICE_ATTR_RW(pwm5, pwm_enable, 4);
 +
 +static struct attribute *emc2305_attributes_fan1[] = {
 +	&sensor_dev_attr_fan1_input.dev_attr.attr,
 +	&sensor_dev_attr_fan1_div.dev_attr.attr,
 +	&sensor_dev_attr_fan1_target.dev_attr.attr,
 +	&sensor_dev_attr_fan1_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm1_enable.dev_attr.attr,
++	&sensor_dev_attr_pwm1.dev_attr.attr,
 +	NULL
 +};
 +
@@ -599,7 +644,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan2_div.dev_attr.attr,
 +	&sensor_dev_attr_fan2_target.dev_attr.attr,
 +	&sensor_dev_attr_fan2_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm2_enable.dev_attr.attr,
++	&sensor_dev_attr_pwm2.dev_attr.attr,
 +	NULL
 +};
 +
@@ -608,7 +653,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan3_div.dev_attr.attr,
 +	&sensor_dev_attr_fan3_target.dev_attr.attr,
 +	&sensor_dev_attr_fan3_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm3_enable.dev_attr.attr,
++	&sensor_dev_attr_pwm3.dev_attr.attr,
 +	NULL
 +};
 +
@@ -617,7 +662,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan4_div.dev_attr.attr,
 +	&sensor_dev_attr_fan4_target.dev_attr.attr,
 +	&sensor_dev_attr_fan4_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm4_enable.dev_attr.attr,
++	&sensor_dev_attr_pwm4.dev_attr.attr,
 +	NULL
 +};
 +
@@ -626,7 +671,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan5_div.dev_attr.attr,
 +	&sensor_dev_attr_fan5_target.dev_attr.attr,
 +	&sensor_dev_attr_fan5_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm5_enable.dev_attr.attr,
++	&sensor_dev_attr_pwm5.dev_attr.attr,
 +	NULL
 +};
 +
