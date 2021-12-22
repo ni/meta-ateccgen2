@@ -9,6 +9,7 @@ SRC_URI += " \
     file://imx8qxp-apalis-smartracks.dtsi \
     file://imx8qxp-apalis-smartracks.dts \
     file://add-support-for-diodes-pi4ioe5v96248.patch \
+    file://hwmon-add-support-for-SMSC-EMC2305-03-02-01-fan-controller.patch \
     "
 
 # Inject SmartRacks custom board device tree to kernel source device tree location
