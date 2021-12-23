@@ -1,6 +1,23 @@
+From 35bf96bc360b287ef63de3d14702320c704b58e4 Mon Sep 17 00:00:00 2001
+From: wkoe <wilson.koe@ni.com>
+Date: Wed, 22 Dec 2021 23:17:08 -0800
+Subject: [PATCH] hwmon: add support for SMSC EMC2305
+
+Signed-off-by: wkoe <wilson.koe@ni.com>
+---
+ .../devicetree/bindings/hwmon/emc2305.txt          |  33 +
+ Documentation/hwmon/emc2305.rst                    |  30 +
+ drivers/hwmon/Kconfig                              |  10 +
+ drivers/hwmon/Makefile                             |   1 +
+ drivers/hwmon/emc2305.c                            | 666 +++++++++++++++++++++
+ 5 files changed, 740 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/emc2305.txt
+ create mode 100644 Documentation/hwmon/emc2305.rst
+ create mode 100644 drivers/hwmon/emc2305.c
+
 diff --git a/Documentation/devicetree/bindings/hwmon/emc2305.txt b/Documentation/devicetree/bindings/hwmon/emc2305.txt
 new file mode 100644
-index 000000000000..73165120b88a
+index 00000000..7316512
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/hwmon/emc2305.txt
 @@ -0,0 +1,33 @@
@@ -39,10 +56,10 @@ index 000000000000..73165120b88a
 +       }
 diff --git a/Documentation/hwmon/emc2305.rst b/Documentation/hwmon/emc2305.rst
 new file mode 100644
-index 000000000000..d0cebae09ffd
+index 00000000..e8585c9
 --- /dev/null
 +++ b/Documentation/hwmon/emc2305.rst
-@@ -0,0 +1,34 @@
+@@ -0,0 +1,30 @@
 +Kernel driver emc2305
 +=====================
 +
@@ -52,10 +69,6 @@ index 000000000000..d0cebae09ffd
 +    Prefixes: 'emc2305', 'emc2303', 'emc2302', 'emc2301'
 +    Datasheet: Publicly available at the MICROCHIP website :
 +        http://ww1.microchip.com/downloads/en/DeviceDoc/2305.pdf
-+
-+Authors:
-+        Reinhard Pfau, Guntermann & Drunck GmbH <pfau@gdsys.de>
-+        Biwen Li <biwen.li@nxp.com>
 +
 +Description
 +-----------
@@ -77,27 +90,8 @@ index 000000000000..d0cebae09ffd
 +
 +Configuration is also possible via devicetree:
 +Documentation/devicetree/bindings/hwmon/emc2305.txt
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b526b8a66f8a..a506e8071259 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15013,6 +15013,14 @@ S:	Maintained
- F:	Documentation/hwmon/emc2103.rst
- F:	drivers/hwmon/emc2103.c
- 
-+SMSC EMC2305 HARDWARE MONITOR DRIVER
-+M:	Biwen Li <biwen.li@nxp.com>
-+L:	lm-sensors@lm-sensors.org
-+S:	Maintained
-+F:	Documentation/hwmon/emc2305
-+F:	Documentation/devicetree/bindings/hwmon/emc2305.txt
-+F:	drivers/hwmon/emc2305.c
-+
- SMSC SCH5627 HARDWARE MONITOR DRIVER
- M:	Hans de Goede <hdegoede@redhat.com>
- L:	linux-hwmon@vger.kernel.org
 diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 2fa4666d5b07..5ab3e975517a 100644
+index 2fa4666..5ab3e97 100644
 --- a/drivers/hwmon/Kconfig
 +++ b/drivers/hwmon/Kconfig
 @@ -1457,6 +1457,16 @@ config SENSORS_EMC2103
@@ -118,7 +112,7 @@ index 2fa4666d5b07..5ab3e975517a 100644
  	tristate "SMSC EMC6W201"
  	depends on I2C
 diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index b033e6733b56..b6377d32a2c9 100644
+index b033e67..b6377d3 100644
 --- a/drivers/hwmon/Makefile
 +++ b/drivers/hwmon/Makefile
 @@ -60,6 +60,7 @@ obj-$(CONFIG_SENSORS_DS620)	+= ds620.o
@@ -131,16 +125,12 @@ index b033e6733b56..b6377d32a2c9 100644
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2305.c b/drivers/hwmon/emc2305.c
 new file mode 100644
-index 000000000000..d0c99f9b7434
+index 00000000..1b44852
 --- /dev/null
 +++ b/drivers/hwmon/emc2305.c
-@@ -0,0 +1,689 @@
+@@ -0,0 +1,666 @@
 +/*
 + * emc2305.c - hwmon driver for SMSC EMC2305 fan controller
-+ * (C) Copyright 2013
-+ * Copyright 2020 NXP
-+ * Reinhard Pfau, Guntermann & Drunck GmbH <pfau@gdsys.de>
-+ * Biwen Li <biwen.li@nxp.com>
 + *
 + * Based on emc2103 driver by SMSC.
 + *
@@ -152,24 +142,6 @@ index 000000000000..d0c99f9b7434
 + *
 + * Also supports EMC2302 (up to 2 fans) and EMC2301 (1 fan) fan controller.
 + *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ */
-+
-+/*
-+ * TODO / IDEAS:
-+ * - expose more of the configuration and features
 + */
 +
 +#include <linux/module.h>
@@ -624,18 +596,18 @@ index 000000000000..d0c99f9b7434
 +static SENSOR_DEVICE_ATTR_RW(fan5_div, fan_div, 4);
 +static SENSOR_DEVICE_ATTR_RW(fan5_target, fan_target, 4);
 +static SENSOR_DEVICE_ATTR_RO(fan5_fault, fan_fault, 4);
-+static SENSOR_DEVICE_ATTR_RW(pwm1, pwm_enable, 0);
-+static SENSOR_DEVICE_ATTR_RW(pwm2, pwm_enable, 1);
-+static SENSOR_DEVICE_ATTR_RW(pwm3, pwm_enable, 2);
-+static SENSOR_DEVICE_ATTR_RW(pwm4, pwm_enable, 3);
-+static SENSOR_DEVICE_ATTR_RW(pwm5, pwm_enable, 4);
++static SENSOR_DEVICE_ATTR_RW(pwm1_enable, pwm_enable, 0);
++static SENSOR_DEVICE_ATTR_RW(pwm2_enable, pwm_enable, 1);
++static SENSOR_DEVICE_ATTR_RW(pwm3_enable, pwm_enable, 2);
++static SENSOR_DEVICE_ATTR_RW(pwm4_enable, pwm_enable, 3);
++static SENSOR_DEVICE_ATTR_RW(pwm5_enable, pwm_enable, 4);
 +
 +static struct attribute *emc2305_attributes_fan1[] = {
 +	&sensor_dev_attr_fan1_input.dev_attr.attr,
 +	&sensor_dev_attr_fan1_div.dev_attr.attr,
 +	&sensor_dev_attr_fan1_target.dev_attr.attr,
 +	&sensor_dev_attr_fan1_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm1.dev_attr.attr,
++	&sensor_dev_attr_pwm1_enable.dev_attr.attr,
 +	NULL
 +};
 +
@@ -644,7 +616,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan2_div.dev_attr.attr,
 +	&sensor_dev_attr_fan2_target.dev_attr.attr,
 +	&sensor_dev_attr_fan2_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm2.dev_attr.attr,
++	&sensor_dev_attr_pwm2_enable.dev_attr.attr,
 +	NULL
 +};
 +
@@ -653,7 +625,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan3_div.dev_attr.attr,
 +	&sensor_dev_attr_fan3_target.dev_attr.attr,
 +	&sensor_dev_attr_fan3_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm3.dev_attr.attr,
++	&sensor_dev_attr_pwm3_enable.dev_attr.attr,
 +	NULL
 +};
 +
@@ -662,7 +634,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan4_div.dev_attr.attr,
 +	&sensor_dev_attr_fan4_target.dev_attr.attr,
 +	&sensor_dev_attr_fan4_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm4.dev_attr.attr,
++	&sensor_dev_attr_pwm4_enable.dev_attr.attr,
 +	NULL
 +};
 +
@@ -671,7 +643,7 @@ index 000000000000..d0c99f9b7434
 +	&sensor_dev_attr_fan5_div.dev_attr.attr,
 +	&sensor_dev_attr_fan5_target.dev_attr.attr,
 +	&sensor_dev_attr_fan5_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm5.dev_attr.attr,
++	&sensor_dev_attr_pwm5_enable.dev_attr.attr,
 +	NULL
 +};
 +
@@ -821,6 +793,8 @@ index 000000000000..d0c99f9b7434
 +
 +module_i2c_driver(emc2305_driver);
 +
-+MODULE_AUTHOR("Reinhard Pfau <pfau@gdsys>, Biwen Li <biwen.li@nxp.com>\n");
 +MODULE_DESCRIPTION("SMSC EMC2305 hwmon driver");
 +MODULE_LICENSE("GPL");
+-- 
+2.7.4
+
