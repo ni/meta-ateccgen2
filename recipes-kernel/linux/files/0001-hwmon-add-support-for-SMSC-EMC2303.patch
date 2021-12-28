@@ -16,34 +16,34 @@ index 2fa4666..1b705a1 100644
 --- a/drivers/hwmon/Kconfig
 +++ b/drivers/hwmon/Kconfig
 @@ -1457,6 +1457,16 @@ config SENSORS_EMC2103
-      This driver can also be built as a module. If so, the module
-      will be called emc2103.
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called emc2103.
  
 +config SENSORS_EMC2303
-+   tristate "SMSC EMC2303"
-+   depends on I2C
-+   help
-+     If you say yes here you get support for the SMSC EMC2303
-+     fan controller chips.
++	tristate "SMSC EMC2303"
++	depends on I2C
++	help
++	  If you say yes here you get support for the SMSC EMC2303
++	  fan controller chips.
 +
-+     This driver can also be built as a module.  If so, the module
-+     will be called emc2303.
++	  This driver can also be built as a module.  If so, the module
++	  will be called emc2303.
 +
  config SENSORS_EMC6W201
-    tristate "SMSC EMC6W201"
-    depends on I2C
+ 	tristate "SMSC EMC6W201"
+ 	depends on I2C
 diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
 index b033e67..611c9c8 100644
 --- a/drivers/hwmon/Makefile
 +++ b/drivers/hwmon/Makefile
-@@ -60,6 +60,7 @@ obj-$(CONFIG_SENSORS_DS620)   += ds620.o
- obj-$(CONFIG_SENSORS_DS1621)   += ds1621.o
- obj-$(CONFIG_SENSORS_EMC1403)  += emc1403.o
- obj-$(CONFIG_SENSORS_EMC2103)  += emc2103.o
-+obj-$(CONFIG_SENSORS_EMC2303)  += emc2303.o
- obj-$(CONFIG_SENSORS_EMC6W201) += emc6w201.o
- obj-$(CONFIG_SENSORS_F71805F)  += f71805f.o
- obj-$(CONFIG_SENSORS_F71882FG) += f71882fg.o
+@@ -60,6 +60,7 @@ obj-$(CONFIG_SENSORS_DS620)	+= ds620.o
+ obj-$(CONFIG_SENSORS_DS1621)	+= ds1621.o
+ obj-$(CONFIG_SENSORS_EMC1403)	+= emc1403.o
+ obj-$(CONFIG_SENSORS_EMC2103)	+= emc2103.o
++obj-$(CONFIG_SENSORS_EMC2303)	+= emc2303.o
+ obj-$(CONFIG_SENSORS_EMC6W201)	+= emc6w201.o
+ obj-$(CONFIG_SENSORS_F71805F)	+= f71805f.o
+ obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
 index 00000000..aaa918c
@@ -78,55 +78,55 @@ index 00000000..aaa918c
 + * Note: these are the I2C adresses which are possible for EMC2303 chip.
 + */
 +static const unsigned short i2c_addresses[] = {
-+   0x2E,
-+   0x2F,
-+   0x2C,
-+   0x2D,
-+   0x4C,
-+   0x4D,
-+   I2C_CLIENT_END
++	0x2E,
++	0x2F,
++	0x2C,
++	0x2D,
++	0x4C,
++	0x4D,
++	I2C_CLIENT_END
 +};
 +
 +/*
 + * global registers
 + */
 +enum {
-+   REG_CONFIGURATION = 0x20,
-+   REG_FAN_STATUS = 0x24,
-+   REG_FAN_STALL_STATUS = 0x25,
-+   REG_FAN_SPIN_STATUS = 0x26,
-+   REG_DRIVE_FAIL_STATUS = 0x27,
-+   REG_FAN_INTERRUPT_ENABLE = 0x29,
-+   REG_PWM_POLARITY_CONFIG = 0x2a,
-+   REG_PWM_OUTPUT_CONFIG = 0x2b,
-+   REG_PWM_BASE_FREQ_1 = 0x2c,
-+   REG_PWM_BASE_FREQ_2 = 0x2d,
-+   REG_SOFTWARE_LOCK = 0xef,
-+   REG_PRODUCT_FEATURES = 0xfc,
-+   REG_PRODUCT_ID = 0xfd,
-+   REG_MANUFACTURER_ID = 0xfe,
-+   REG_REVISION = 0xff
++	REG_CONFIGURATION = 0x20,
++	REG_FAN_STATUS = 0x24,
++	REG_FAN_STALL_STATUS = 0x25,
++	REG_FAN_SPIN_STATUS = 0x26,
++	REG_DRIVE_FAIL_STATUS = 0x27,
++	REG_FAN_INTERRUPT_ENABLE = 0x29,
++	REG_PWM_POLARITY_CONFIG = 0x2a,
++	REG_PWM_OUTPUT_CONFIG = 0x2b,
++	REG_PWM_BASE_FREQ_1 = 0x2c,
++	REG_PWM_BASE_FREQ_2 = 0x2d,
++	REG_SOFTWARE_LOCK = 0xef,
++	REG_PRODUCT_FEATURES = 0xfc,
++	REG_PRODUCT_ID = 0xfd,
++	REG_MANUFACTURER_ID = 0xfe,
++	REG_REVISION = 0xff
 +};
 +
 +/*
 + * fan specific registers
 + */
 +enum {
-+   REG_FAN_SETTING = 0x30,
-+   REG_PWM_DIVIDE = 0x31,
-+   REG_FAN_CONFIGURATION_1 = 0x32,
-+   REG_FAN_CONFIGURATION_2 = 0x33,
-+   REG_GAIN = 0x35,
-+   REG_FAN_SPIN_UP_CONFIG = 0x36,
-+   REG_FAN_MAX_STEP = 0x37,
-+   REG_FAN_MINIMUM_DRIVE = 0x38,
-+   REG_FAN_VALID_TACH_COUNT = 0x39,
-+   REG_FAN_DRIVE_FAIL_BAND_LOW = 0x3a,
-+   REG_FAN_DRIVE_FAIL_BAND_HIGH = 0x3b,
-+   REG_TACH_TARGET_LOW = 0x3c,
-+   REG_TACH_TARGET_HIGH = 0x3d,
-+   REG_TACH_READ_HIGH = 0x3e,
-+   REG_TACH_READ_LOW = 0x3f,
++	REG_FAN_SETTING = 0x30,
++	REG_PWM_DIVIDE = 0x31,
++	REG_FAN_CONFIGURATION_1 = 0x32,
++	REG_FAN_CONFIGURATION_2 = 0x33,
++	REG_GAIN = 0x35,
++	REG_FAN_SPIN_UP_CONFIG = 0x36,
++	REG_FAN_MAX_STEP = 0x37,
++	REG_FAN_MINIMUM_DRIVE = 0x38,
++	REG_FAN_VALID_TACH_COUNT = 0x39,
++	REG_FAN_DRIVE_FAIL_BAND_LOW = 0x3a,
++	REG_FAN_DRIVE_FAIL_BAND_HIGH = 0x3b,
++	REG_TACH_TARGET_LOW = 0x3c,
++	REG_TACH_TARGET_HIGH = 0x3d,
++	REG_TACH_READ_HIGH = 0x3e,
++	REG_TACH_READ_LOW = 0x3f,
 +};
 +
 +#define SEL_FAN(fan, reg) (reg + fan * 0x10)
@@ -138,115 +138,115 @@ index 00000000..aaa918c
 +#define FAN_RPM_FACTOR 3932160
 +
 +struct emc2303_fan_data {
-+   bool        enabled;
-+   bool        rpm_control;
-+   bool        valid;      /* registers are valid */
-+   u8      poles;
-+   u8      multiplier;
-+   u16     tach;
-+   u16     target;
-+   unsigned long       last_updated;   /* in jiffies */
++	bool		enabled;
++	bool		rpm_control;
++	bool		valid;		/* registers are valid */
++	u8		poles;
++	u8		multiplier;
++	u16		tach;
++	u16		target;
++	unsigned long		last_updated;	/* in jiffies */
 +};
 +
 +struct emc2303_data {
-+   struct i2c_client   *client;
-+   const struct        attribute_group *groups[6];
-+   struct mutex        update_lock;
-+   struct emc2303_fan_data fan[3];
++	struct i2c_client	*client;
++	const struct		attribute_group *groups[6];
++	struct mutex		update_lock;
++	struct emc2303_fan_data fan[3];
 +};
 +
 +static int read_u8_from_i2c(struct i2c_client *client, u8 i2c_reg, u8 *output)
 +{
-+   int status = i2c_smbus_read_byte_data(client, i2c_reg);
-+   if (status < 0) {
-+       dev_warn(&client->dev, "reg 0x%02x, err %d\n",
-+           i2c_reg, status);
-+   } else {
-+       *output = status;
-+   }
-+   return status;
++	int status = i2c_smbus_read_byte_data(client, i2c_reg);
++	if (status < 0) {
++		dev_warn(&client->dev, "reg 0x%02x, err %d\n",
++			i2c_reg, status);
++	} else {
++		*output = status;
++	}
++	return status;
 +}
 +
 +static void read_fan_from_i2c(struct i2c_client *client, u16 *output,
-+                 u8 hi_addr, u8 lo_addr)
++			      u8 hi_addr, u8 lo_addr)
 +{
-+   u8 high_byte, lo_byte;
++	u8 high_byte, lo_byte;
 +
-+   if (read_u8_from_i2c(client, hi_addr, &high_byte) < 0)
-+       return;
++	if (read_u8_from_i2c(client, hi_addr, &high_byte) < 0)
++		return;
 +
-+   if (read_u8_from_i2c(client, lo_addr, &lo_byte) < 0)
-+       return;
++	if (read_u8_from_i2c(client, lo_addr, &lo_byte) < 0)
++		return;
 +
-+   *output = ((u16)high_byte << 5) | (lo_byte >> 3);
++	*output = ((u16)high_byte << 5) | (lo_byte >> 3);
 +}
 +
 +static void write_fan_target_to_i2c(struct i2c_client *client, int fan,
-+                   u16 new_target)
++				    u16 new_target)
 +{
-+   const u8 lo_reg = SEL_FAN(fan, REG_TACH_TARGET_LOW);
-+   const u8 hi_reg = SEL_FAN(fan, REG_TACH_TARGET_HIGH);
-+   u8 high_byte = (new_target & 0x1fe0) >> 5;
-+   u8 low_byte = (new_target & 0x001f) << 3;
++	const u8 lo_reg = SEL_FAN(fan, REG_TACH_TARGET_LOW);
++	const u8 hi_reg = SEL_FAN(fan, REG_TACH_TARGET_HIGH);
++	u8 high_byte = (new_target & 0x1fe0) >> 5;
++	u8 low_byte = (new_target & 0x001f) << 3;
 +
-+   i2c_smbus_write_byte_data(client, lo_reg, low_byte);
-+   i2c_smbus_write_byte_data(client, hi_reg, high_byte);
++	i2c_smbus_write_byte_data(client, lo_reg, low_byte);
++	i2c_smbus_write_byte_data(client, hi_reg, high_byte);
 +}
 +
 +static void read_fan_config_from_i2c(struct i2c_client *client, int fan_idx)
 +
 +{
-+   struct emc2303_data *data = i2c_get_clientdata(client);
-+   u8 conf1;
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	u8 conf1;
 +
-+   if (read_u8_from_i2c(client, SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1),
-+                &conf1) < 0)
-+       return;
++	if (read_u8_from_i2c(client, SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1),
++			     &conf1) < 0)
++		return;
 +
-+   data->fan[fan_idx].rpm_control = (conf1 & 0x80) != 0;
-+   data->fan[fan_idx].multiplier = 1 << ((conf1 & 0x60) >> 5);
-+   data->fan[fan_idx].poles = ((conf1 & 0x18) >> 3) + 1;
++	data->fan[fan_idx].rpm_control = (conf1 & 0x80) != 0;
++	data->fan[fan_idx].multiplier = 1 << ((conf1 & 0x60) >> 5);
++	data->fan[fan_idx].poles = ((conf1 & 0x18) >> 3) + 1;
 +}
 +
 +static void read_fan_data(struct i2c_client *client, int fan_idx)
 +{
-+   struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = i2c_get_clientdata(client);
 +
-+   read_fan_from_i2c(client, &data->fan[fan_idx].target,
-+             SEL_FAN(fan_idx, REG_TACH_TARGET_HIGH),
-+             SEL_FAN(fan_idx, REG_TACH_TARGET_LOW));
-+   read_fan_from_i2c(client, &data->fan[fan_idx].tach,
-+             SEL_FAN(fan_idx, REG_TACH_READ_HIGH),
-+             SEL_FAN(fan_idx, REG_TACH_READ_LOW));
++	read_fan_from_i2c(client, &data->fan[fan_idx].target,
++			  SEL_FAN(fan_idx, REG_TACH_TARGET_HIGH),
++			  SEL_FAN(fan_idx, REG_TACH_TARGET_LOW));
++	read_fan_from_i2c(client, &data->fan[fan_idx].tach,
++			  SEL_FAN(fan_idx, REG_TACH_READ_HIGH),
++			  SEL_FAN(fan_idx, REG_TACH_READ_LOW));
 +}
 +
 +static struct emc2303_fan_data *
 +emc2303_update_fan(struct i2c_client *client, int fan_idx)
 +{
-+   struct emc2303_data *data = i2c_get_clientdata(client);
-+   struct emc2303_fan_data *fan_data = &data->fan[fan_idx];
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan_data = &data->fan[fan_idx];
 +
-+   mutex_lock(&data->update_lock);
++	mutex_lock(&data->update_lock);
 +
-+   if (time_after(jiffies, fan_data->last_updated + HZ + HZ / 2)
-+       || !fan_data->valid) {
-+       read_fan_config_from_i2c(client, fan_idx);
-+       read_fan_data(client, fan_idx);
-+       fan_data->valid = true;
-+       fan_data->last_updated = jiffies;
-+   }
++	if (time_after(jiffies, fan_data->last_updated + HZ + HZ / 2)
++	    || !fan_data->valid) {
++		read_fan_config_from_i2c(client, fan_idx);
++		read_fan_data(client, fan_idx);
++		fan_data->valid = true;
++		fan_data->last_updated = jiffies;
++	}
 +
-+   mutex_unlock(&data->update_lock);
-+   return fan_data;
++	mutex_unlock(&data->update_lock);
++	return fan_data;
 +}
 +
 +static struct emc2303_fan_data *
 +emc2303_update_device_fan(struct device *dev, struct device_attribute *da)
 +{
-+   struct i2c_client *client = to_i2c_client(dev);
-+   int fan_idx = to_sensor_dev_attr(da)->index;
++	struct i2c_client *client = to_i2c_client(dev);
++	int fan_idx = to_sensor_dev_attr(da)->index;
 +
-+   return emc2303_update_fan(client, fan_idx);
++	return emc2303_update_fan(client, fan_idx);
 +}
 +
 +/*
@@ -262,230 +262,230 @@ index 00000000..aaa918c
 +static int
 +emc2303_set_fan_div(struct i2c_client *client, int fan_idx, long new_div)
 +{
-+   struct emc2303_data *data = i2c_get_clientdata(client);
-+   struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
-+   const u8 reg_conf1 = SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1);
-+   int new_range_bits, old_div = 8 / fan->multiplier;
-+   int status = 0;
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
++	const u8 reg_conf1 = SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1);
++	int new_range_bits, old_div = 8 / fan->multiplier;
++	int status = 0;
 +
-+   if (new_div == old_div) /* No change */
-+       return 0;
++	if (new_div == old_div) /* No change */
++		return 0;
 +
-+   switch (new_div) {
-+   case 1:
-+       new_range_bits = 3;
-+       break;
-+   case 2:
-+       new_range_bits = 2;
-+       break;
-+   case 4:
-+       new_range_bits = 1;
-+       break;
-+   case 8:
-+       new_range_bits = 0;
-+       break;
-+   default:
-+       return -EINVAL;
-+   }
++	switch (new_div) {
++	case 1:
++		new_range_bits = 3;
++		break;
++	case 2:
++		new_range_bits = 2;
++		break;
++	case 4:
++		new_range_bits = 1;
++		break;
++	case 8:
++		new_range_bits = 0;
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+   mutex_lock(&data->update_lock);
++	mutex_lock(&data->update_lock);
 +
-+   status = i2c_smbus_read_byte_data(client, reg_conf1);
-+   if (status < 0) {
-+       dev_dbg(&client->dev, "reg 0x%02x, err %d\n",
-+           reg_conf1, status);
-+       goto exit_unlock;
-+   }
-+   status &= 0x9F;
-+   status |= (new_range_bits << 5);
-+   status = i2c_smbus_write_byte_data(client, reg_conf1, status);
-+   if (status < 0) {
-+       goto exit_invalidate;
-+   }
++	status = i2c_smbus_read_byte_data(client, reg_conf1);
++	if (status < 0) {
++		dev_dbg(&client->dev, "reg 0x%02x, err %d\n",
++			reg_conf1, status);
++		goto exit_unlock;
++	}
++	status &= 0x9F;
++	status |= (new_range_bits << 5);
++	status = i2c_smbus_write_byte_data(client, reg_conf1, status);
++	if (status < 0) {
++		goto exit_invalidate;
++	}
 +
-+   fan->multiplier = 8 / new_div;
++	fan->multiplier = 8 / new_div;
 +
-+   /* update fan target if high byte is not disabled */
-+   if ((fan->target & 0x1fe0) != 0x1fe0) {
-+       u16 new_target = (fan->target * old_div) / new_div;
-+       fan->target = min_t(u16, new_target, 0x1fff);
-+       write_fan_target_to_i2c(client, fan_idx, fan->target);
-+   }
++	/* update fan target if high byte is not disabled */
++	if ((fan->target & 0x1fe0) != 0x1fe0) {
++		u16 new_target = (fan->target * old_div) / new_div;
++		fan->target = min_t(u16, new_target, 0x1fff);
++		write_fan_target_to_i2c(client, fan_idx, fan->target);
++	}
 +
 +exit_invalidate:
-+   /* invalidate fan data to force re-read from hardware */
-+   fan->valid = false;
++	/* invalidate fan data to force re-read from hardware */
++	fan->valid = false;
 +exit_unlock:
-+   mutex_unlock(&data->update_lock);
-+   return status;
++	mutex_unlock(&data->update_lock);
++	return status;
 +}
 +
 +static int
 +emc2303_set_fan_target(struct i2c_client *client, int fan_idx, long rpm_target)
 +{
-+   struct emc2303_data *data = i2c_get_clientdata(client);
-+   struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
 +
-+   /*
-+    * Datasheet states 16000 as maximum RPM target
-+    * (table 2.2 and section 4.3)
-+    */
-+   if ((rpm_target < 0) || (rpm_target > 16000))
-+       return -EINVAL;
++	/*
++	 * Datasheet states 16000 as maximum RPM target
++	 * (table 2.2 and section 4.3)
++	 */
++	if ((rpm_target < 0) || (rpm_target > 16000))
++		return -EINVAL;
 +
-+   mutex_lock(&data->update_lock);
++	mutex_lock(&data->update_lock);
 +
-+   if (rpm_target == 0)
-+       fan->target = 0x1fff;
-+   else
-+       fan->target = clamp_val(
-+           FAN_RPM_FACTOR * fan->multiplier / rpm_target,
-+           0, 0x1fff);
++	if (rpm_target == 0)
++		fan->target = 0x1fff;
++	else
++		fan->target = clamp_val(
++			FAN_RPM_FACTOR * fan->multiplier / rpm_target,
++			0, 0x1fff);
 +
-+   write_fan_target_to_i2c(client, fan_idx, fan->target);
++	write_fan_target_to_i2c(client, fan_idx, fan->target);
 +
-+   mutex_unlock(&data->update_lock);
-+   return 0;
++	mutex_unlock(&data->update_lock);
++	return 0;
 +}
 +
 +static int
 +emc2303_set_pwm_enable(struct i2c_client *client, int fan_idx, long enable)
 +{
-+   struct emc2303_data *data = i2c_get_clientdata(client);
-+   struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
-+   const u8 reg_fan_conf1 = SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1);
-+   int status = 0;
-+   u8 conf_reg;
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
++	const u8 reg_fan_conf1 = SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1);
++	int status = 0;
++	u8 conf_reg;
 +
-+   mutex_lock(&data->update_lock);
-+   switch (enable) {
-+   case 0:
-+       fan->rpm_control = false;
-+       break;
-+   case 3:
-+       fan->rpm_control = true;
-+       break;
-+   default:
-+       status = -EINVAL;
-+       goto exit_unlock;
-+   }
++	mutex_lock(&data->update_lock);
++	switch (enable) {
++	case 0:
++		fan->rpm_control = false;
++		break;
++	case 3:
++		fan->rpm_control = true;
++		break;
++	default:
++		status = -EINVAL;
++		goto exit_unlock;
++	}
 +
-+   status = read_u8_from_i2c(client, reg_fan_conf1, &conf_reg);
-+   if (status < 0)
-+       goto exit_unlock;
++	status = read_u8_from_i2c(client, reg_fan_conf1, &conf_reg);
++	if (status < 0)
++		goto exit_unlock;
 +
-+   if (fan->rpm_control)
-+       conf_reg |= 0x80;
-+   else
-+       conf_reg &= ~0x80;
++	if (fan->rpm_control)
++		conf_reg |= 0x80;
++	else
++		conf_reg &= ~0x80;
 +
-+   status = i2c_smbus_write_byte_data(client, reg_fan_conf1, conf_reg);
++	status = i2c_smbus_write_byte_data(client, reg_fan_conf1, conf_reg);
 +
 +exit_unlock:
-+   mutex_unlock(&data->update_lock);
-+   return status;
++	mutex_unlock(&data->update_lock);
++	return status;
 +}
 +
 +static ssize_t
 +fan_input_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+   struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
-+   int rpm = 0;
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
++	int rpm = 0;
 +
-+   if (fan->tach != 0)
-+       rpm = (FAN_RPM_FACTOR * fan->multiplier) / fan->tach;
-+   return sprintf(buf, "%d\n", rpm);
++	if (fan->tach != 0)
++		rpm = (FAN_RPM_FACTOR * fan->multiplier) / fan->tach;
++	return sprintf(buf, "%d\n", rpm);
 +}
 +
 +static ssize_t
 +fan_fault_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+   struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
 +
-+   return sprintf(buf, "%d\n", (fan->tach & 0x1fe0) == 0x1fe0);
++	return sprintf(buf, "%d\n", (fan->tach & 0x1fe0) == 0x1fe0);
 +}
 +
 +static ssize_t
 +fan_div_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+   struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
 +
-+   return sprintf(buf, "%d\n", 8 / fan->multiplier);
++	return sprintf(buf, "%d\n", 8 / fan->multiplier);
 +}
 +
 +static ssize_t
 +fan_div_store(struct device *dev, struct device_attribute *da,
-+       const char *buf, size_t count)
++	    const char *buf, size_t count)
 +{
-+   struct i2c_client *client = to_i2c_client(dev);
-+   int fan_idx = to_sensor_dev_attr(da)->index;
-+   long new_div;
-+   int status;
++	struct i2c_client *client = to_i2c_client(dev);
++	int fan_idx = to_sensor_dev_attr(da)->index;
++	long new_div;
++	int status;
 +
-+   status = kstrtol(buf, 10, &new_div);
-+   if (status < 0)
-+       return status;
++	status = kstrtol(buf, 10, &new_div);
++	if (status < 0)
++		return status;
 +
-+   status = emc2303_set_fan_div(client, fan_idx, new_div);
-+   if (status < 0)
-+       return status;
++	status = emc2303_set_fan_div(client, fan_idx, new_div);
++	if (status < 0)
++		return status;
 +
-+   return count;
++	return count;
 +}
 +
 +static ssize_t
 +fan_target_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+   struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
-+   int rpm = 0;
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
++	int rpm = 0;
 +
-+   /* high byte of 0xff indicates disabled so return 0 */
-+   if ((fan->target != 0) && ((fan->target & 0x1fe0) != 0x1fe0))
-+       rpm = FAN_RPM_FACTOR * fan->multiplier
-+           / fan->target;
++	/* high byte of 0xff indicates disabled so return 0 */
++	if ((fan->target != 0) && ((fan->target & 0x1fe0) != 0x1fe0))
++		rpm = FAN_RPM_FACTOR * fan->multiplier
++			/ fan->target;
 +
-+   return sprintf(buf, "%d\n", rpm);
++	return sprintf(buf, "%d\n", rpm);
 +}
 +
 +static ssize_t fan_target_store(struct device *dev, struct device_attribute *da,
-+                 const char *buf, size_t count)
++			      const char *buf, size_t count)
 +{
-+   struct i2c_client *client = to_i2c_client(dev);
-+   int fan_idx = to_sensor_dev_attr(da)->index;
-+   long rpm_target;
-+   int status;
++	struct i2c_client *client = to_i2c_client(dev);
++	int fan_idx = to_sensor_dev_attr(da)->index;
++	long rpm_target;
++	int status;
 +
-+   status = kstrtol(buf, 10, &rpm_target);
-+   if (status < 0)
-+       return status;
++	status = kstrtol(buf, 10, &rpm_target);
++	if (status < 0)
++		return status;
 +
-+   status = emc2303_set_fan_target(client, fan_idx, rpm_target);
-+   if (status < 0)
-+       return status;
++	status = emc2303_set_fan_target(client, fan_idx, rpm_target);
++	if (status < 0)
++		return status;
 +
-+   return count;
++	return count;
 +}
 +
 +static ssize_t
 +pwm_enable_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+   struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
-+   return sprintf(buf, "%d\n", fan->rpm_control ? 3 : 0);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
++	return sprintf(buf, "%d\n", fan->rpm_control ? 3 : 0);
 +}
 +
 +static ssize_t pwm_enable_store(struct device *dev, struct device_attribute *da,
-+                 const char *buf, size_t count)
++			      const char *buf, size_t count)
 +{
-+   struct i2c_client *client = to_i2c_client(dev);
-+   int fan_idx = to_sensor_dev_attr(da)->index;
-+   long new_value;
-+   int status;
++	struct i2c_client *client = to_i2c_client(dev);
++	int fan_idx = to_sensor_dev_attr(da)->index;
++	long new_value;
++	int status;
 +
-+   status = kstrtol(buf, 10, &new_value);
-+   if (status < 0)
-+       return -EINVAL;
-+   status = emc2303_set_pwm_enable(client, fan_idx, new_value);
-+   return count;
++	status = kstrtol(buf, 10, &new_value);
++	if (status < 0)
++		return -EINVAL;
++	status = emc2303_set_pwm_enable(client, fan_idx, new_value);
++	return count;
 +}
 +
 +static SENSOR_DEVICE_ATTR_RO(fan1_input, fan_input, 0);
@@ -505,42 +505,42 @@ index 00000000..aaa918c
 +static SENSOR_DEVICE_ATTR_RW(pwm3_enable, pwm_enable, 2);
 +
 +static struct attribute *emc2303_attributes_fan1[] = {
-+   &sensor_dev_attr_fan1_input.dev_attr.attr,
-+   &sensor_dev_attr_fan1_div.dev_attr.attr,
-+   &sensor_dev_attr_fan1_target.dev_attr.attr,
-+   &sensor_dev_attr_fan1_fault.dev_attr.attr,
-+   &sensor_dev_attr_pwm1_enable.dev_attr.attr,
-+   NULL
++	&sensor_dev_attr_fan1_input.dev_attr.attr,
++	&sensor_dev_attr_fan1_div.dev_attr.attr,
++	&sensor_dev_attr_fan1_target.dev_attr.attr,
++	&sensor_dev_attr_fan1_fault.dev_attr.attr,
++	&sensor_dev_attr_pwm1_enable.dev_attr.attr,
++	NULL
 +};
 +
 +static struct attribute *emc2303_attributes_fan2[] = {
-+   &sensor_dev_attr_fan2_input.dev_attr.attr,
-+   &sensor_dev_attr_fan2_div.dev_attr.attr,
-+   &sensor_dev_attr_fan2_target.dev_attr.attr,
-+   &sensor_dev_attr_fan2_fault.dev_attr.attr,
-+   &sensor_dev_attr_pwm2_enable.dev_attr.attr,
-+   NULL
++	&sensor_dev_attr_fan2_input.dev_attr.attr,
++	&sensor_dev_attr_fan2_div.dev_attr.attr,
++	&sensor_dev_attr_fan2_target.dev_attr.attr,
++	&sensor_dev_attr_fan2_fault.dev_attr.attr,
++	&sensor_dev_attr_pwm2_enable.dev_attr.attr,
++	NULL
 +};
 +
 +static struct attribute *emc2303_attributes_fan3[] = {
-+   &sensor_dev_attr_fan3_input.dev_attr.attr,
-+   &sensor_dev_attr_fan3_div.dev_attr.attr,
-+   &sensor_dev_attr_fan3_target.dev_attr.attr,
-+   &sensor_dev_attr_fan3_fault.dev_attr.attr,
-+   &sensor_dev_attr_pwm3_enable.dev_attr.attr,
-+   NULL
++	&sensor_dev_attr_fan3_input.dev_attr.attr,
++	&sensor_dev_attr_fan3_div.dev_attr.attr,
++	&sensor_dev_attr_fan3_target.dev_attr.attr,
++	&sensor_dev_attr_fan3_fault.dev_attr.attr,
++	&sensor_dev_attr_pwm3_enable.dev_attr.attr,
++	NULL
 +};
 +
 +static const struct attribute_group emc2303_fan1_group = {
-+   .attrs = emc2303_attributes_fan1,
++	.attrs = emc2303_attributes_fan1,
 +};
 +
 +static const struct attribute_group emc2303_fan2_group = {
-+   .attrs = emc2303_attributes_fan2,
++	.attrs = emc2303_attributes_fan2,
 +};
 +
 +static const struct attribute_group emc2303_fan3_group = {
-+   .attrs = emc2303_attributes_fan3,
++	.attrs = emc2303_attributes_fan3,
 +};
 +
 +/*
@@ -549,56 +549,56 @@ index 00000000..aaa918c
 +static int
 +emc2303_probe(struct i2c_client *client, const struct i2c_device_id *id)
 +{
-+   struct emc2303_data *data;
-+   struct device *hwmon_dev;
-+   int status, idx = 0;
++	struct emc2303_data *data;
++	struct device *hwmon_dev;
++	int status, idx = 0;
 +
-+   if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
-+       return -EIO;
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
++		return -EIO;
 +
-+   data = devm_kzalloc(&client->dev, sizeof(struct emc2303_data), GFP_KERNEL);
-+   if (!data)
-+       return -ENOMEM;
++	data = devm_kzalloc(&client->dev, sizeof(struct emc2303_data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
 +
-+   i2c_set_clientdata(client, data);
-+   data->client = client;
-+   mutex_init(&data->update_lock);
++	i2c_set_clientdata(client, data);
++	data->client = client;
++	mutex_init(&data->update_lock);
 +
-+   status = i2c_smbus_read_byte_data(client, REG_PRODUCT_ID);
++	status = i2c_smbus_read_byte_data(client, REG_PRODUCT_ID);
 +
-+   if (status == 0x35) /* EMC2303 */
-+   {
-+       /* sysfs hooks */
-+       data->groups[idx++] = &emc2303_fan1_group;
-+       data->groups[idx++] = &emc2303_fan2_group;
-+       data->groups[idx++] = &emc2303_fan3_group;
-+   }
-+   else if (status < 0)
-+   {
-+       dev_err(&client->dev, "Failed to read reg REG_PRODUCT_ID, status = %d\n", status);
-+       return status;
-+   }
-+   else
-+   {
-+       dev_err(&client->dev, "Unknown device, status = %d\n", status);
-+       return status;
-+   }
++	if (status == 0x35) /* EMC2303 */
++	{
++		/* sysfs hooks */
++		data->groups[idx++] = &emc2303_fan1_group;
++		data->groups[idx++] = &emc2303_fan2_group;
++		data->groups[idx++] = &emc2303_fan3_group;
++	}
++	else if (status < 0)
++	{
++		dev_err(&client->dev, "Failed to read reg REG_PRODUCT_ID, status = %d\n", status);
++		return status;
++	}
++	else
++	{
++		dev_err(&client->dev, "Unknown device, status = %d\n", status);
++		return status;
++	}
 +
-+   hwmon_dev = devm_hwmon_device_register_with_groups(&client->dev,
-+                              client->name, data,
-+                              data->groups);
-+   if (IS_ERR(hwmon_dev))
-+       return PTR_ERR(hwmon_dev);
++	hwmon_dev = devm_hwmon_device_register_with_groups(&client->dev,
++							   client->name, data,
++							   data->groups);
++	if (IS_ERR(hwmon_dev))
++		return PTR_ERR(hwmon_dev);
 +
-+   dev_info(&client->dev, "pwm fan controller: '%s'\n",
-+        client->name);
++	dev_info(&client->dev, "pwm fan controller: '%s'\n",
++		 client->name);
 +
-+   return 0;
++	return 0;
 +}
 +
 +static const struct i2c_device_id emc2303_ids[] = {
-+   { "emc2303", 0 },
-+   { }
++	{ "emc2303", 0 },
++	{ }
 +};
 +MODULE_DEVICE_TABLE(i2c, emc2303_ids);
 +
@@ -606,36 +606,36 @@ index 00000000..aaa918c
 +static int
 +emc2303_detect(struct i2c_client *new_client, struct i2c_board_info *info)
 +{
-+   struct i2c_adapter *adapter = new_client->adapter;
-+   int manufacturer, product;
++	struct i2c_adapter *adapter = new_client->adapter;
++	int manufacturer, product;
 +
-+   if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
-+       return -ENODEV;
++	if (!i2c_check_functionality(adapter, I2C_FUNC_SMBUS_BYTE_DATA))
++		return -ENODEV;
 +
-+   manufacturer =
-+       i2c_smbus_read_byte_data(new_client, REG_MANUFACTURER_ID);
-+   if (manufacturer != 0x5D)
-+       return -ENODEV;
++	manufacturer =
++		i2c_smbus_read_byte_data(new_client, REG_MANUFACTURER_ID);
++	if (manufacturer != 0x5D)
++		return -ENODEV;
 +
-+   product = i2c_smbus_read_byte_data(new_client, REG_PRODUCT_ID);
++	product = i2c_smbus_read_byte_data(new_client, REG_PRODUCT_ID);
 +
-+   if (product == 0x35)
-+       strlcpy(info->type, "emc2303", I2C_NAME_SIZE);
-+   else
-+       return -ENODEV;
++	if (product == 0x35)
++		strlcpy(info->type, "emc2303", I2C_NAME_SIZE);
++	else
++		return -ENODEV;
 +
-+   return 0;
++	return 0;
 +}
 +
 +static struct i2c_driver emc2303_driver = {
-+   .class      = I2C_CLASS_HWMON,
-+   .driver = {
-+       .name   = "emc2303",
-+   },
-+   .probe      = emc2303_probe,
-+   .id_table   = emc2303_ids,
-+   .detect     = emc2303_detect,
-+   .address_list   = i2c_addresses,
++	.class		= I2C_CLASS_HWMON,
++	.driver = {
++		.name	= "emc2303",
++	},
++	.probe		= emc2303_probe,
++	.id_table	= emc2303_ids,
++	.detect		= emc2303_detect,
++	.address_list	= i2c_addresses,
 +};
 +
 +module_i2c_driver(emc2303_driver);
@@ -644,3 +644,4 @@ index 00000000..aaa918c
 +MODULE_LICENSE("GPL");
 -- 
 2.7.4
+
