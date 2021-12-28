@@ -1,146 +1,62 @@
-From 35bf96bc360b287ef63de3d14702320c704b58e4 Mon Sep 17 00:00:00 2001
+From 9b653b368234ca499d973c084842b27625ea8d88 Mon Sep 17 00:00:00 2001
 From: wkoe <wilson.koe@ni.com>
 Date: Wed, 22 Dec 2021 23:17:08 -0800
-Subject: [PATCH] hwmon: add support for SMSC EMC2305
+Subject: [PATCH] hwmon: add support for SMSC EMC2303
 
 Signed-off-by: wkoe <wilson.koe@ni.com>
 ---
- .../devicetree/bindings/hwmon/emc2305.txt          |  33 +
- Documentation/hwmon/emc2305.rst                    |  30 +
- drivers/hwmon/Kconfig                              |  10 +
- drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/emc2305.c                            | 666 +++++++++++++++++++++
- 5 files changed, 740 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/hwmon/emc2305.txt
- create mode 100644 Documentation/hwmon/emc2305.rst
- create mode 100644 drivers/hwmon/emc2305.c
+ drivers/hwmon/Kconfig   |  10 +
+ drivers/hwmon/Makefile  |   1 +
+ drivers/hwmon/emc2303.c | 592 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 603 insertions(+)
+ create mode 100644 drivers/hwmon/emc2303.c
 
-diff --git a/Documentation/devicetree/bindings/hwmon/emc2305.txt b/Documentation/devicetree/bindings/hwmon/emc2305.txt
-new file mode 100644
-index 00000000..7316512
---- /dev/null
-+++ b/Documentation/devicetree/bindings/hwmon/emc2305.txt
-@@ -0,0 +1,33 @@
-+EMC2305 (I2C)
-+
-+This device is a RPM-based PWM Fan Speed Controller for up to 5 fans.
-+Each fan can beconfigured individually:
-+
-+ - The PWM mode:
-+    0: PWM is disabled
-+    3: RPM based PWM
-+
-+ - The fan divisor (for RPM mesaurement)
-+   1, 2 ,4 or 8
-+
-+ - The target RPM speed (for RPM based PWM mode)
-+   max 16000 (according to data sheet)
-+
-+
-+ - The /emc2305 node
-+
-+   Required properties:
-+
-+   - compatible : must be "smsc,emc2305"
-+   - reg : I2C bus address of the device
-+   - #address-cells : must be <1>
-+   - #size-cells : must be <0>
-+
-+   Example EMC2305 node:
-+
-+       emc2305@2C {
-+	    compatible = "smsc,emc2305";
-+	    reg = <0x2C>;
-+	    #address-cells = <1>;
-+	    #size-cells = <0>;
-+       }
-diff --git a/Documentation/hwmon/emc2305.rst b/Documentation/hwmon/emc2305.rst
-new file mode 100644
-index 00000000..e8585c9
---- /dev/null
-+++ b/Documentation/hwmon/emc2305.rst
-@@ -0,0 +1,30 @@
-+Kernel driver emc2305
-+=====================
-+
-+Supported chips:
-+  * SMSC EMC2305, EMC2303, EMC2302, EMC2301
-+    Adresses scanned: I2C 0x2c, 0x2d, 0x2e, 0x2f, 0x4c, 0x4d
-+    Prefixes: 'emc2305', 'emc2303', 'emc2302', 'emc2301'
-+    Datasheet: Publicly available at the MICROCHIP website :
-+        http://ww1.microchip.com/downloads/en/DeviceDoc/2305.pdf
-+
-+Description
-+-----------
-+
-+The SMSC EMC2305 is a fan controller for up to 5 fans.
-+The EMC2303 has the same functionality but supports only up to 3 fans.
-+
-+The EMC2302 supports 2 fans and the EMC2301 1 fan. These chips support less
-+possible I2C addresses.
-+
-+Fan rotation speeds are reported in RPM.
-+The driver supports the RPM based PWM control to keep a fan at a desired speed.
-+To enable this function for a fan, write 3 to pwm<num>_enable and the desired
-+fan speed to fan<num>_target.
-+
-+
-+Devicetree
-+----------
-+
-+Configuration is also possible via devicetree:
-+Documentation/devicetree/bindings/hwmon/emc2305.txt
 diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 2fa4666..5ab3e97 100644
+index 2fa4666..1b705a1 100644
 --- a/drivers/hwmon/Kconfig
 +++ b/drivers/hwmon/Kconfig
 @@ -1457,6 +1457,16 @@ config SENSORS_EMC2103
  	  This driver can also be built as a module. If so, the module
  	  will be called emc2103.
  
-+config SENSORS_EMC2305
-+	tristate "SMSC EMC2305"
++config SENSORS_EMC2303
++	tristate "SMSC EMC2303"
 +	depends on I2C
 +	help
-+	  If you say yes here you get support for the SMSC EMC2305
++	  If you say yes here you get support for the SMSC EMC2303
 +	  fan controller chips.
 +
 +	  This driver can also be built as a module.  If so, the module
-+	  will be called emc2305.
++	  will be called emc2303.
 +
  config SENSORS_EMC6W201
  	tristate "SMSC EMC6W201"
  	depends on I2C
 diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index b033e67..b6377d3 100644
+index b033e67..611c9c8 100644
 --- a/drivers/hwmon/Makefile
 +++ b/drivers/hwmon/Makefile
 @@ -60,6 +60,7 @@ obj-$(CONFIG_SENSORS_DS620)	+= ds620.o
  obj-$(CONFIG_SENSORS_DS1621)	+= ds1621.o
  obj-$(CONFIG_SENSORS_EMC1403)	+= emc1403.o
  obj-$(CONFIG_SENSORS_EMC2103)	+= emc2103.o
-+obj-$(CONFIG_SENSORS_EMC2305)	+= emc2305.o
++obj-$(CONFIG_SENSORS_EMC2303)	+= emc2303.o
  obj-$(CONFIG_SENSORS_EMC6W201)	+= emc6w201.o
  obj-$(CONFIG_SENSORS_F71805F)	+= f71805f.o
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
-diff --git a/drivers/hwmon/emc2305.c b/drivers/hwmon/emc2305.c
+diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
-index 00000000..1b44852
+index 00000000..cd4cc62
 --- /dev/null
-+++ b/drivers/hwmon/emc2305.c
-@@ -0,0 +1,666 @@
++++ b/drivers/hwmon/emc2303.c
+@@ -0,0 +1,592 @@
 +/*
-+ * emc2305.c - hwmon driver for SMSC EMC2305 fan controller
++ * emc2303.c - hwmon driver for SMSC EMC2303 fan controller
 + *
 + * Based on emc2103 driver by SMSC.
 + *
 + * Datasheet available at:
-+ * http://ww1.microchip.com/downloads/en/DeviceDoc/2305.pdf
-+ *
-+ * Also supports the EMC2303 fan controller which has the same functionality
-+ * and register layout as EMC2305, but supports only up to 3 fans instead of 5.
-+ *
-+ * Also supports EMC2302 (up to 2 fans) and EMC2301 (1 fan) fan controller.
++ * https://ww1.microchip.com/downloads/en/DeviceDoc/EMC2301-2-3-5-Data-Sheet-DS20006532A.pdf
 + *
 + */
 +
@@ -157,12 +73,9 @@ index 00000000..1b44852
 +
 +/*
 + * Addresses scanned.
-+ * Listed in the same order as they appear in the EMC2305, EMC2303 data sheets.
++ * Listed in the same order as they appear in the EMC2303 data sheets.
 + *
-+ * Note: these are the I2C adresses which are possible for EMC2305 and EMC2303
-+ * chips.
-+ * The EMC2302 supports only 0x2e (EMC2302-1) and 0x2f (EMC2302-2).
-+ * The EMC2301 supports only 0x2f.
++ * Note: these are the I2C adresses which are possible for EMC2303 chip.
 + */
 +static const unsigned short i2c_addresses[] = {
 +	0x2E,
@@ -224,7 +137,7 @@ index 00000000..1b44852
 + */
 +#define FAN_RPM_FACTOR 3932160
 +
-+struct emc2305_fan_data {
++struct emc2303_fan_data {
 +	bool		enabled;
 +	bool		rpm_control;
 +	bool		valid;		/* registers are valid */
@@ -235,12 +148,11 @@ index 00000000..1b44852
 +	unsigned long		last_updated;	/* in jiffies */
 +};
 +
-+struct emc2305_data {
++struct emc2303_data {
 +	struct i2c_client	*client;
 +	const struct		attribute_group *groups[6];
 +	struct mutex		update_lock;
-+	int			fan_count; /* num of fan */
-+	struct emc2305_fan_data fan[5];
++	struct emc2303_fan_data fan[3];
 +};
 +
 +static int read_u8_from_i2c(struct i2c_client *client, u8 i2c_reg, u8 *output)
@@ -284,7 +196,7 @@ index 00000000..1b44852
 +static void read_fan_config_from_i2c(struct i2c_client *client, int fan_idx)
 +
 +{
-+	struct emc2305_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = i2c_get_clientdata(client);
 +	u8 conf1;
 +
 +	if (read_u8_from_i2c(client, SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1),
@@ -298,7 +210,7 @@ index 00000000..1b44852
 +
 +static void read_fan_data(struct i2c_client *client, int fan_idx)
 +{
-+	struct emc2305_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = i2c_get_clientdata(client);
 +
 +	read_fan_from_i2c(client, &data->fan[fan_idx].target,
 +			  SEL_FAN(fan_idx, REG_TACH_TARGET_HIGH),
@@ -308,11 +220,11 @@ index 00000000..1b44852
 +			  SEL_FAN(fan_idx, REG_TACH_READ_LOW));
 +}
 +
-+static struct emc2305_fan_data *
-+emc2305_update_fan(struct i2c_client *client, int fan_idx)
++static struct emc2303_fan_data *
++emc2303_update_fan(struct i2c_client *client, int fan_idx)
 +{
-+	struct emc2305_data *data = i2c_get_clientdata(client);
-+	struct emc2305_fan_data *fan_data = &data->fan[fan_idx];
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan_data = &data->fan[fan_idx];
 +
 +	mutex_lock(&data->update_lock);
 +
@@ -328,13 +240,13 @@ index 00000000..1b44852
 +	return fan_data;
 +}
 +
-+static struct emc2305_fan_data *
-+emc2305_update_device_fan(struct device *dev, struct device_attribute *da)
++static struct emc2303_fan_data *
++emc2303_update_device_fan(struct device *dev, struct device_attribute *da)
 +{
 +	struct i2c_client *client = to_i2c_client(dev);
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +
-+	return emc2305_update_fan(client, fan_idx);
++	return emc2303_update_fan(client, fan_idx);
 +}
 +
 +/*
@@ -348,10 +260,10 @@ index 00000000..1b44852
 + * because the divider changed.
 + */
 +static int
-+emc2305_set_fan_div(struct i2c_client *client, int fan_idx, long new_div)
++emc2303_set_fan_div(struct i2c_client *client, int fan_idx, long new_div)
 +{
-+	struct emc2305_data *data = i2c_get_clientdata(client);
-+	struct emc2305_fan_data *fan = emc2305_update_fan(client, fan_idx);
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
 +	const u8 reg_conf1 = SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1);
 +	int new_range_bits, old_div = 8 / fan->multiplier;
 +	int status = 0;
@@ -409,10 +321,10 @@ index 00000000..1b44852
 +}
 +
 +static int
-+emc2305_set_fan_target(struct i2c_client *client, int fan_idx, long rpm_target)
++emc2303_set_fan_target(struct i2c_client *client, int fan_idx, long rpm_target)
 +{
-+	struct emc2305_data *data = i2c_get_clientdata(client);
-+	struct emc2305_fan_data *fan = emc2305_update_fan(client, fan_idx);
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
 +
 +	/*
 +	 * Datasheet states 16000 as maximum RPM target
@@ -437,10 +349,10 @@ index 00000000..1b44852
 +}
 +
 +static int
-+emc2305_set_pwm_enable(struct i2c_client *client, int fan_idx, long enable)
++emc2303_set_pwm_enable(struct i2c_client *client, int fan_idx, long enable)
 +{
-+	struct emc2305_data *data = i2c_get_clientdata(client);
-+	struct emc2305_fan_data *fan = emc2305_update_fan(client, fan_idx);
++	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_fan_data *fan = emc2303_update_fan(client, fan_idx);
 +	const u8 reg_fan_conf1 = SEL_FAN(fan_idx, REG_FAN_CONFIGURATION_1);
 +	int status = 0;
 +	u8 conf_reg;
@@ -477,7 +389,7 @@ index 00000000..1b44852
 +static ssize_t
 +fan_input_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct emc2305_fan_data *fan = emc2305_update_device_fan(dev, da);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
 +	int rpm = 0;
 +
 +	if (fan->tach != 0)
@@ -488,7 +400,7 @@ index 00000000..1b44852
 +static ssize_t
 +fan_fault_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct emc2305_fan_data *fan = emc2305_update_device_fan(dev, da);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
 +
 +	return sprintf(buf, "%d\n", (fan->tach & 0x1fe0) == 0x1fe0);
 +}
@@ -496,7 +408,7 @@ index 00000000..1b44852
 +static ssize_t
 +fan_div_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct emc2305_fan_data *fan = emc2305_update_device_fan(dev, da);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
 +
 +	return sprintf(buf, "%d\n", 8 / fan->multiplier);
 +}
@@ -514,7 +426,7 @@ index 00000000..1b44852
 +	if (status < 0)
 +		return status;
 +
-+	status = emc2305_set_fan_div(client, fan_idx, new_div);
++	status = emc2303_set_fan_div(client, fan_idx, new_div);
 +	if (status < 0)
 +		return status;
 +
@@ -524,7 +436,7 @@ index 00000000..1b44852
 +static ssize_t
 +fan_target_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct emc2305_fan_data *fan = emc2305_update_device_fan(dev, da);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
 +	int rpm = 0;
 +
 +	/* high byte of 0xff indicates disabled so return 0 */
@@ -547,7 +459,7 @@ index 00000000..1b44852
 +	if (status < 0)
 +		return status;
 +
-+	status = emc2305_set_fan_target(client, fan_idx, rpm_target);
++	status = emc2303_set_fan_target(client, fan_idx, rpm_target);
 +	if (status < 0)
 +		return status;
 +
@@ -557,7 +469,7 @@ index 00000000..1b44852
 +static ssize_t
 +pwm_enable_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct emc2305_fan_data *fan = emc2305_update_device_fan(dev, da);
++	struct emc2303_fan_data *fan = emc2303_update_device_fan(dev, da);
 +	return sprintf(buf, "%d\n", fan->rpm_control ? 3 : 0);
 +}
 +
@@ -572,7 +484,7 @@ index 00000000..1b44852
 +	status = kstrtol(buf, 10, &new_value);
 +	if (status < 0)
 +		return -EINVAL;
-+	status = emc2305_set_pwm_enable(client, fan_idx, new_value);
++	status = emc2303_set_pwm_enable(client, fan_idx, new_value);
 +	return count;
 +}
 +
@@ -588,21 +500,11 @@ index 00000000..1b44852
 +static SENSOR_DEVICE_ATTR_RW(fan3_div, fan_div, 2);
 +static SENSOR_DEVICE_ATTR_RW(fan3_target, fan_target, 2);
 +static SENSOR_DEVICE_ATTR_RO(fan3_fault, fan_fault, 2);
-+static SENSOR_DEVICE_ATTR_RO(fan4_input, fan_input, 3);
-+static SENSOR_DEVICE_ATTR_RW(fan4_div, fan_div, 3);
-+static SENSOR_DEVICE_ATTR_RW(fan4_target, fan_target, 3);
-+static SENSOR_DEVICE_ATTR_RO(fan4_fault, fan_fault, 3);
-+static SENSOR_DEVICE_ATTR_RO(fan5_input, fan_input, 4);
-+static SENSOR_DEVICE_ATTR_RW(fan5_div, fan_div, 4);
-+static SENSOR_DEVICE_ATTR_RW(fan5_target, fan_target, 4);
-+static SENSOR_DEVICE_ATTR_RO(fan5_fault, fan_fault, 4);
 +static SENSOR_DEVICE_ATTR_RW(pwm1_enable, pwm_enable, 0);
 +static SENSOR_DEVICE_ATTR_RW(pwm2_enable, pwm_enable, 1);
 +static SENSOR_DEVICE_ATTR_RW(pwm3_enable, pwm_enable, 2);
-+static SENSOR_DEVICE_ATTR_RW(pwm4_enable, pwm_enable, 3);
-+static SENSOR_DEVICE_ATTR_RW(pwm5_enable, pwm_enable, 4);
 +
-+static struct attribute *emc2305_attributes_fan1[] = {
++static struct attribute *emc2303_attributes_fan1[] = {
 +	&sensor_dev_attr_fan1_input.dev_attr.attr,
 +	&sensor_dev_attr_fan1_div.dev_attr.attr,
 +	&sensor_dev_attr_fan1_target.dev_attr.attr,
@@ -611,7 +513,7 @@ index 00000000..1b44852
 +	NULL
 +};
 +
-+static struct attribute *emc2305_attributes_fan2[] = {
++static struct attribute *emc2303_attributes_fan2[] = {
 +	&sensor_dev_attr_fan2_input.dev_attr.attr,
 +	&sensor_dev_attr_fan2_div.dev_attr.attr,
 +	&sensor_dev_attr_fan2_target.dev_attr.attr,
@@ -620,7 +522,7 @@ index 00000000..1b44852
 +	NULL
 +};
 +
-+static struct attribute *emc2305_attributes_fan3[] = {
++static struct attribute *emc2303_attributes_fan3[] = {
 +	&sensor_dev_attr_fan3_input.dev_attr.attr,
 +	&sensor_dev_attr_fan3_div.dev_attr.attr,
 +	&sensor_dev_attr_fan3_target.dev_attr.attr,
@@ -629,58 +531,32 @@ index 00000000..1b44852
 +	NULL
 +};
 +
-+static struct attribute *emc2305_attributes_fan4[] = {
-+	&sensor_dev_attr_fan4_input.dev_attr.attr,
-+	&sensor_dev_attr_fan4_div.dev_attr.attr,
-+	&sensor_dev_attr_fan4_target.dev_attr.attr,
-+	&sensor_dev_attr_fan4_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm4_enable.dev_attr.attr,
-+	NULL
++static const struct attribute_group emc2303_fan1_group = {
++	.attrs = emc2303_attributes_fan1,
 +};
 +
-+static struct attribute *emc2305_attributes_fan5[] = {
-+	&sensor_dev_attr_fan5_input.dev_attr.attr,
-+	&sensor_dev_attr_fan5_div.dev_attr.attr,
-+	&sensor_dev_attr_fan5_target.dev_attr.attr,
-+	&sensor_dev_attr_fan5_fault.dev_attr.attr,
-+	&sensor_dev_attr_pwm5_enable.dev_attr.attr,
-+	NULL
++static const struct attribute_group emc2303_fan2_group = {
++	.attrs = emc2303_attributes_fan2,
 +};
 +
-+static const struct attribute_group emc2305_fan1_group = {
-+	.attrs = emc2305_attributes_fan1,
-+};
-+
-+static const struct attribute_group emc2305_fan2_group = {
-+	.attrs = emc2305_attributes_fan2,
-+};
-+
-+static const struct attribute_group emc2305_fan3_group = {
-+	.attrs = emc2305_attributes_fan3,
-+};
-+
-+static const struct attribute_group emc2305_fan4_group = {
-+	.attrs = emc2305_attributes_fan4,
-+};
-+
-+static const struct attribute_group emc2305_fan5_group = {
-+	.attrs = emc2305_attributes_fan5,
++static const struct attribute_group emc2303_fan3_group = {
++	.attrs = emc2303_attributes_fan3,
 +};
 +
 +/*
 + * driver interface
 + */
 +static int
-+emc2305_probe(struct i2c_client *client, const struct i2c_device_id *id)
++emc2303_probe(struct i2c_client *client, const struct i2c_device_id *id)
 +{
-+	struct emc2305_data *data;
++	struct emc2303_data *data;
 +	struct device *hwmon_dev;
 +	int status, idx = 0;
 +
 +	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_BYTE_DATA))
 +		return -EIO;
 +
-+	data = devm_kzalloc(&client->dev, sizeof(struct emc2305_data), GFP_KERNEL);
++	data = devm_kzalloc(&client->dev, sizeof(struct emc2303_data), GFP_KERNEL);
 +	if (!data)
 +		return -ENOMEM;
 +
@@ -689,38 +565,24 @@ index 00000000..1b44852
 +	mutex_init(&data->update_lock);
 +
 +	status = i2c_smbus_read_byte_data(client, REG_PRODUCT_ID);
-+	switch (status) {
-+	case 0x34: /* EMC2305 */
-+		data->fan_count = 5;
-+		break;
-+	case 0x35: /* EMC2303 */
++
++	if (status == 0x35) /* EMC2303 */
 +		data->fan_count = 3;
-+		break;
-+	case 0x36: /* EMC2302 */
-+		data->fan_count = 2;
-+		break;
-+	case 0x37: /* EMC2301 */
-+		data->fan_count = 1;
-+		break;
-+	default:
-+		if (status < 0)
-+			dev_err(&client->dev, "Failed to read reg REG_PRODUCT_ID, status = %d\n", status);
-+		else
-+			dev_err(&client->dev, "Unknown device, status = %d\n", status);
++	else if (status < 0)
++	{
++		dev_err(&client->dev, "Failed to read reg REG_PRODUCT_ID, status = %d\n", status);
++		return status;
++	}
++	else
++	{
++		dev_err(&client->dev, "Unknown device, status = %d\n", status);
 +		return status;
 +	}
 +
 +	/* sysfs hooks */
-+	data->groups[idx++] = &emc2305_fan1_group;
-+	if (data->fan_count >= 2)
-+		data->groups[idx++] = &emc2305_fan2_group;
-+	if (data->fan_count >= 3) {
-+		data->groups[idx++] = &emc2305_fan3_group;
-+	}
-+	if (data->fan_count == 5) {
-+		data->groups[idx++] = &emc2305_fan4_group;
-+		data->groups[idx++] = &emc2305_fan5_group;
-+	}
++	data->groups[idx++] = &emc2303_fan1_group;
++	data->groups[idx++] = &emc2303_fan2_group;
++	data->groups[idx++] = &emc2303_fan3_group;
 +
 +	hwmon_dev = devm_hwmon_device_register_with_groups(&client->dev,
 +							   client->name, data,
@@ -734,18 +596,15 @@ index 00000000..1b44852
 +	return 0;
 +}
 +
-+static const struct i2c_device_id emc2305_ids[] = {
-+	{ "emc2301", 0 },
-+	{ "emc2302", 0 },
++static const struct i2c_device_id emc2303_ids[] = {
 +	{ "emc2303", 0 },
-+	{ "emc2305", 0 },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(i2c, emc2305_ids);
++MODULE_DEVICE_TABLE(i2c, emc2303_ids);
 +
 +/* Return 0 if detection is successful, -ENODEV otherwise */
 +static int
-+emc2305_detect(struct i2c_client *new_client, struct i2c_board_info *info)
++emc2303_detect(struct i2c_client *new_client, struct i2c_board_info *info)
 +{
 +	struct i2c_adapter *adapter = new_client->adapter;
 +	int manufacturer, product;
@@ -760,40 +619,28 @@ index 00000000..1b44852
 +
 +	product = i2c_smbus_read_byte_data(new_client, REG_PRODUCT_ID);
 +
-+	switch (product) {
-+	case 0x34:
-+		strlcpy(info->type, "emc2305", I2C_NAME_SIZE);
-+		break;
-+	case 0x35:
++	if (product == 0x35)
 +		strlcpy(info->type, "emc2303", I2C_NAME_SIZE);
-+		break;
-+	case 0x36:
-+		strlcpy(info->type, "emc2302", I2C_NAME_SIZE);
-+		break;
-+	case 0x37:
-+		strlcpy(info->type, "emc2301", I2C_NAME_SIZE);
-+		break;
-+	default:
++	else
 +		return -ENODEV;
-+	}
 +
 +	return 0;
 +}
 +
-+static struct i2c_driver emc2305_driver = {
++static struct i2c_driver emc2303_driver = {
 +	.class		= I2C_CLASS_HWMON,
 +	.driver = {
-+		.name	= "emc2305",
++		.name	= "emc2303",
 +	},
-+	.probe		= emc2305_probe,
-+	.id_table	= emc2305_ids,
-+	.detect		= emc2305_detect,
++	.probe		= emc2303_probe,
++	.id_table	= emc2303_ids,
++	.detect		= emc2303_detect,
 +	.address_list	= i2c_addresses,
 +};
 +
-+module_i2c_driver(emc2305_driver);
++module_i2c_driver(emc2303_driver);
 +
-+MODULE_DESCRIPTION("SMSC EMC2305 hwmon driver");
++MODULE_DESCRIPTION("SMSC EMC2303 hwmon driver");
 +MODULE_LICENSE("GPL");
 -- 
 2.7.4
