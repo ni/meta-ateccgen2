@@ -1,16 +1,57 @@
-From 3c1360932756b2ceadc28b0743c0be4abc1399c8 Mon Sep 17 00:00:00 2001
+From 1943eef99fbf7a4edc06f958ec0c387a512f029a Mon Sep 17 00:00:00 2001
 From: wkoe <wilson.koe@ni.com>
 Date: Wed, 22 Dec 2021 23:17:08 -0800
 Subject: [PATCH] hwmon: add support for SMSC EMC2303
 
 Signed-off-by: wkoe <wilson.koe@ni.com>
 ---
- drivers/hwmon/Kconfig   |  10 +
- drivers/hwmon/Makefile  |   1 +
- drivers/hwmon/emc2303.c | 592 ++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 603 insertions(+)
+ .../devicetree/bindings/hwmon/emc2303.txt          |  33 ++
+ drivers/hwmon/Kconfig                              |  10 +
+ drivers/hwmon/Makefile                             |   1 +
+ drivers/hwmon/emc2303.c                            | 598 +++++++++++++++++++++
+ 4 files changed, 642 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/emc2303.txt
  create mode 100644 drivers/hwmon/emc2303.c
 
+diff --git a/Documentation/devicetree/bindings/hwmon/emc2303.txt b/Documentation/devicetree/bindings/hwmon/emc2303.txt
+new file mode 100644
+index 00000000..a9eb7b1
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/emc2303.txt
+@@ -0,0 +1,33 @@
++EMC2303 (I2C)
++
++This device is a RPM-based PWM Fan Speed Controller for 3 fans.
++Each fan can beconfigured individually:
++
++- The PWM mode:
++   0: PWM is disabled
++   3: RPM based PWM
++
++- The fan divisor (for RPM mesaurement)
++  1, 2 ,4 or 8
++
++- The target RPM speed (for RPM based PWM mode)
++  max 16000 (according to data sheet)
++
++
++- The /emc2303 node
++
++  Required properties:
++
++  - compatible : must be "smsc,emc2303"
++  - reg : I2C bus address of the device
++  - #address-cells : must be <1>
++  - #size-cells : must be <0>
++
++  Example EMC2303 node:
++
++    emc2303@2C {
++        compatible = "smsc,emc2303";
++        reg = <0x2C>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++    }
 diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
 index 2fa4666..1b705a1 100644
 --- a/drivers/hwmon/Kconfig
@@ -46,10 +87,10 @@ index b033e67..611c9c8 100644
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
-index 00000000..aaa918c
+index 00000000..82a627b
 --- /dev/null
 +++ b/drivers/hwmon/emc2303.c
-@@ -0,0 +1,592 @@
+@@ -0,0 +1,598 @@
 +/*
 + * emc2303.c - hwmon driver for SMSC EMC2303 fan controller
 + *
@@ -132,25 +173,31 @@ index 00000000..aaa918c
 +#define SEL_FAN(fan, reg) (reg + fan * 0x10)
 +
 +/*
-+ * Factor by equations [2] and [3] from data sheet; valid for fans where the
-+ * number of edges equals (poles * 2 + 1).
++ * According to ME, EDGX[1:0] = 0b01; USECK = 0b0;
++ *
++ * TACH edges         = 5
++ * No. of poles       = 2
++ * Multiplier         = 1
++ * Internal Clk freq. = 32 kHz
++ *
++ * Factor by equations 4-2 and 4-3 from data sheet is 3840000
 + */
-+#define FAN_RPM_FACTOR 3932160
++#define FAN_RPM_FACTOR 3840000
 +
 +struct emc2303_fan_data {
-+	bool		enabled;
-+	bool		rpm_control;
-+	bool		valid;		/* registers are valid */
-+	u8		poles;
-+	u8		multiplier;
-+	u16		tach;
-+	u16		target;
-+	unsigned long		last_updated;	/* in jiffies */
++	bool			enabled;
++	bool			rpm_control;
++	bool			valid;		/* registers are valid */
++	u8				poles;
++	u8				multiplier;
++	u16				tach;
++	u16				target;
++	unsigned long	last_updated;	/* in jiffies */
 +};
 +
 +struct emc2303_data {
 +	struct i2c_client	*client;
-+	const struct		attribute_group *groups[6];
++	const struct		attribute_group *groups[4];
 +	struct mutex		update_lock;
 +	struct emc2303_fan_data fan[3];
 +};
@@ -328,7 +375,7 @@ index 00000000..aaa918c
 +
 +	/*
 +	 * Datasheet states 16000 as maximum RPM target
-+	 * (table 2.2 and section 4.3)
++	 * (table 1.2 and section 4.3)
 +	 */
 +	if ((rpm_target < 0) || (rpm_target > 16000))
 +		return -EINVAL;
@@ -580,8 +627,8 @@ index 00000000..aaa918c
 +	}
 +	else
 +	{
-+		dev_err(&client->dev, "Unknown device, status = %d\n", status);
-+		return status;
++		dev_err(&client->dev, "Unknown device, REG_PRODUCT_ID register content = 0x%x\n", status);
++		return -ENODEV;
 +	}
 +
 +	hwmon_dev = devm_hwmon_device_register_with_groups(&client->dev,
