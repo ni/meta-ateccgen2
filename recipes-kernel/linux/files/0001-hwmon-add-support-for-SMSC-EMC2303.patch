@@ -1,4 +1,4 @@
-From 256421a853d2e9af414e89a7091c2c9cc9aad668 Mon Sep 17 00:00:00 2001
+From ac469839b2e9036e9d7a55bbf262a9b1eeea9e6f Mon Sep 17 00:00:00 2001
 From: wkoe <wilson.koe@ni.com>
 Date: Wed, 22 Dec 2021 23:17:08 -0800
 Subject: [PATCH] hwmon: add support for SMSC EMC2303
@@ -87,7 +87,7 @@ index b033e67..611c9c8 100644
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
-index 00000000..48ddb00
+index 00000000..d65f2dd
 --- /dev/null
 +++ b/drivers/hwmon/emc2303.c
 @@ -0,0 +1,544 @@
@@ -408,7 +408,7 @@ index 00000000..48ddb00
 +	int rpm = 0;
 +	int status = 0;
 +
-+	status = emc2303_update_fan_data(dev, fan_idx);
++	status = emc2303_update_fan_data(client, fan_idx);
 +	if (status < 0)
 +		return status;
 +
@@ -427,7 +427,7 @@ index 00000000..48ddb00
 +	int rpm = 0;
 +	int status = 0;
 +
-+	status = emc2303_update_fan_data(dev, fan_idx);
++	status = emc2303_update_fan_data(client, fan_idx);
 +	if (status < 0)
 +		return status;
 +
@@ -467,7 +467,7 @@ index 00000000..48ddb00
 +	struct emc2303_fan_data *fan = &data->fan[fan_idx];
 +	int status = 0;
 +
-+	status = emc2303_update_fan_data(dev, fan_idx);
++	status = emc2303_update_fan_data(client, fan_idx);
 +	if (status < 0)
 +		return status;
 +
