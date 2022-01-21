@@ -1,35 +1,32 @@
-From ac469839b2e9036e9d7a55bbf262a9b1eeea9e6f Mon Sep 17 00:00:00 2001
+From 4224bc2c428f0fd002f165150d85e965e578b572 Mon Sep 17 00:00:00 2001
 From: wkoe <wilson.koe@ni.com>
 Date: Wed, 22 Dec 2021 23:17:08 -0800
 Subject: [PATCH] hwmon: add support for SMSC EMC2303
 
 Signed-off-by: wkoe <wilson.koe@ni.com>
 ---
- .../devicetree/bindings/hwmon/emc2303.txt          |  33 ++
+ .../devicetree/bindings/hwmon/emc2303.txt          |  30 ++
  drivers/hwmon/Kconfig                              |  10 +
  drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/emc2303.c                            | 544 +++++++++++++++++++++
- 4 files changed, 588 insertions(+)
+ drivers/hwmon/emc2303.c                            | 542 +++++++++++++++++++++
+ 4 files changed, 583 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/hwmon/emc2303.txt
  create mode 100644 drivers/hwmon/emc2303.c
 
 diff --git a/Documentation/devicetree/bindings/hwmon/emc2303.txt b/Documentation/devicetree/bindings/hwmon/emc2303.txt
 new file mode 100644
-index 00000000..a9eb7b1
+index 00000000..7fcd9f9
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/hwmon/emc2303.txt
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,30 @@
 +EMC2303 (I2C)
 +
 +This device is a RPM-based PWM Fan Speed Controller for 3 fans.
-+Each fan can beconfigured individually:
++Each fan can be configured individually:
 +
 +- The PWM mode:
 +   0: PWM is disabled
 +   3: RPM based PWM
-+
-+- The fan divisor (for RPM mesaurement)
-+  1, 2 ,4 or 8
 +
 +- The target RPM speed (for RPM based PWM mode)
 +  max 16000 (according to data sheet)
@@ -87,10 +84,10 @@ index b033e67..611c9c8 100644
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
-index 00000000..d65f2dd
+index 00000000..816c91d
 --- /dev/null
 +++ b/drivers/hwmon/emc2303.c
-@@ -0,0 +1,544 @@
+@@ -0,0 +1,542 @@
 +/*
 + * emc2303.c - hwmon driver for SMSC EMC2303 fan controller
 + *
@@ -173,22 +170,24 @@ index 00000000..d65f2dd
 +#define SEL_FAN(fan, reg) (reg + fan * 0x10)
 +
 +/*
-+ * According to ME, EDGX[1:0] = 0b01; USECK = 0b0;
++ * Bloew is the fan configuration used in SmartRacks:
 + *
 + * TACH edges         = 5
 + * No. of poles       = 2
++ * Multiplier         = 4
 + * Internal Clk freq. = 32 kHz
-+ *
-+ * Factor by equations 4-2 and 4-3 from data sheet is 3840000
 + */
-+#define FAN_RPM_FACTOR 3840000
++#define FAN_TACH_EDGES 5
++#define FAN_POLES      2
++#define FAN_MULTIPLIER 4
++#define FAN_CLK_FREQ   32000
++
++/* Apply Equation 4-2 from datasheet */
++#define FAN_RPM_FACTOR (((FAN_TACH_EDGES - 1) * FAN_MULTIPLIER * FAN_CLK_FREQ * 60) / FAN_POLES)
 +
 +struct emc2303_fan_data {
-+	bool			enabled;
 +	bool			rpm_control;
 +	bool			valid;		/* registers are valid */
-+	u8				poles;
-+	u8				multiplier;
 +	u16				tach;
 +	u16				target;
 +	unsigned long	last_updated;	/* in jiffies */
@@ -262,8 +261,6 @@ index 00000000..d65f2dd
 +		return status;
 +
 +	data->fan[fan_idx].rpm_control = (conf1 & 0x80) != 0;
-+	data->fan[fan_idx].multiplier = 1 << ((conf1 & 0x60) >> 5);
-+	data->fan[fan_idx].poles = ((conf1 & 0x18) >> 3) + 1;
 +
 +	return status;
 +}
@@ -314,9 +311,8 @@ index 00000000..d65f2dd
 +}
 +
 +/*
-+ * set/ config functions
++ * set config functions
 + */
-+
 +static int
 +emc2303_set_fan_target(struct i2c_client *client, int fan_idx, long rpm_target)
 +{
@@ -341,7 +337,7 @@ index 00000000..d65f2dd
 +		fan->target = 0x1fff;
 +	else
 +		fan->target = clamp_val(
-+			FAN_RPM_FACTOR * fan->multiplier / rpm_target,
++			FAN_RPM_FACTOR / rpm_target,
 +			0, 0x1fff);
 +
 +	status = write_fan_target_to_i2c(client, fan_idx, fan->target);
@@ -413,7 +409,7 @@ index 00000000..d65f2dd
 +		return status;
 +
 +	if (fan->tach != 0)
-+		rpm = (FAN_RPM_FACTOR * fan->multiplier) / fan->tach;
++		rpm = FAN_RPM_FACTOR / fan->tach;
 +	return sprintf(buf, "%d\n", rpm);
 +}
 +
@@ -433,8 +429,7 @@ index 00000000..d65f2dd
 +
 +	/* high byte of 0xff indicates disabled so return 0 */
 +	if ((fan->target != 0) && ((fan->target & 0x1fe0) != 0x1fe0))
-+		rpm = FAN_RPM_FACTOR * fan->multiplier
-+			/ fan->target;
++		rpm = FAN_RPM_FACTOR / fan->target;
 +
 +	return sprintf(buf, "%d\n", rpm);
 +}
