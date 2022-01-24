@@ -1,4 +1,4 @@
-From 4224bc2c428f0fd002f165150d85e965e578b572 Mon Sep 17 00:00:00 2001
+From 34c2c52ae627f377bb949d04baea67e280d44bb5 Mon Sep 17 00:00:00 2001
 From: wkoe <wilson.koe@ni.com>
 Date: Wed, 22 Dec 2021 23:17:08 -0800
 Subject: [PATCH] hwmon: add support for SMSC EMC2303
@@ -84,7 +84,7 @@ index b033e67..611c9c8 100644
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
-index 00000000..816c91d
+index 00000000..9041766
 --- /dev/null
 +++ b/drivers/hwmon/emc2303.c
 @@ -0,0 +1,542 @@
@@ -170,7 +170,7 @@ index 00000000..816c91d
 +#define SEL_FAN(fan, reg) (reg + fan * 0x10)
 +
 +/*
-+ * Bloew is the fan configuration used in SmartRacks:
++ * Below is the fan configuration used in SmartRacks:
 + *
 + * TACH edges         = 5
 + * No. of poles       = 2
