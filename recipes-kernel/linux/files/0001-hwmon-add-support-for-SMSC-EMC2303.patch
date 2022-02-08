@@ -1,15 +1,15 @@
-From 34c2c52ae627f377bb949d04baea67e280d44bb5 Mon Sep 17 00:00:00 2001
+From cd6eb15bfabd6b94191c70f0e02d5e403d3ff679 Mon Sep 17 00:00:00 2001
 From: wkoe <wilson.koe@ni.com>
 Date: Wed, 22 Dec 2021 23:17:08 -0800
 Subject: [PATCH] hwmon: add support for SMSC EMC2303
 
 Signed-off-by: wkoe <wilson.koe@ni.com>
 ---
- .../devicetree/bindings/hwmon/emc2303.txt          |  30 ++
+ .../devicetree/bindings/hwmon/emc2303.txt          |  30 +
  drivers/hwmon/Kconfig                              |  10 +
  drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/emc2303.c                            | 542 +++++++++++++++++++++
- 4 files changed, 583 insertions(+)
+ drivers/hwmon/emc2303.c                            | 711 +++++++++++++++++++++
+ 4 files changed, 752 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/hwmon/emc2303.txt
  create mode 100644 drivers/hwmon/emc2303.c
 
@@ -84,10 +84,10 @@ index b033e67..611c9c8 100644
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
-index 00000000..9041766
+index 00000000..b2ae311
 --- /dev/null
 +++ b/drivers/hwmon/emc2303.c
-@@ -0,0 +1,542 @@
+@@ -0,0 +1,711 @@
 +/*
 + * emc2303.c - hwmon driver for SMSC EMC2303 fan controller
 + *
@@ -108,6 +108,92 @@ index 00000000..9041766
 +#include <linux/err.h>
 +#include <linux/mutex.h>
 +#include <linux/of.h>
++
++/*
++ * Initial Register values for SmartRacks.
++ * Values provided by Mechanical Engineer. Refer to the following link:
++ * https://nio365.sharepoint.com/sites/SmartRack/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FSmartRack%2FShared+Documents%2F3_Mechanical%2FThermal%2FV%26V%2F16U%2Ffan+control%2FVI%2FEMC+2303+boka+fan+config+file%2Ffan+setting+9GV+%283+fans%29+ver003.txt&parent=%2Fsites%2FSmartRack%2FShared+Documents%2F3_Mechanical%2FThermal%2FV%26V%2F16U%2Ffan+control%2FVI%2FEMC+2303+boka+fan+config+file&isSPOFile=1&OR=Teams-HL&CT=1640669588127&sourceId=&params=%7B%22AppName%22%3A%22Teams-Desktop%22%2C%22AppVersion%22%3A%2227%2F21110108719%22%7D
++ *
++ * Register description below are only based on SmartRacks specific configuration. For full
++ * description of each register's function, please refer to the datasheet.
++ */
++
++/* Configuration Register at 20H (Section 6.2)
++ * bit      Field        Value
++ * 7        MASK         0 = ALERT pin is unmasked.
++ * 6        DIS_TO       1 = The SMBus Time-Out function is disabled.
++ * 5        WD_EN        0 = Watchdog Timer does not operate continuously.
++ * 4:2      -            -
++ * 1        DRECK        1 = The CLK pin acts as a clock output and is a push-pull driver.
++ * 0        USECK        0 = Use internal oscillator for all tachometer measurements.
++ */
++#define REG_CONFIGURATION_VALUE   0x42
++
++/* Fan Configuration Registers at 32H, 42H and 52H (Section 6.14)
++ * bit      Field        Value
++ * 7        ENAGx          1 = Closed Loop algorithm is enabled.
++ * 6:5      RNGx[1:0]     10 = 2000 RPM minimum, TACH count multiplier = 4.
++ * 4:3      EDGx[1:0]     01 = 5 edges (2 poles), effective TACH multiplier is 1.
++ * 2:0      UDTx[2:0]    011 = 400 ms update interval.
++ */
++#define REG_FAN_CONFIGURATION_1_VALUE   0xcb
++
++/* Fan Configuration 2 Registers at 33H, 43H and 53H (Section 6.15)
++ * bit      Field        Value
++ * 7        -            -
++ * 6        ENRCx         0 = Ramp Rate Control disabled.
++ * 5        GHENx         1 = Glitch filter enabled.
++ * 4:3      DPTx[1:0]    01 = BASIC Derivative Option for Fan Speed Setting calculation.
++ * 2:1      ERGx[1:0]    01 = 50 RPM Error Window
++ * 0        -            -
++ */
++#define REG_FAN_CONFIGURATION_2_VALUE   0x2a
++
++/* PID Gain Register at 35H, 45H and 55H (Section 6.16)
++ * bit      Field        Value
++ * 7:6      -            -
++ * 5:4      GDEx[1:0]    01 = 2x Derivative Gain.
++ * 3:2      GINx[1:0]    01 = 2x Integral Gain.
++ * 1:0      GPRx[1:0]    01 = 2x Proportional Gain.
++ */
++#define REG_GAIN_VALUE   0x15
++
++/* Fan Spin Up Configuration Registers at 36H, 46H and 56H (Section 6.17)
++ * bit      Field        Value
++ * 7:6      DFCx[1:0]     00 = Drive Fail Count disabled.
++ * 5        NKCKx          1 = Spin-Up will not drive to 100% PWM.
++ * 4:2      SPLVx[2:0]   000 = 30% Spin-Up Level.
++ * 1:0      SPT[1:0]      11 = 2s Spin-Up Time.
++ */
++#define REG_FAN_SPIN_UP_CONFIG_VALUE   0x23
++
++/* Maximum Step Size Register at 37H, 47H and 57H (Section 6.18)
++ * bit      Field        Value
++ * 7:6      -            -
++ * 5:0      FxMS[5:0]    00 0101 = Fan Drive Max Step size is 5.
++ */
++#define REG_FAN_MAX_STEP_VALUE   0x05
++
++/* Fan Minimum Drive Register at 38H, 48H and 58H (Section 6.19)
++ * bit      Field        Value
++ * 7:0      FxMS[7:0]    0000 0001 = Fan Drive Min Step size is 1.
++ */
++#define REG_FAN_MINIMUM_DRIVE_VALUE   0x01
++
++/* Drive Fail Band Registers (Section 6.21):-
++ * High Byte at 3BH, 4BH and 5BH
++ * bit      Field        Value
++ * 7:0      FxDF[12:5]   0000 1000
++ *
++ * Low Byte at 3AH, 4AH and 5AH
++ * bit      Field        Value
++ * 7:3      FxDF[4:0]    0 0000
++ * 2:0      -            -
++ *
++ * Number of tach counts used by the Fan Drive Fail detection circuitry = 256 (in decimal).
++ */
++#define REG_FAN_DRIVE_FAIL_BAND_HIGH_VALUE   0x08
++#define REG_FAN_DRIVE_FAIL_BAND_LOW_VALUE   0x00
 +
 +/*
 + * Addresses scanned.
@@ -296,7 +382,7 @@ index 00000000..9041766
 +		status = update_fan_config(client, fan_idx);
 +		if (status < 0)
 +			goto exit_unlock;
-+		
++
 +		status = update_tach_target_and_reading(client, fan_idx);
 +		if (status < 0)
 +			goto exit_unlock;
@@ -397,8 +483,8 @@ index 00000000..9041766
 +static ssize_t
 +fan_input_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	struct emc2303_fan_data *fan = &data->fan[fan_idx];
 +	int rpm = 0;
@@ -416,8 +502,8 @@ index 00000000..9041766
 +static ssize_t
 +fan_target_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	struct emc2303_fan_data *fan = &data->fan[fan_idx];
 +	int rpm = 0;
@@ -437,7 +523,8 @@ index 00000000..9041766
 +static ssize_t fan_target_store(struct device *dev, struct device_attribute *da,
 +			      const char *buf, size_t count)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	long rpm_target;
 +	int status;
@@ -456,8 +543,8 @@ index 00000000..9041766
 +static ssize_t
 +pwm_enable_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	struct emc2303_fan_data *fan = &data->fan[fan_idx];
 +	int status = 0;
@@ -472,7 +559,8 @@ index 00000000..9041766
 +static ssize_t pwm_enable_store(struct device *dev, struct device_attribute *da,
 +			      const char *buf, size_t count)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	long new_value;
 +	int status;
@@ -486,6 +574,80 @@ index 00000000..9041766
 +		return status;
 +
 +	return count;
++}
++
++static int set_init_config(struct i2c_client *client)
++{
++	int status = 0;
++	int idx;
++
++	/* Set global register first. */
++	status = i2c_smbus_write_byte_data(client, REG_CONFIGURATION,
++				REG_CONFIGURATION_VALUE);
++	if (status < 0)
++		return status;
++
++	/* Iterate through all 3 fans to set the fan registers. */
++	for (idx = 0; idx < 3; idx++)
++	{
++		/* Set Fan Configuration Registers. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_FAN_CONFIGURATION_1),
++					REG_FAN_CONFIGURATION_1_VALUE);
++		if (status < 0)
++			return status;
++
++		/* Set Fan Configuration 2 Registers. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_FAN_CONFIGURATION_2),
++					REG_FAN_CONFIGURATION_2_VALUE);
++		if (status < 0)
++			return status;
++
++		/* Set PID Gain Register. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_GAIN),
++					REG_GAIN_VALUE);
++		if (status < 0)
++			return status;
++
++		/* Set Fan Spin Up Configuration Registers. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_FAN_SPIN_UP_CONFIG),
++					REG_FAN_SPIN_UP_CONFIG_VALUE);
++		if (status < 0)
++			return status;
++
++		/* Set Maximum Step Size Register. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_FAN_MAX_STEP),
++					REG_FAN_MAX_STEP_VALUE);
++		if (status < 0)
++			return status;
++
++		/* Set Fan Minimum Drive Register. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_FAN_MINIMUM_DRIVE),
++					REG_FAN_MINIMUM_DRIVE_VALUE);
++		if (status < 0)
++			return status;
++
++		/* Set Drive Fail Band Low Byte Registers. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_FAN_DRIVE_FAIL_BAND_LOW),
++					REG_FAN_DRIVE_FAIL_BAND_LOW_VALUE);
++		if (status < 0)
++			return status;
++
++		/* Set Drive Fail Band High Byte Registers. */
++		status = i2c_smbus_write_byte_data(client,
++					SEL_FAN(idx, REG_FAN_DRIVE_FAIL_BAND_HIGH),
++					REG_FAN_DRIVE_FAIL_BAND_HIGH_VALUE);
++		if (status < 0)
++			return status;
++	}
++
++	return status;
 +}
 +
 +static SENSOR_DEVICE_ATTR_RO(fan1_input, fan_input, 0);
@@ -570,6 +732,13 @@ index 00000000..9041766
 +	{
 +		dev_err(&client->dev, "Unknown device, REG_PRODUCT_ID register content = 0x%x\n", status);
 +		return -ENODEV;
++	}
++
++	status = set_init_config(client);
++	if (status < 0)
++	{
++		dev_err(&client->dev, "Failure when setting initial configuration, status: %d\n", status);
++		return status;
 +	}
 +
 +	hwmon_dev = devm_hwmon_device_register_with_groups(&client->dev,
