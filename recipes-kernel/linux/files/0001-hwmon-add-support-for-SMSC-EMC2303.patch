@@ -1,4 +1,4 @@
-From b250cba009721e7ed50e50aedfbfb44dfc59ca93 Mon Sep 17 00:00:00 2001
+From cd6eb15bfabd6b94191c70f0e02d5e403d3ff679 Mon Sep 17 00:00:00 2001
 From: wkoe <wilson.koe@ni.com>
 Date: Wed, 22 Dec 2021 23:17:08 -0800
 Subject: [PATCH] hwmon: add support for SMSC EMC2303
@@ -8,8 +8,8 @@ Signed-off-by: wkoe <wilson.koe@ni.com>
  .../devicetree/bindings/hwmon/emc2303.txt          |  30 +
  drivers/hwmon/Kconfig                              |  10 +
  drivers/hwmon/Makefile                             |   1 +
- drivers/hwmon/emc2303.c                            | 735 +++++++++++++++++++++
- 4 files changed, 776 insertions(+)
+ drivers/hwmon/emc2303.c                            | 711 +++++++++++++++++++++
+ 4 files changed, 752 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/hwmon/emc2303.txt
  create mode 100644 drivers/hwmon/emc2303.c
 
@@ -84,10 +84,10 @@ index b033e67..611c9c8 100644
  obj-$(CONFIG_SENSORS_F71882FG)	+= f71882fg.o
 diff --git a/drivers/hwmon/emc2303.c b/drivers/hwmon/emc2303.c
 new file mode 100644
-index 00000000..b570810
+index 00000000..b2ae311
 --- /dev/null
 +++ b/drivers/hwmon/emc2303.c
-@@ -0,0 +1,735 @@
+@@ -0,0 +1,711 @@
 +/*
 + * emc2303.c - hwmon driver for SMSC EMC2303 fan controller
 + *
@@ -127,7 +127,7 @@ index 00000000..b570810
 + * 1        DRECK        1 = The CLK pin acts as a clock output and is a push-pull driver.
 + * 0        USECK        0 = Use internal oscillator for all tachometer measurements.
 + */
-+#define REG_CONFIGURATION_VALUE 			0x42
++#define REG_CONFIGURATION_VALUE   0x42
 +
 +/* Fan Configuration Registers at 32H, 42H and 52H (Section 6.14)
 + * bit      Field        Value
@@ -136,7 +136,7 @@ index 00000000..b570810
 + * 4:3      EDGx[1:0]     01 = 5 edges (2 poles), effective TACH multiplier is 1.
 + * 2:0      UDTx[2:0]    011 = 400 ms update interval.
 + */
-+#define REG_FAN_CONFIGURATION_1_VALUE		0xcb
++#define REG_FAN_CONFIGURATION_1_VALUE   0xcb
 +
 +/* Fan Configuration 2 Registers at 33H, 43H and 53H (Section 6.15)
 + * bit      Field        Value
@@ -147,7 +147,7 @@ index 00000000..b570810
 + * 2:1      ERGx[1:0]    01 = 50 RPM Error Window
 + * 0        -            -
 + */
-+#define REG_FAN_CONFIGURATION_2_VALUE		0x2a
++#define REG_FAN_CONFIGURATION_2_VALUE   0x2a
 +
 +/* PID Gain Register at 35H, 45H and 55H (Section 6.16)
 + * bit      Field        Value
@@ -156,7 +156,7 @@ index 00000000..b570810
 + * 3:2      GINx[1:0]    01 = 2x Integral Gain.
 + * 1:0      GPRx[1:0]    01 = 2x Proportional Gain.
 + */
-+#define REG_GAIN_VALUE						0x15
++#define REG_GAIN_VALUE   0x15
 +
 +/* Fan Spin Up Configuration Registers at 36H, 46H and 56H (Section 6.17)
 + * bit      Field        Value
@@ -165,20 +165,20 @@ index 00000000..b570810
 + * 4:2      SPLVx[2:0]   000 = 30% Spin-Up Level.
 + * 1:0      SPT[1:0]      11 = 2s Spin-Up Time.
 + */
-+#define REG_FAN_SPIN_UP_CONFIG_VALUE		0x23
++#define REG_FAN_SPIN_UP_CONFIG_VALUE   0x23
 +
 +/* Maximum Step Size Register at 37H, 47H and 57H (Section 6.18)
 + * bit      Field        Value
 + * 7:6      -            -
 + * 5:0      FxMS[5:0]    00 0101 = Fan Drive Max Step size is 5.
 + */
-+#define REG_FAN_MAX_STEP_VALUE				0x05
++#define REG_FAN_MAX_STEP_VALUE   0x05
 +
 +/* Fan Minimum Drive Register at 38H, 48H and 58H (Section 6.19)
 + * bit      Field        Value
 + * 7:0      FxMS[7:0]    0000 0001 = Fan Drive Min Step size is 1.
 + */
-+#define REG_FAN_MINIMUM_DRIVE_VALUE			0x01
++#define REG_FAN_MINIMUM_DRIVE_VALUE   0x01
 +
 +/* Drive Fail Band Registers (Section 6.21):-
 + * High Byte at 3BH, 4BH and 5BH
@@ -190,25 +190,10 @@ index 00000000..b570810
 + * 7:3      FxDF[4:0]    0 0000
 + * 2:0      -            -
 + *
-+ * Drive Fail Band Registers as a whole = 256 (in decimal).
++ * Number of tach counts used by the Fan Drive Fail detection circuitry = 256 (in decimal).
 + */
-+#define REG_FAN_DRIVE_FAIL_BAND_HIGH_VALUE	0x08
-+#define REG_FAN_DRIVE_FAIL_BAND_LOW_VALUE	0x00
-+
-+/* TACH Target Registers (Section 6.22)
-+ * High Byte at 3DH, 4DH and 5DH
-+ * bit      Field        Value
-+ * 7:0      FxTT[12:5]   1011 1101
-+ *
-+ * Low Byte at 3CH, 4CH and 5CH
-+ * bit      Field        Value
-+ * 7:3      FxTT[4:0]    0 0001
-+ * 2:0      -            -
-+ *
-+ * TACH Target Registers as a whole = 6049 (in decimal).
-+ */
-+#define REG_TACH_TARGET_HIGH_VALUE			0xbd
-+#define REG_TACH_TARGET_LOW_VALUE			0x08
++#define REG_FAN_DRIVE_FAIL_BAND_HIGH_VALUE   0x08
++#define REG_FAN_DRIVE_FAIL_BAND_LOW_VALUE   0x00
 +
 +/*
 + * Addresses scanned.
@@ -397,7 +382,7 @@ index 00000000..b570810
 +		status = update_fan_config(client, fan_idx);
 +		if (status < 0)
 +			goto exit_unlock;
-+		
++
 +		status = update_tach_target_and_reading(client, fan_idx);
 +		if (status < 0)
 +			goto exit_unlock;
@@ -498,8 +483,8 @@ index 00000000..b570810
 +static ssize_t
 +fan_input_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	struct emc2303_fan_data *fan = &data->fan[fan_idx];
 +	int rpm = 0;
@@ -517,8 +502,8 @@ index 00000000..b570810
 +static ssize_t
 +fan_target_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	struct emc2303_fan_data *fan = &data->fan[fan_idx];
 +	int rpm = 0;
@@ -538,7 +523,8 @@ index 00000000..b570810
 +static ssize_t fan_target_store(struct device *dev, struct device_attribute *da,
 +			      const char *buf, size_t count)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	long rpm_target;
 +	int status;
@@ -557,8 +543,8 @@ index 00000000..b570810
 +static ssize_t
 +pwm_enable_show(struct device *dev, struct device_attribute *da, char *buf)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct emc2303_data *data = i2c_get_clientdata(client);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	struct emc2303_fan_data *fan = &data->fan[fan_idx];
 +	int status = 0;
@@ -573,7 +559,8 @@ index 00000000..b570810
 +static ssize_t pwm_enable_store(struct device *dev, struct device_attribute *da,
 +			      const char *buf, size_t count)
 +{
-+	struct i2c_client *client = to_i2c_client(dev);
++	struct emc2303_data *data = dev_get_drvdata(dev);
++	struct i2c_client *client = data->client;
 +	int fan_idx = to_sensor_dev_attr(da)->index;
 +	long new_value;
 +	int status;
@@ -606,70 +593,56 @@ index 00000000..b570810
 +		/* Set Fan Configuration Registers. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_FAN_CONFIGURATION_1),
-+					SEL_FAN(idx, REG_FAN_CONFIGURATION_1_VALUE));
++					REG_FAN_CONFIGURATION_1_VALUE);
 +		if (status < 0)
 +			return status;
 +
 +		/* Set Fan Configuration 2 Registers. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_FAN_CONFIGURATION_2),
-+					SEL_FAN(idx, REG_FAN_CONFIGURATION_2_VALUE));
++					REG_FAN_CONFIGURATION_2_VALUE);
 +		if (status < 0)
 +			return status;
 +
 +		/* Set PID Gain Register. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_GAIN),
-+					SEL_FAN(idx, REG_GAIN_VALUE));
++					REG_GAIN_VALUE);
 +		if (status < 0)
 +			return status;
 +
 +		/* Set Fan Spin Up Configuration Registers. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_FAN_SPIN_UP_CONFIG),
-+					SEL_FAN(idx, REG_FAN_SPIN_UP_CONFIG_VALUE));
++					REG_FAN_SPIN_UP_CONFIG_VALUE);
 +		if (status < 0)
 +			return status;
 +
 +		/* Set Maximum Step Size Register. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_FAN_MAX_STEP),
-+					SEL_FAN(idx, REG_FAN_MAX_STEP_VALUE));
++					REG_FAN_MAX_STEP_VALUE);
 +		if (status < 0)
 +			return status;
 +
 +		/* Set Fan Minimum Drive Register. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_FAN_MINIMUM_DRIVE),
-+					SEL_FAN(idx, REG_FAN_MINIMUM_DRIVE_VALUE));
++					REG_FAN_MINIMUM_DRIVE_VALUE);
 +		if (status < 0)
 +			return status;
 +
 +		/* Set Drive Fail Band Low Byte Registers. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_FAN_DRIVE_FAIL_BAND_LOW),
-+					SEL_FAN(idx, REG_FAN_DRIVE_FAIL_BAND_LOW_VALUE));
++					REG_FAN_DRIVE_FAIL_BAND_LOW_VALUE);
 +		if (status < 0)
 +			return status;
 +
 +		/* Set Drive Fail Band High Byte Registers. */
 +		status = i2c_smbus_write_byte_data(client,
 +					SEL_FAN(idx, REG_FAN_DRIVE_FAIL_BAND_HIGH),
-+					SEL_FAN(idx, REG_FAN_DRIVE_FAIL_BAND_HIGH_VALUE));
-+		if (status < 0)
-+			return status;
-+
-+		/* Set TACH Target Low Byte Registers. */
-+		status = i2c_smbus_write_byte_data(client,
-+					SEL_FAN(idx, REG_TACH_TARGET_LOW),
-+					SEL_FAN(idx, REG_TACH_TARGET_LOW_VALUE));
-+		if (status < 0)
-+			return status;
-+
-+		/* Set TACH Target High Byte Registers. */
-+		status = i2c_smbus_write_byte_data(client,
-+					SEL_FAN(idx, REG_TACH_TARGET_HIGH),
-+					SEL_FAN(idx, REG_TACH_TARGET_HIGH_VALUE));
++					REG_FAN_DRIVE_FAIL_BAND_HIGH_VALUE);
 +		if (status < 0)
 +			return status;
 +	}
@@ -761,6 +734,13 @@ index 00000000..b570810
 +		return -ENODEV;
 +	}
 +
++	status = set_init_config(client);
++	if (status < 0)
++	{
++		dev_err(&client->dev, "Failure when setting initial configuration, status: %d\n", status);
++		return status;
++	}
++
 +	hwmon_dev = devm_hwmon_device_register_with_groups(&client->dev,
 +							   client->name, data,
 +							   data->groups);
@@ -769,10 +749,6 @@ index 00000000..b570810
 +
 +	dev_info(&client->dev, "pwm fan controller: '%s'\n",
 +		 client->name);
-+
-+	status = set_init_config(client);
-+	if (status < 0)
-+		return status;
 +
 +	return 0;
 +}
