@@ -295,6 +295,7 @@
 	#address-cells = <1>;
 	#size-cells = <0>;
 	clock-frequency = <400000>;
+	/delete-node/ &rtc_i2c;
 };
 
 /* RCU's I2C2 */
