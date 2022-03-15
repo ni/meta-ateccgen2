@@ -1,0 +1,35 @@
+From d38c215a0fbc4023ceaeb13bb873d5dd940a9e15 Mon Sep 17 00:00:00 2001
+From: wkoe <wilson.koe@ni.com>
+Date: Mon, 14 Mar 2022 20:53:28 -0700
+Subject: [PATCH] alter default apalis device tree
+
+Signed-off-by: wkoe <wilson.koe@ni.com>
+---
+ include/configs/apalis-imx8.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/include/configs/apalis-imx8.h b/include/configs/apalis-imx8.h
+index 5532f8e03f..fdfcbb1baa 100644
+--- a/include/configs/apalis-imx8.h
++++ b/include/configs/apalis-imx8.h
+@@ -92,6 +92,8 @@
+ #  define BOOT_SCRIPT	"boot.scr"
+ #endif
+ 
++#define FDT_FILE			"imx8-apalis-smartracks.dtb"
++
+ /* Initial environment variables */
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	AHAB_ENV \
+@@ -105,7 +107,7 @@
+ 	"console=ttyLP1 earlycon\0" \
+ 	"fdt_high=\0" \
+ 	"boot_fdt=try\0" \
+-	"fdt_board=eval\0" \
++	"fdtfile=" FDT_FILE "\0" \
+ 	"finduuid=part uuid mmc ${mmcdev}:2 uuid\0" \
+ 	"hdp_file=hdmitxfw.bin\0" \
+ 	"loadhdp=${load_cmd} ${hdp_addr} ${hdp_file}\0" \
+-- 
+2.17.1
+
