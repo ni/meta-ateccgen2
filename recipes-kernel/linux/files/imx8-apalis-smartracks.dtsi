@@ -987,7 +987,7 @@
 
 /* Apalis SPI1 */
 &lpspi0 {
-	status = "disabled"
+	status = "disabled";
 };
 
 /* Apalis SPI2 */
