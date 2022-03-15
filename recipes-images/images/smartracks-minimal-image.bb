@@ -5,10 +5,6 @@ DESCRIPTION = "Minimal image without graphical interface that just boots"
 
 LICENSE = "MIT"
 
-KERNEL_DEVICETREE = " \
-    freescale/imx8-apalis-smartracks.dtb \
-"
-
 #Prefix to the resulting deployable tarball name
 export IMAGE_BASENAME = "Reference-Minimal-Image"
 MACHINE_NAME ?= "${MACHINE}"
