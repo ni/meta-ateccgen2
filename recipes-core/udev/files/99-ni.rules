@@ -13,7 +13,7 @@ ACTION=="add", KERNEL=="i2c-[0-9]*", ATTR{name}=="i2c-[0-9]*-mux (chan_id 3)", S
 ACTION=="add", ATTRS{iomem_base}=="0x5A070010", SYMLINK+="UART1"
 ACTION=="add", ATTRS{iomem_base}=="0x5A090010", SYMLINK+="UART2"
 ACTION=="add", ATTRS{iomem_base}=="0x5A060010", SYMLINK+="UART3"
-ACTION=="add", ATTRS{iomem_base}=="0x5A0A0010", SYMLINK+="UART5"
+ACTION=="add", ATTRS{iomem_base}=="0x5A0A0010", SYMLINK+="UART4"
 ACTION=="add", KERNELS=="watchdog", SYMLINK+="apalis-watchdog"
 KERNEL=="mmcblk[0-9]", ENV{DEVTYPE}=="disk", KERNELS=="5b010000.mmc", SYMLINK+="emmc"
 KERNEL=="mmcblk[0-9]boot[0-9]", ENV{DEVTYPE}=="disk", KERNELS=="5b010000.mmc", SYMLINK+="emmc-boot%n"

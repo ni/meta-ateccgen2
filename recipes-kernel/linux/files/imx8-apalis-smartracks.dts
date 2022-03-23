@@ -1,7 +1,6 @@
 /dts-v1/;
 
 #include "imx8qp-apalis-v1.1.dtsi"
-#include "imx8-apalis-eval.dtsi"
 #include "imx8-apalis-smartracks.dtsi"
 
 / {
