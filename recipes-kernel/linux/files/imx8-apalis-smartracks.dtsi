@@ -635,6 +635,11 @@
     status = "disabled";
 };
 
+/* usbphy signal for usbotg3 which is not used in RCU. */
+&usb3phynop1 {
+    status = "disabled";
+};
+
 /* Apalis USBH2, Apalis USBH3 and on-module Wi-Fi via on-module HSIC Hub */
 &usbh1 {
     vbus-supply = <&reg_usb_host_vbus>;
