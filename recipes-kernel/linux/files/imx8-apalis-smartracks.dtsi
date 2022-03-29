@@ -7,52 +7,28 @@
         rtc1 = &rtc;
     };
 
-    chosen {
-        stdout-path = &lpuart1;
-    };
-
     /* Apalis BKL1 */
     backlight: backlight {
-        compatible = "pwm-backlight";
-        pinctrl-names = "default";
         pinctrl-0 = <&pinctrl_bkl_on>;
-        enable-gpios = <&lsio_gpio1 4 GPIO_ACTIVE_HIGH>; /* Apalis BKL1_ON */
     };
 
     panel_lvds: panel-lvds {
-        compatible = "panel-lvds";
-        backlight = <&backlight>;
-
         status = "okay";
-
-        port {
-            panel_lvds_in: endpoint {
-                remote-endpoint = <&lvds1_out>;
-            };
-        };
-    };
-
-    panel2_lvds: panel2-lvds {
-        compatible = "panel-lvds";
-
-        status = "okay";
-
-        port {
-            panel2_lvds_in: endpoint {
-                remote-endpoint = <&lvds2_out>;
-            };
-        };
     };
 };
 
+/* Apalis ADC signals */
+/* Disable adc0 to mux pin MXM3 305 for GPIO function. */
 &adc0 {
     status = "disabled";
 };
 
+/* Disable adc0 to mux pin MXM3 307 for GPIO function. */
 &adc1 {
     status = "disabled";
 };
 
+/* Apalis audio system sub-node */
 &asrc0 {
     status = "disabled";
 };
@@ -85,14 +61,6 @@
 /* Apalis HDMI1 */
 &hdmi {
     status = "okay";
-};
-
-&hsio_refa_clk {
-    status = "disabled";
-};
-
-&hsio_refb_clk {
-    status = "disabled";
 };
 
 /* RCU's I2C1 */
@@ -423,20 +391,6 @@
             >;
         };
 
-        /* Apalis BKL1_PWM */
-        pinctrl_pwm_bkl: pwmbklgrp {
-            fsl,pins = <
-                IMX8QM_LVDS1_GPIO00_LVDS1_PWM0_OUT      0x00000020 /* MXM3 239 */
-            >;
-        };
-
-        /* RCU's SD1_CD# */
-        pinctrl_mmc1_cd: mmc1cdgrp {
-            fsl,pins = <
-                IMX8QM_ESAI1_TX1_LSIO_GPIO2_IO09        0x00000021 /* MXM3 164 */
-            >;
-        };
-
         /* RCU's SD1 */
         /* Redefine pins because RCU is using these pins as SD instead of MMC, only */
         /* 4 data lines will be used instead of 8 data lines.                       */
@@ -514,41 +468,14 @@
     };
 };
 
-/* RCU LVDS signals */
+/* RCU LVDS channel 1 and 2 phy node */
 &ldb2_phy {
     status = "okay";
 };
 
+/* RCU LVDS channel 1 and 2 parent node */
 &ldb2 {
     status = "okay";
-
-    lvds-channel@0 {
-        fsl,data-mapping = "spwg";
-        fsl,data-width = <24>;
-        status = "okay";
-
-        port@1 {
-            reg = <1>;
-
-            lvds1_out: endpoint {
-                remote-endpoint = <&panel_lvds_in>;
-            };
-        };
-    };
-
-    lvds-channel@1 {
-        fsl,data-mapping = "spwg";
-        fsl,data-width = <24>;
-        status = "okay";
-
-        port@2 {
-            reg = <2>;
-
-            lvds2_out: endpoint {
-                remote-endpoint = <&panel2_lvds_in>;
-            };
-        };
-    };
 };
 
 /* Apalis SPI1 */
@@ -613,14 +540,17 @@
     status = "disabled";
 };
 
+/* Apalis RPMsg0 node */
 &rpmsg0{
     status = "disabled";
 };
 
+/* Apalis RPMsg1 node */
 &rpmsg1{
     status = "disabled";
 };
 
+/* Apalis audio system sub-node */
 &sai1 {
     status = "disabled";
 };
@@ -651,6 +581,7 @@
     status = "okay";
 };
 
+/* USB phy signal for USBOTG1 */
 &usbphy1 {
     status = "disabled";
 };
