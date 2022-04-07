@@ -8,5 +8,8 @@ SRC_URI = "\
 do_install () {
     install -d ${D}${sysconfdir}/udev/rules.d
     install -m 0644 ${WORKDIR}/99-ni.rules ${D}${sysconfdir}/udev/rules.d/
+}
+
+do_install_append () {
     rm -f ${D}${sysconfdir}/udev/rules.d/99-toradex.rules
 }
