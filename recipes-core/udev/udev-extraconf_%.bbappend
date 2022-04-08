@@ -10,6 +10,4 @@ do_install_append() {
 
     install -d ${D}${sysconfdir}/udev/scripts/
     install -m 0755 ${WORKDIR}/vsftpd-sd.sh ${D}${sysconfdir}/udev/scripts/vsftpd-sd.sh
-
-    rm -f ${D}${sysconfdir}/udev/rules.d/99-toradex.rules
 }
