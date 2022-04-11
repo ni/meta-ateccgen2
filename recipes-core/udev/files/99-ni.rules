@@ -1,4 +1,5 @@
-# Content in this file is derived from examples provided in udev-toradex-rules.bb in meta-toradex-bsp-common
+# Content in this file is derived from examples provided in udev-toradex-rules.bb in meta-toradex-bsp-common, refer to
+# https://git.toradex.com/cgit/meta-toradex-bsp-common.git/tree/recipes-core/udev/files/apalis-imx8/99-toradex.rules?h=dunfell-5.x.y
 
 ACTION=="add", KERNEL=="i2c-[0-9]*", ATTR{name}=="5a820000.i2c", SYMLINK+="I2C1"
 ACTION=="add", KERNEL=="i2c-[0-9]*", ATTR{name}=="5a830000.i2c", SYMLINK+="I2C2"
@@ -18,3 +19,5 @@ ACTION=="add", KERNELS=="watchdog", SYMLINK+="apalis-watchdog"
 KERNEL=="mmcblk[0-9]", ENV{DEVTYPE}=="disk", KERNELS=="5b010000.mmc", SYMLINK+="emmc"
 KERNEL=="mmcblk[0-9]boot[0-9]", ENV{DEVTYPE}=="disk", KERNELS=="5b010000.mmc", SYMLINK+="emmc-boot%n"
 KERNEL=="mmcblk[0-9]p[0-9]", ENV{DEVTYPE}=="partition", KERNELS=="5b010000.mmc", SYMLINK+="emmc-part%n"
+ACTION=="add|change", KERNEL=="mmcblk[0-9]", KERNELS=="5b030000.mmc", SYMLINK+="apalis-sd4bit"
+ACTION=="add|change", KERNEL=="mmcblk[0-9]p[0-9]*", KERNELS=="5b030000.mmc", SYMLINK+="apalis-sd4bit-part%n"

@@ -90,7 +90,7 @@
         reg = <0x20>;
         gpio-controller;
         #gpio-cells = <2>;
-        label = "pca9674-5a830000.gpio";
+        label = "pca9674-57226000.gpio";
         /* IO0 and IO1 has to be output high by default */
         lines-initial-states = <0x00>;
         gpio-line-names =
@@ -114,7 +114,7 @@
         gpio-controller;
         #gpio-cells = <2>;
         npgio=<48>;
-        label = "pi4ioe5v96248-5a820000.gpio";
+        label = "pi4ioe5v96248-56246000.gpio";
 
         /* NOTE: lines-initial-states acts as a bitmask, i.e.                                                                              */
         /* For a pin to be configured as output, the bit within the bitmask should be set to 1.                                            */
