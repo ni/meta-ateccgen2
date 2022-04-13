@@ -15,6 +15,37 @@
     panel_lvds: panel-lvds {
         status = "okay";
     };
+
+    /* I2C Analog Mux attached to RCU's I2C5 */
+    /* MXM3 196 (lsio_gpio3 line 12) and MXM3 198 (lsio_gpio2 line 7) occupied by mux driver */
+    i2cmux-56247000.i2c {
+        compatible = "i2c-mux-gpio";
+        #address-cells = <1>;
+        #size-cells = <0>;
+        mux-gpios = <&lsio_gpio3 12 GPIO_ACTIVE_HIGH &lsio_gpio2 7 GPIO_ACTIVE_HIGH>;
+        i2c-parent = <&i2c1_lvds0>;
+
+        i2c@0 {
+            reg = <0>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+        };
+        i2c@1 {
+            reg = <1>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+        };
+        i2c@2 {
+            reg = <2>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+        };
+        i2c@3 {
+            reg = <3>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+        };
+    };
 };
 
 /* Apalis ADC signals */
