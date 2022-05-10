@@ -4,6 +4,7 @@
     aliases {
         rtc1 = &rtc_i2c;
         rtc0 = &rtc;
+        temp0 = &temp_i2c;
     };
 
     reg_3v3: regulator-3v3 {
@@ -227,6 +228,13 @@
     rtc_i2c: rtc@68 {
         compatible = "dallas,ds3232";
         reg = <0x68>;
+    };
+    
+    /* Onboard Temperature Sensor TMP1075 */
+    temp_i2c: temp@4F {
+        status = "okay";
+        compatible = "lm75";
+        reg = <0x4F>;
     };
     
     /* 16-bit LED driver */
