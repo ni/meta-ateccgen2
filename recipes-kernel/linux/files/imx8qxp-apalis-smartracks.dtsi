@@ -229,6 +229,13 @@
         reg = <0x68>;
     };
     
+    /* Onboard Temperature Sensor TMP1075 */
+    temp_i2c: temp@4F {
+        compatible = "national,lm75";
+        reg = <0x4F>;
+        status = "okay";
+    };
+    
     /* 16-bit LED driver */
     pca9552: pca9552@62 {
         compatible = "nxp,pca9552";
