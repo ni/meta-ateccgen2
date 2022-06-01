@@ -17,5 +17,3 @@ do_configure_prepend() {
     cp ${WORKDIR}/imx8-apalis-smartracks.dtsi ${WORKDIR}/git/arch/arm64/boot/dts/freescale
     cp ${WORKDIR}/imx8-apalis-smartracks.dts ${WORKDIR}/git/arch/arm64/boot/dts/freescale
 }
-
-KERNEL_DEVICETREE_append = " freescale/imx8-apalis-smartracks.dtb"

@@ -7,15 +7,6 @@
         rtc1 = &rtc;
     };
 
-    /* Apalis BKL1 */
-    backlight: backlight {
-        pinctrl-0 = <&pinctrl_bkl_on>;
-    };
-
-    panel_lvds: panel-lvds {
-        status = "okay";
-    };
-
     /* I2C Analog Mux attached to RCU's I2C5 */
     /* MXM3 196 (lsio_gpio3 line 12) and MXM3 198 (lsio_gpio2 line 7) occupied by mux driver */
     i2cmux-56247000.i2c {
@@ -48,6 +39,16 @@
     };
 };
 
+/* Disable pcie switch to mux pin MXM3 15 for GPIO function. */
+&reg_pcie_switch {
+    status = "disabled";
+};
+
+/* Disable gpio fan to mux pin MXM3 17 for GPIO function. */
+&gpio_fan {
+    status = "disabled";
+};
+
 /* Apalis ADC signals */
 /* Disable adc0 to mux pin MXM3 305 for GPIO function. */
 &adc0 {
@@ -64,14 +65,43 @@
     status = "disabled";
 };
 
+/* Apalis First Gigabit Ethernet */
+&fec1 {
+    status = "okay";
+
+    mdio {
+        ethphy0: ethernet-phy@7 {
+            /delete-property/ interrupt-parent;
+            /delete-property/ interrupts;
+            /delete-property/ reset-assert-us;
+            /delete-property/ reset-deassert-us;
+            /delete-property/ reset-gpios;
+            /delete-property/ reset-names;
+        };
+    };
+};
+
 /* Apalis Second Gigabit Ethernet */
 &fec2 {
     status = "okay";
     pinctrl-names = "default";
     pinctrl-0 = <&pinctrl_fec2>;
     fsl,magic-packet;
-    phy-handle = <&ethphy0>;
+    fsl,mii-exclusive;
+    phy-handle = <&ethphy1>;
     phy-mode = "rgmii-id";
+
+    mdio {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        ethphy1: ethernet-phy@7 {
+            compatible = "ethernet-phy-ieee802.3-c22";
+            micrel,led-mode = <0>;
+            reg = <7>;
+            max-speed = <100>;
+        };
+    };
 };
 
 /* Apalis CAN1 */
@@ -106,6 +136,21 @@
     clock-frequency = <400000>;
 };
 
+/* Parent node to enable i2c0_mipi1 */
+&irqsteer_mipi1 {
+    status = "okay";
+};
+
+/* Parent node to enable i2c0_mipi1 */
+&mipi1_dphy {
+    status = "okay";
+};
+
+/* Parent node to enable i2c0_mipi1 */
+&mipi1_dsi_host {
+    status = "okay";
+};
+
 /* RCU's I2C3 */
 &i2c0_mipi1 {
     status = "okay";
@@ -127,6 +172,21 @@
         gpio-line-names =
             "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
     };
+};
+
+/* Parent node to enable i2c0_lvds0 & i2c1_lvds0 */
+&ldb1_phy {
+    status = "okay";
+};
+
+/* Parent node to enable i2c0_lvds0 & i2c1_lvds0 */
+&ldb1 {
+    status = "okay";
+};
+
+/* Parent node to enable i2c0_lvds0 & i2c1_lvds0 */
+&irqsteer_lvds0 {
+    status = "okay";
 };
 
 /* RCU's I2C4 */
@@ -264,6 +324,11 @@
     clock-frequency = <100000>;
 };
 
+/* Parent node to enable i2c0_lvds1 */
+&irqsteer_lvds1 {
+    status = "okay";
+};
+
 /* RCU's I2C6 */
 &i2c0_lvds1 {
     status = "okay";
@@ -276,15 +341,8 @@
 
 &iomuxc {
     pinctrl-names = "default";
-    pinctrl-0 = <&pinctrl_rcugpio>, <&pinctrl_cam1_gpios>, <&pinctrl_dap1_gpios>,
-            <&pinctrl_esai0_gpios>, <&pinctrl_fec2_gpios>,
-            <&pinctrl_gpio3>, <&pinctrl_gpio4>, <&pinctrl_gpio_keys>,
-            <&pinctrl_gpio_usbh_oc_n>, <&pinctrl_lpuart1ctrl>,
-            <&pinctrl_lvds0_i2c0_gpio>, <&pinctrl_lvds1_i2c0_gpios>,
-            <&pinctrl_mipi_dsi_0_1_en>, <&pinctrl_mipi_dsi1_gpios>,
-            <&pinctrl_mlb_gpios>, <&pinctrl_qspi1a_gpios>,
-            <&pinctrl_sata1_act>, <&pinctrl_sim0_gpios>,
-            <&pinctrl_usdhc1_gpios>;
+    pinctrl-0 = <&pinctrl_rcugpio>, <&pinctrl_reset_moci>,
+            <&pinctrl_gpio_usbh_oc_n>;
 
     apalis-imx8qm {
         pinctrl_rcugpio: rcugpiogrp {
@@ -610,13 +668,12 @@
 
 /* Apalis USBH2, Apalis USBH3 and on-module Wi-Fi via on-module HSIC Hub */
 &usbh1 {
-    vbus-supply = <&reg_usb_host_vbus>;
-    status = "okay";
+    status = "disabled";
 };
 
 /* This is the usbphy signal required by usbh1. */
 &usbphynop2 {
-    status = "okay";
+    status = "disabled";
 };
 
 /* USB phy signal for USBOTG1 */
