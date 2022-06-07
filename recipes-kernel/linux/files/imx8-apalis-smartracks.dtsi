@@ -373,12 +373,12 @@
                 IMX8QM_ESAI0_TX3_RX2_LSIO_GPIO2_IO29        0x06000021 /* MXM3 183 */
                 IMX8QM_ESAI0_TX4_RX1_LSIO_GPIO2_IO30        0x06000021 /* MXM3 185 */
                 IMX8QM_ESAI0_TX5_RX0_LSIO_GPIO2_IO31        0x06000021 /* MXM3 187 */
-                IMX8QM_MCLK_IN0_LSIO_GPIO3_IO00             0x06000021 /* MXM3 191 */
-                IMX8QM_SPI3_SDO_LSIO_GPIO2_IO18             0x06000021 /* MXM3 193 */
+                IMX8QM_MCLK_IN0_LSIO_GPIO3_IO00             0x06000061 /* MXM3 191 */
+                IMX8QM_SPI3_SDO_LSIO_GPIO2_IO18             0x06000061 /* MXM3 193 */
                 IMX8QM_SPI3_SDI_LSIO_GPIO2_IO19             0x06000021 /* MXM3 194 */
-                IMX8QM_ESAI0_SCKR_LSIO_GPIO2_IO24           0x06000021 /* MXM3 195 */
+                IMX8QM_ESAI0_SCKR_LSIO_GPIO2_IO24           0x06000061 /* MXM3 195 */
                 IMX8QM_SAI1_RXC_LSIO_GPIO3_IO12             0x06000021 /* MXM3 196 */
-                IMX8QM_ESAI0_SCKT_LSIO_GPIO2_IO25           0x06000021 /* MXM3 197 */
+                IMX8QM_ESAI0_SCKT_LSIO_GPIO2_IO25           0x06000061 /* MXM3 197 */
                 IMX8QM_ESAI1_SCKT_LSIO_GPIO2_IO07           0x06000021 /* MXM3 198 */
                 IMX8QM_GPT1_COMPARE_LSIO_GPIO0_IO19         0x06000021 /* MXM3 2   */
                 IMX8QM_SPI0_CS1_LSIO_GPIO3_IO06             0x06000021 /* MXM3 200 */
