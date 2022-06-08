@@ -344,87 +344,95 @@
     pinctrl-0 = <&pinctrl_rcugpio>, <&pinctrl_reset_moci>,
             <&pinctrl_gpio_usbh_oc_n>;
 
+
     apalis-imx8qm {
         pinctrl_rcugpio: rcugpiogrp {
             fsl,pins = <
-                IMX8QM_FLEXCAN2_RX_LSIO_GPIO4_IO01          0x06000021 /* MXM3 11  */
-                IMX8QM_M40_I2C0_SCL_LSIO_GPIO0_IO06         0x06000021 /* MXM3 110 */
-                IMX8QM_UART1_RTS_B_LSIO_GPIO0_IO26          0x06000021 /* MXM3 114 */
-                IMX8QM_UART1_CTS_B_LSIO_GPIO0_IO27          0x06000021 /* MXM3 116 */
+                /* Bits 5:6 controls the PULL settings of GPIO on the iMX8:        */
+                /* 0b00 - prohibited                                               */
+                /* 0b01 - pull-up                                                  */
+                /* 0b10 - pull-down                                                */
+                /* 0b11 - pull disabled                                            */
+
+                /* Pin name and muxing                      Pin setting            */
+                IMX8QM_FLEXCAN2_RX_LSIO_GPIO4_IO01          0x06000061 /* MXM3 11  */
+                IMX8QM_M40_I2C0_SCL_LSIO_GPIO0_IO06         0x06000061 /* MXM3 110 */
+                IMX8QM_UART1_RTS_B_LSIO_GPIO0_IO26          0x06000061 /* MXM3 114 */
+                IMX8QM_UART1_CTS_B_LSIO_GPIO0_IO27          0x06000061 /* MXM3 116 */
                 IMX8QM_FLEXCAN0_RX_LSIO_GPIO3_IO29          0x06000061 /* MXM3 12  */
-                IMX8QM_M40_I2C0_SDA_LSIO_GPIO0_IO07         0x06000021 /* MXM3 120 */
-                IMX8QM_M41_I2C0_SDA_LSIO_GPIO0_IO11         0x06000021 /* MXM3 122 */
-                IMX8QM_MIPI_DSI1_GPIO0_00_LSIO_GPIO1_IO22   0x06000021 /* MXM3 123 */
-                IMX8QM_M41_I2C0_SCL_LSIO_GPIO0_IO10         0x06000021 /* MXM3 124 */
-                IMX8QM_FLEXCAN2_TX_LSIO_GPIO4_IO02          0x06000021 /* MXM3 13  */
-                IMX8QM_SIM0_IO_LSIO_GPIO0_IO02              0x06000021 /* MXM3 135 */
+                IMX8QM_M40_I2C0_SDA_LSIO_GPIO0_IO07         0x06000061 /* MXM3 120 */
+                IMX8QM_M41_I2C0_SDA_LSIO_GPIO0_IO11         0x06000061 /* MXM3 122 */
+                IMX8QM_MIPI_DSI1_GPIO0_00_LSIO_GPIO1_IO22   0x06000061 /* MXM3 123 */
+                IMX8QM_M41_I2C0_SCL_LSIO_GPIO0_IO10         0x06000061 /* MXM3 124 */
+                IMX8QM_FLEXCAN2_TX_LSIO_GPIO4_IO02          0x06000061 /* MXM3 13  */
+                IMX8QM_SIM0_IO_LSIO_GPIO0_IO02              0x06000061 /* MXM3 135 */
                 IMX8QM_FLEXCAN0_TX_LSIO_GPIO3_IO30          0x06000061 /* MXM3 14  */
-                IMX8QM_USDHC1_DATA4_LSIO_GPIO5_IO19         0x06000021 /* MXM3 148 */
-                IMX8QM_MLB_SIG_LSIO_GPIO3_IO26              0x06000021 /* MXM3 15  */
-                IMX8QM_USDHC1_DATA5_LSIO_GPIO5_IO20         0x06000021 /* MXM3 152 */
-                IMX8QM_USDHC1_DATA6_LSIO_GPIO5_IO21         0x06000021 /* MXM3 156 */
-                IMX8QM_USDHC1_DATA7_LSIO_GPIO5_IO22         0x06000021 /* MXM3 158 */
-                IMX8QM_FLEXCAN1_RX_LSIO_GPIO3_IO31          0x06000021 /* MXM3 16  */
-                IMX8QM_MLB_DATA_LSIO_GPIO3_IO28             0x06000021 /* MXM3 17  */
-                IMX8QM_ESAI0_TX0_LSIO_GPIO2_IO26            0x06000021 /* MXM3 177 */
-                IMX8QM_ESAI0_TX1_LSIO_GPIO2_IO27            0x06000021 /* MXM3 179 */
-                IMX8QM_FLEXCAN1_TX_LSIO_GPIO4_IO00          0x06000021 /* MXM3 18  */
-                IMX8QM_ESAI0_TX2_RX3_LSIO_GPIO2_IO28        0x06000021 /* MXM3 181 */
-                IMX8QM_ESAI0_TX3_RX2_LSIO_GPIO2_IO29        0x06000021 /* MXM3 183 */
-                IMX8QM_ESAI0_TX4_RX1_LSIO_GPIO2_IO30        0x06000021 /* MXM3 185 */
-                IMX8QM_ESAI0_TX5_RX0_LSIO_GPIO2_IO31        0x06000021 /* MXM3 187 */
+                IMX8QM_USDHC1_DATA4_LSIO_GPIO5_IO19         0x06000061 /* MXM3 148 */
+                IMX8QM_MLB_SIG_LSIO_GPIO3_IO26              0x06000061 /* MXM3 15  */
+                IMX8QM_USDHC1_DATA5_LSIO_GPIO5_IO20         0x06000061 /* MXM3 152 */
+                IMX8QM_USDHC1_DATA6_LSIO_GPIO5_IO21         0x06000061 /* MXM3 156 */
+                IMX8QM_USDHC1_DATA7_LSIO_GPIO5_IO22         0x06000061 /* MXM3 158 */
+                IMX8QM_FLEXCAN1_RX_LSIO_GPIO3_IO31          0x06000061 /* MXM3 16  */
+                IMX8QM_MLB_DATA_LSIO_GPIO3_IO28             0x06000061 /* MXM3 17  */
+                IMX8QM_ESAI0_TX0_LSIO_GPIO2_IO26            0x06000061 /* MXM3 177 */
+                IMX8QM_ESAI0_TX1_LSIO_GPIO2_IO27            0x06000061 /* MXM3 179 */
+                IMX8QM_FLEXCAN1_TX_LSIO_GPIO4_IO00          0x06000061 /* MXM3 18  */
+                IMX8QM_ESAI0_TX2_RX3_LSIO_GPIO2_IO28        0x06000061 /* MXM3 181 */
+                IMX8QM_ESAI0_TX3_RX2_LSIO_GPIO2_IO29        0x06000061 /* MXM3 183 */
+                IMX8QM_ESAI0_TX4_RX1_LSIO_GPIO2_IO30        0x06000061 /* MXM3 185 */
+                IMX8QM_ESAI0_TX5_RX0_LSIO_GPIO2_IO31        0x06000061 /* MXM3 187 */
                 IMX8QM_MCLK_IN0_LSIO_GPIO3_IO00             0x06000061 /* MXM3 191 */
                 IMX8QM_SPI3_SDO_LSIO_GPIO2_IO18             0x06000061 /* MXM3 193 */
-                IMX8QM_SPI3_SDI_LSIO_GPIO2_IO19             0x06000021 /* MXM3 194 */
+                IMX8QM_SPI3_SDI_LSIO_GPIO2_IO19             0x06000061 /* MXM3 194 */
                 IMX8QM_ESAI0_SCKR_LSIO_GPIO2_IO24           0x06000061 /* MXM3 195 */
-                IMX8QM_SAI1_RXC_LSIO_GPIO3_IO12             0x06000021 /* MXM3 196 */
+                IMX8QM_SAI1_RXC_LSIO_GPIO3_IO12             0x06000061 /* MXM3 196 */
                 IMX8QM_ESAI0_SCKT_LSIO_GPIO2_IO25           0x06000061 /* MXM3 197 */
-                IMX8QM_ESAI1_SCKT_LSIO_GPIO2_IO07           0x06000021 /* MXM3 198 */
-                IMX8QM_GPT1_COMPARE_LSIO_GPIO0_IO19         0x06000021 /* MXM3 2   */
+                IMX8QM_ESAI1_SCKT_LSIO_GPIO2_IO07           0x06000061 /* MXM3 198 */
+                IMX8QM_GPT1_COMPARE_LSIO_GPIO0_IO19         0x06000061 /* MXM3 2   */
                 IMX8QM_SPI0_CS1_LSIO_GPIO3_IO06             0x06000061 /* MXM3 200 */
                 IMX8QM_SAI1_RXFS_LSIO_GPIO3_IO14            0x06000061 /* MXM3 202 */
-                IMX8QM_SPI2_CS1_LSIO_GPIO3_IO11             0x06000021 /* MXM3 204 */
-                IMX8QM_SPDIF0_TX_LSIO_GPIO2_IO15            0x06000021 /* MXM3 215 */
-                IMX8QM_SPDIF0_RX_LSIO_GPIO2_IO14            0x06000021 /* MXM3 217 */
-                IMX8QM_SPI0_SCK_LSIO_GPIO3_IO02             0x06000021 /* MXM3 221 */
-                IMX8QM_SPI0_SDI_LSIO_GPIO3_IO04             0x06000021 /* MXM3 223 */
-                IMX8QM_SPI0_SDO_LSIO_GPIO3_IO03             0x06000021 /* MXM3 225 */
-                IMX8QM_SPI0_CS0_LSIO_GPIO3_IO05             0x06000021 /* MXM3 227 */
-                IMX8QM_SPI2_SDI_LSIO_GPIO3_IO09             0x06000021 /* MXM3 229 */
-                IMX8QM_SPI2_SDO_LSIO_GPIO3_IO08             0x06000021 /* MXM3 231 */
-                IMX8QM_SPI2_CS0_LSIO_GPIO3_IO10             0x06000021 /* MXM3 233 */
-                IMX8QM_SPI2_SCK_LSIO_GPIO3_IO07             0x06000021 /* MXM3 235 */
-                IMX8QM_USB_SS3_TC2_LSIO_GPIO4_IO05          0x06000021 /* MXM3 262 */
-                IMX8QM_ESAI0_FSR_LSIO_GPIO2_IO22            0x06000021 /* MXM3 271 */
-                IMX8QM_ESAI0_FST_LSIO_GPIO2_IO23            0x06000021 /* MXM3 273 */
-                IMX8QM_USB_SS3_TC0_LSIO_GPIO4_IO03          0x06000021 /* MXM3 274 */
-                IMX8QM_SIM0_GPIO0_00_LSIO_GPIO0_IO05        0x06000021 /* MXM3 275 */
-                IMX8QM_SIM0_RST_LSIO_GPIO0_IO01             0x06000021 /* MXM3 277 */
-                IMX8QM_SIM0_CLK_LSIO_GPIO0_IO00             0x06000021 /* MXM3 279 */
-                IMX8QM_QSPI1A_DATA0_LSIO_GPIO4_IO26         0x06000021 /* MXM3 287 */
-                IMX8QM_QSPI1A_DATA1_LSIO_GPIO4_IO25         0x06000021 /* MXM3 289 */
-                IMX8QM_QSPI1A_DATA2_LSIO_GPIO4_IO24         0x06000021 /* MXM3 291 */
-                IMX8QM_QSPI1A_DATA3_LSIO_GPIO4_IO23         0x06000021 /* MXM3 293 */
-                IMX8QM_QSPI1A_SS0_B_LSIO_GPIO4_IO19         0x06000021 /* MXM3 295 */
-                IMX8QM_QSPI1A_DQS_LSIO_GPIO4_IO22           0x06000021 /* MXM3 297 */
-                IMX8QM_QSPI1A_SS1_B_LSIO_GPIO4_IO20         0x06000021 /* MXM3 299 */
-                IMX8QM_QSPI1A_SCLK_LSIO_GPIO4_IO21          0x06000021 /* MXM3 301 */
-                IMX8QM_ADC_IN0_LSIO_GPIO3_IO18              0x06000021 /* MXM3 305 */
-                IMX8QM_ADC_IN1_LSIO_GPIO3_IO19              0x06000021 /* MXM3 307 */
-                IMX8QM_ADC_IN2_LSIO_GPIO3_IO20              0x06000021 /* MXM3 309 */
-                IMX8QM_ADC_IN3_LSIO_GPIO3_IO21              0x06000021 /* MXM3 311 */
-                IMX8QM_ADC_IN4_LSIO_GPIO3_IO22              0x06000021 /* MXM3 315 */
-                IMX8QM_ADC_IN5_LSIO_GPIO3_IO23              0x06000021 /* MXM3 317 */
-                IMX8QM_ADC_IN6_LSIO_GPIO3_IO24              0x06000021 /* MXM3 319 */
-                IMX8QM_ADC_IN7_LSIO_GPIO3_IO25              0x06000021 /* MXM3 321 */
-                IMX8QM_ESAI1_TX0_LSIO_GPIO2_IO08            0x06000021 /* MXM3 35  */
-                IMX8QM_SPI3_CS0_LSIO_GPIO2_IO20             0x06000021 /* MXM3 37  */
-                IMX8QM_GPT0_COMPARE_LSIO_GPIO0_IO16         0x06000021 /* MXM3 4   */
-                IMX8QM_M41_GPIO0_00_LSIO_GPIO0_IO12         0x06000021 /* MXM3 5   */
-                IMX8QM_UART0_RTS_B_LSIO_GPIO0_IO22          0x06000021 /* MXM3 6   */
-                IMX8QM_MLB_CLK_LSIO_GPIO3_IO27              0x06000021 /* MXM3 63  */
-                IMX8QM_M41_GPIO0_01_LSIO_GPIO0_IO13         0x06000021 /* MXM3 7   */
-                IMX8QM_UART0_CTS_B_LSIO_GPIO0_IO23          0x06000021 /* MXM3 8   */
+                IMX8QM_SPI2_CS1_LSIO_GPIO3_IO11             0x06000061 /* MXM3 204 */
+                IMX8QM_SPDIF0_TX_LSIO_GPIO2_IO15            0x06000061 /* MXM3 215 */
+                IMX8QM_SPDIF0_RX_LSIO_GPIO2_IO14            0x06000061 /* MXM3 217 */
+                IMX8QM_SPI0_SCK_LSIO_GPIO3_IO02             0x06000061 /* MXM3 221 */
+                IMX8QM_SPI0_SDI_LSIO_GPIO3_IO04             0x06000061 /* MXM3 223 */
+                IMX8QM_SPI0_SDO_LSIO_GPIO3_IO03             0x06000061 /* MXM3 225 */
+                IMX8QM_SPI0_CS0_LSIO_GPIO3_IO05             0x06000061 /* MXM3 227 */
+                IMX8QM_SPI2_SDI_LSIO_GPIO3_IO09             0x06000061 /* MXM3 229 */
+                IMX8QM_SPI2_SDO_LSIO_GPIO3_IO08             0x06000061 /* MXM3 231 */
+                IMX8QM_SPI2_CS0_LSIO_GPIO3_IO10             0x06000061 /* MXM3 233 */
+                IMX8QM_SPI2_SCK_LSIO_GPIO3_IO07             0x06000061 /* MXM3 235 */
+                IMX8QM_USB_SS3_TC2_LSIO_GPIO4_IO05          0x06000061 /* MXM3 262 */
+                IMX8QM_ESAI0_FSR_LSIO_GPIO2_IO22            0x06000061 /* MXM3 271 */
+                IMX8QM_ESAI0_FST_LSIO_GPIO2_IO23            0x06000061 /* MXM3 273 */
+                IMX8QM_USB_SS3_TC0_LSIO_GPIO4_IO03          0x06000061 /* MXM3 274 */
+                IMX8QM_SIM0_GPIO0_00_LSIO_GPIO0_IO05        0x06000061 /* MXM3 275 */
+                IMX8QM_SIM0_RST_LSIO_GPIO0_IO01             0x06000061 /* MXM3 277 */
+                IMX8QM_SIM0_CLK_LSIO_GPIO0_IO00             0x06000061 /* MXM3 279 */
+                IMX8QM_QSPI1A_DATA0_LSIO_GPIO4_IO26         0x06000061 /* MXM3 287 */
+                IMX8QM_QSPI1A_DATA1_LSIO_GPIO4_IO25         0x06000061 /* MXM3 289 */
+                IMX8QM_QSPI1A_DATA2_LSIO_GPIO4_IO24         0x06000061 /* MXM3 291 */
+                IMX8QM_QSPI1A_DATA3_LSIO_GPIO4_IO23         0x06000061 /* MXM3 293 */
+                IMX8QM_QSPI1A_SS0_B_LSIO_GPIO4_IO19         0x06000061 /* MXM3 295 */
+                IMX8QM_QSPI1A_DQS_LSIO_GPIO4_IO22           0x06000061 /* MXM3 297 */
+                IMX8QM_QSPI1A_SS1_B_LSIO_GPIO4_IO20         0x06000061 /* MXM3 299 */
+                IMX8QM_QSPI1A_SCLK_LSIO_GPIO4_IO21          0x06000061 /* MXM3 301 */
+                IMX8QM_ADC_IN0_LSIO_GPIO3_IO18              0x06000061 /* MXM3 305 */
+                IMX8QM_ADC_IN1_LSIO_GPIO3_IO19              0x06000061 /* MXM3 307 */
+                IMX8QM_ADC_IN2_LSIO_GPIO3_IO20              0x06000061 /* MXM3 309 */
+                IMX8QM_ADC_IN3_LSIO_GPIO3_IO21              0x06000061 /* MXM3 311 */
+                IMX8QM_ADC_IN4_LSIO_GPIO3_IO22              0x06000061 /* MXM3 315 */
+                IMX8QM_ADC_IN5_LSIO_GPIO3_IO23              0x06000061 /* MXM3 317 */
+                IMX8QM_ADC_IN6_LSIO_GPIO3_IO24              0x06000061 /* MXM3 319 */
+                IMX8QM_ADC_IN7_LSIO_GPIO3_IO25              0x06000061 /* MXM3 321 */
+                IMX8QM_ESAI1_TX0_LSIO_GPIO2_IO08            0x06000061 /* MXM3 35  */
+                IMX8QM_SPI3_CS0_LSIO_GPIO2_IO20             0x06000061 /* MXM3 37  */
+                IMX8QM_GPT0_COMPARE_LSIO_GPIO0_IO16         0x06000061 /* MXM3 4   */
+                IMX8QM_M41_GPIO0_00_LSIO_GPIO0_IO12         0x06000061 /* MXM3 5   */
+                IMX8QM_UART0_RTS_B_LSIO_GPIO0_IO22          0x06000061 /* MXM3 6   */
+                IMX8QM_MLB_CLK_LSIO_GPIO3_IO27              0x06000061 /* MXM3 63  */
+                IMX8QM_M41_GPIO0_01_LSIO_GPIO0_IO13         0x06000061 /* MXM3 7   */
+                IMX8QM_UART0_CTS_B_LSIO_GPIO0_IO23          0x06000061 /* MXM3 8   */
             >;
         };
 
