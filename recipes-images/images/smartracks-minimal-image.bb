@@ -1,7 +1,7 @@
 inherit core-image
 
-SUMMARY = "Smart Racks Linux Reference Minimal Image"
-DESCRIPTION = "Minimal image without graphical interface that just boots"
+SUMMARY = "Smart Racks RCU Image"
+DESCRIPTION = "Smart Racks RCU image with preinstalled RCU firmware"
 
 LICENSE = "MIT"
 
