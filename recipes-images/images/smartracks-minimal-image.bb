@@ -6,8 +6,8 @@ DESCRIPTION = "Minimal image without graphical interface that just boots"
 LICENSE = "MIT"
 
 #Prefix to the resulting deployable tarball name
-export IMAGE_BASENAME = "Reference-Minimal-Image"
-MACHINE_NAME ?= "${MACHINE}"
+export IMAGE_BASENAME = "Core-RCU-Image"
+MACHINE_NAME = "NI-ATE"
 IMAGE_NAME = "${MACHINE_NAME}_${IMAGE_BASENAME}"
 
 # Copy Licenses to image /usr/share/common-license
