@@ -1,13 +1,13 @@
 inherit core-image
 
-SUMMARY = "Smart Racks Linux Reference Minimal Image"
-DESCRIPTION = "Minimal image without graphical interface that just boots"
+SUMMARY = "Smart Racks RCU Image"
+DESCRIPTION = "Smart Racks RCU image with preinstalled RCU firmware"
 
 LICENSE = "MIT"
 
 #Prefix to the resulting deployable tarball name
-export IMAGE_BASENAME = "Reference-Minimal-Image"
-MACHINE_NAME ?= "${MACHINE}"
+export IMAGE_BASENAME = "RCU-Image"
+MACHINE_NAME = "NI-ATE-Core"
 IMAGE_NAME = "${MACHINE_NAME}_${IMAGE_BASENAME}"
 
 # Copy Licenses to image /usr/share/common-license
