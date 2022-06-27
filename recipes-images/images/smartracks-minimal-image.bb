@@ -32,6 +32,7 @@ IMAGE_LINGUAS = "en-us"
 
 CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-client"
 
+# Remove conflicting packages recommended by packagegroup-base-tdx-cli
 BAD_RECOMMENDATIONS = "set-hostname udev-toradex-rules"
 
 IMAGE_INSTALL += " \
