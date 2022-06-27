@@ -32,6 +32,8 @@ IMAGE_LINGUAS = "en-us"
 
 CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-client"
 
+BAD_RECOMMENDATIONS = "set-hostname udev-toradex-rules"
+
 IMAGE_INSTALL += " \
     packagegroup-boot \
     packagegroup-basic \
