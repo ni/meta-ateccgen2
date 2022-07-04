@@ -508,29 +508,34 @@
                 IMX8QM_USDHC1_DATA1_CONN_USDHC1_DATA1       0x00000021 /* MXM3 162 */
                 IMX8QM_USDHC1_DATA2_CONN_USDHC1_DATA2       0x00000021 /* MXM3 144 */
                 IMX8QM_USDHC1_DATA3_CONN_USDHC1_DATA3       0x00000021 /* MXM3 146 */
-
+                /* On-module PMIC use */
+                IMX8QM_USDHC1_VSELECT_CONN_USDHC1_VSELECT   0x00000021
             >;
         };
 
         pinctrl_usdhc2_100mhz: usdhc2grp100mhz {
             fsl,pins = <
-                IMX8QM_USDHC1_CLK_CONN_USDHC1_CLK           0x06000041 /* MXM3 154 */
-                IMX8QM_USDHC1_CMD_CONN_USDHC1_CMD           0x00000021 /* MXM3 150 */
-                IMX8QM_USDHC1_DATA0_CONN_USDHC1_DATA0       0x00000021 /* MXM3 160 */
-                IMX8QM_USDHC1_DATA1_CONN_USDHC1_DATA1       0x00000021 /* MXM3 162 */
-                IMX8QM_USDHC1_DATA2_CONN_USDHC1_DATA2       0x00000021 /* MXM3 144 */
-                IMX8QM_USDHC1_DATA3_CONN_USDHC1_DATA3       0x00000021 /* MXM3 146 */
+                IMX8QM_USDHC1_CLK_CONN_USDHC1_CLK           0x06000040 /* MXM3 154 */
+                IMX8QM_USDHC1_CMD_CONN_USDHC1_CMD           0x00000020 /* MXM3 150 */
+                IMX8QM_USDHC1_DATA0_CONN_USDHC1_DATA0       0x00000020 /* MXM3 160 */
+                IMX8QM_USDHC1_DATA1_CONN_USDHC1_DATA1       0x00000020 /* MXM3 162 */
+                IMX8QM_USDHC1_DATA2_CONN_USDHC1_DATA2       0x00000020 /* MXM3 144 */
+                IMX8QM_USDHC1_DATA3_CONN_USDHC1_DATA3       0x00000020 /* MXM3 146 */
+                /* On-module PMIC use */
+                IMX8QM_USDHC1_VSELECT_CONN_USDHC1_VSELECT   0x00000020
             >;
         };
 
         pinctrl_usdhc2_200mhz: usdhc2grp200mhz {
             fsl,pins = <
-                IMX8QM_USDHC1_CLK_CONN_USDHC1_CLK           0x06000041 /* MXM3 154 */
-                IMX8QM_USDHC1_CMD_CONN_USDHC1_CMD           0x00000021 /* MXM3 150 */
-                IMX8QM_USDHC1_DATA0_CONN_USDHC1_DATA0       0x00000021 /* MXM3 160 */
-                IMX8QM_USDHC1_DATA1_CONN_USDHC1_DATA1       0x00000021 /* MXM3 162 */
-                IMX8QM_USDHC1_DATA2_CONN_USDHC1_DATA2       0x00000021 /* MXM3 144 */
-                IMX8QM_USDHC1_DATA3_CONN_USDHC1_DATA3       0x00000021 /* MXM3 146 */
+                IMX8QM_USDHC1_CLK_CONN_USDHC1_CLK           0x06000040 /* MXM3 154 */
+                IMX8QM_USDHC1_CMD_CONN_USDHC1_CMD           0x00000020 /* MXM3 150 */
+                IMX8QM_USDHC1_DATA0_CONN_USDHC1_DATA0       0x00000020 /* MXM3 160 */
+                IMX8QM_USDHC1_DATA1_CONN_USDHC1_DATA1       0x00000020 /* MXM3 162 */
+                IMX8QM_USDHC1_DATA2_CONN_USDHC1_DATA2       0x00000020 /* MXM3 144 */
+                IMX8QM_USDHC1_DATA3_CONN_USDHC1_DATA3       0x00000020 /* MXM3 146 */
+                /* On-module PMIC use */
+                IMX8QM_USDHC1_VSELECT_CONN_USDHC1_VSELECT   0x00000020
             >;
         };
 
@@ -701,16 +706,16 @@
     status = "okay";
 };
 
+/* Apalis MMC1 */
+&usdhc2 {
+    status = "disabled";
+};
+
 /* RCU's SD1 */
 /* RCU uses Apalis' MMC1 as its SD1, hence the bus-width is reduced to 4 */
 /* Delete 'no-1-8-v' property to enable UHS-I speed for SD card          */
-&usdhc2 {
+&usdhc3 {
     bus-width = <4>;
     status = "okay";
     /delete-property/ no-1-8-v;
-};
-
-/* Apalis SD1 */
-&usdhc3 {
-    status = "disabled";
 };
