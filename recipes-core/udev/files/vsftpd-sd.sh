@@ -7,7 +7,7 @@
 
 if [ "$ACTION" = "add" ]; then
 	# Attempt to mount SD card to FTP writable location
-	mount /dev/mmcblk1p1 /var/lib/ftp/upload
+	mount /dev/mmcblk2p1 /var/lib/ftp/upload
 	retcode=$?
 	if [ $retcode -eq 0 ]; then
 		logger "Mount success."
