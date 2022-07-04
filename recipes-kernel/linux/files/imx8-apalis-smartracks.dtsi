@@ -712,10 +712,9 @@
 };
 
 /* RCU's SD1 */
-/* RCU uses Apalis' MMC1 as its SD1, hence the bus-width is reduced to 4 */
+/* RCU uses Apalis' SD1 as its SD1, hence the bus-width is reduced to 4 */
 /* Delete 'no-1-8-v' property to enable UHS-I speed for SD card          */
 &usdhc3 {
-    bus-width = <4>;
     status = "okay";
     /delete-property/ no-1-8-v;
 };
