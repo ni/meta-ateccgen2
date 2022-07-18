@@ -235,7 +235,7 @@
 
     /* Onboard Temperature Sensor TMP1075 */
     temp_i2c: temp@4F {
-        compatible = "national,lm75";
+        compatible = "ti,tmp1075";
         reg = <0x4F>;
         status = "okay";
     };
