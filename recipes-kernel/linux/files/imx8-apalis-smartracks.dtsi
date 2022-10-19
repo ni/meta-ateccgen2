@@ -249,6 +249,12 @@
             "IOXPD1_IO5_0", "IOXPD1_IO5_1", "IOXPD1_IO5_2", "IOXPD1_IO5_3", "IOXPD1_IO5_4", "IOXPD1_IO5_5", "IOXPD1_IO5_6", "IOXPD1_IO5_7";
     };
 
+    /* RCU carrier CAT24C128 EEPROM */
+    eeprom: eeprom@50 { 
+        compatible = "atmel,24c128"; 
+        reg = <0x50>;
+    }; 
+
     rtc_i2c: rtc@68 {
         compatible = "dallas,ds3232";
         reg = <0x68>;
