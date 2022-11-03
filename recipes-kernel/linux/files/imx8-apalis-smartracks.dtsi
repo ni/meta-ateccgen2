@@ -7,6 +7,10 @@
         rtc1 = &rtc;
     };
 
+    reg_usb_host_vbus: regulator-usb-host-vbus {
+        regulator-name = "VCC USBH2(ABCD) / USBH(3|4)";
+    };
+
     /* I2C Analog Mux attached to RCU's I2C3 */
     /* PEP I/O Expander IO7 (IOXPD2_IO0_7) occupied by mux driver */
     i2cmux-57226000.i2c {
@@ -584,20 +588,6 @@
                 IMX8QM_M40_GPIO0_01_DMA_UART4_TX        0x06000020 /* MXM3 3 */
             >;
         };
-
-        /* Apalis USBH_EN */
-        pinctrl_usbh_en: usbhen {
-            fsl,pins = <
-                IMX8QM_USB_SS3_TC1_CONN_USB_OTG2_PWR    0x00000021 /* MXM3 84 */
-            >;
-        };
-
-        /* Apalis USBH_OC# */
-        pinctrl_gpio_usbh_oc_n: gpiousbhocn {
-            fsl,pins = <
-                IMX8QM_USB_SS3_TC3_CONN_USB_OTG2_OC     0x04000021 /* MXM3 96 */
-            >;
-        };
     };
 };
 
@@ -705,17 +695,19 @@
 
 /* Apalis USBH2, Apalis USBH3 and on-module Wi-Fi via on-module HSIC Hub */
 &usbh1 {
-    status = "disabled";
+    status = "okay";
+    vbus-supply = <&reg_usb_host_vbus>;
+    fsl,usbphy = <&usbphy1>;
 };
 
-/* This is the usbphy signal required by usbh1. */
+/* Original usbphy signal for USBH1. */
 &usbphynop2 {
     status = "disabled";
 };
 
-/* USB phy signal for USBOTG1 */
+/* Original usbphy signal for USBOTG1 (disabled), reassigned to USBH1 */
 &usbphy1 {
-    status = "disabled";
+    status = "okay";
 };
 
 /* Apalis USBO1 */
