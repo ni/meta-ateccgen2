@@ -152,12 +152,20 @@
 /* RCU's I2C1 */
 &i2c2 {
     status = "okay";
+    pinctrl-names = "default", "gpio";
+    pinctrl-1 = <&pinctrl_lpi2c2_gpio>;
+    scl-gpios = <&lsio_gpio0 17 GPIO_ACTIVE_HIGH>;
+	sda-gpios = <&lsio_gpio0 18 GPIO_ACTIVE_HIGH>;
     clock-frequency = <400000>;
 };
 
 /* RCU's I2C2 */
 &i2c3 {
     status = "okay";
+    pinctrl-names = "default", "gpio";
+    pinctrl-1 = <&pinctrl_lpi2c3_gpio>;
+    scl-gpios = <&lsio_gpio0 3 GPIO_ACTIVE_HIGH>;
+	sda-gpios = <&lsio_gpio0 4 GPIO_ACTIVE_HIGH>;
     clock-frequency = <400000>;
 };
 
@@ -179,8 +187,11 @@
 /* RCU's I2C3 */
 &i2c0_mipi1 {
     status = "okay";
-    pinctrl-names = "default";
+    pinctrl-names = "default", "gpio";
     pinctrl-0 = <&pinctrl_i2c0_mipi1>;
+    pinctrl-1 = <&pinctrl_i2c0_mipi1_gpio>;
+    scl-gpios = <&lsio_gpio1 20 GPIO_ACTIVE_HIGH>;
+	sda-gpios = <&lsio_gpio1 21 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -217,8 +228,11 @@
 /* RCU's I2C4 */
 &i2c0_lvds0 {
     status = "okay";
-    pinctrl-names = "default";
+    pinctrl-names = "default", "gpio";
     pinctrl-0 = <&pinctrl_i2c0_lvds0>;
+    pinctrl-1 = <&pinctrl_i2c0_lvds0_gpio>;
+    scl-gpios = <&lsio_gpio1 6 GPIO_ACTIVE_HIGH>;
+	sda-gpios = <&lsio_gpio1 7 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -348,8 +362,11 @@
 /* RCU's I2C5 */
 &i2c1_lvds0 {
     status = "okay";
-    pinctrl-names = "default";
+    pinctrl-names = "default", "gpio";
     pinctrl-0 = <&pinctrl_i2c1_lvds0>;
+    pinctrl-1 = <&pinctrl_i2c1_lvds0_gpio>;
+    scl-gpios = <&lsio_gpio1 8 GPIO_ACTIVE_HIGH>;
+	sda-gpios = <&lsio_gpio1 9 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -363,8 +380,11 @@
 /* RCU's I2C6 */
 &i2c0_lvds1 {
     status = "okay";
-    pinctrl-names = "default";
+    pinctrl-names = "default", "gpio";
     pinctrl-0 = <&pinctrl_i2c0_lvds1>;
+    pinctrl-1 = <&pinctrl_i2c0_lvds1_gpio>;
+    scl-gpios = <&lsio_gpio1 12 GPIO_ACTIVE_HIGH>;
+	sda-gpios = <&lsio_gpio1 13 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -489,11 +509,35 @@
             >;
         };
 
+        /* RCU's I2C1 GPIO pin config */
+        pinctrl_lpi2c2_gpio: lpi2c2gpiogrp {
+            fsl,pins = <
+                IMX8QM_GPT1_CLK_LSIO_GPIO0_IO17        0x04000020 /* MXM3 211 */
+                IMX8QM_GPT1_CAPTURE_LSIO_GPIO0_IO18    0x04000020 /* MXM3 209 */
+            >;
+        };
+
+        /* RCU's I2C2 GPIO pin config */
+        pinctrl_lpi2c3_gpio: lpi2c3gpiogrp {
+            fsl,pins = <
+                IMX8QM_SIM0_PD_LSIO_GPIO0_IO03          0x04000020 /* MXM3 203 */
+                IMX8QM_SIM0_POWER_EN_LSIO_GPIO0_IO04    0x04000020 /* MXM3 201 */
+            >;
+        };
+
         /* RCU's I2C3 */
         pinctrl_i2c0_mipi1: mipi1i2c0grp {
             fsl,pins = <
                 IMX8QM_MIPI_DSI1_I2C0_SCL_MIPI_DSI1_I2C0_SCL    0x04000020 /* MXM3 173 */
                 IMX8QM_MIPI_DSI1_I2C0_SDA_MIPI_DSI1_I2C0_SDA    0x04000020 /* MXM3 175 */
+            >;
+        };
+
+        /* RCU's I2C3 GPIO pin config */
+        pinctrl_i2c0_mipi1_gpio: mipi1i2c0gpiogrp {
+            fsl,pins = <
+                IMX8QM_MIPI_DSI1_I2C0_SCL_LSIO_GPIO1_IO20    0x04000020 /* MXM3 173 */
+                IMX8QM_MIPI_DSI1_I2C0_SDA_LSIO_GPIO1_IO21    0x04000020 /* MXM3 175 */
             >;
         };
 
@@ -505,6 +549,14 @@
             >;
         };
 
+        /* RCU's I2C4 GPIO pin config */
+        pinctrl_i2c0_lvds0_gpio: lvds0i2c0gpiogrp {
+            fsl,pins = <
+                IMX8QM_LVDS0_I2C0_SCL_LSIO_GPIO1_IO06    0x04000020 /* MXM3 87  */
+                IMX8QM_LVDS0_I2C0_SDA_LSIO_GPIO1_IO07    0x04000020 /* MXM3 99  */
+            >;
+        };
+
         /* RCU's I2C5 */
         pinctrl_i2c1_lvds0: lvds0i2c1grp {
             fsl,pins = <
@@ -513,11 +565,27 @@
             >;
         };
 
+        /* RCU's I2C5 GPIO pin config */
+        pinctrl_i2c1_lvds0_gpio: lvds0i2c1gpiogrp {
+            fsl,pins = <
+                IMX8QM_LVDS0_I2C1_SCL_LSIO_GPIO1_IO08    0x04000020 /* MXM3 138 */
+                IMX8QM_LVDS0_I2C1_SDA_LSIO_GPIO1_IO09    0x04000020 /* MXM3 140 */
+            >;
+        };
+
         /* RCU's I2C6 */
         pinctrl_i2c0_lvds1: lvds1i2c0grp {
             fsl,pins = <
                 IMX8QM_LVDS1_I2C0_SCL_LVDS1_I2C0_SCL    0x04000020 /* MXM3 281 */
                 IMX8QM_LVDS1_I2C0_SDA_LVDS1_I2C0_SDA    0x04000020 /* MXM3 283 */
+            >;
+        };
+
+        /* RCU's I2C6 GPIO pin config */
+        pinctrl_i2c0_lvds1_gpio: lvds1i2c0gpiogrp {
+            fsl,pins = <
+                IMX8QM_LVDS1_I2C0_SCL_LSIO_GPIO1_IO12    0x04000020 /* MXM3 281 */
+                IMX8QM_LVDS1_I2C0_SDA_LSIO_GPIO1_IO13    0x04000020 /* MXM3 283 */
             >;
         };
 
