@@ -155,7 +155,7 @@
     pinctrl-names = "default", "gpio";
     pinctrl-1 = <&pinctrl_lpi2c2_gpio>;
     scl-gpios = <&lsio_gpio0 17 GPIO_ACTIVE_HIGH>;
-	sda-gpios = <&lsio_gpio0 18 GPIO_ACTIVE_HIGH>;
+    sda-gpios = <&lsio_gpio0 18 GPIO_ACTIVE_HIGH>;
     clock-frequency = <400000>;
 };
 
@@ -165,7 +165,7 @@
     pinctrl-names = "default", "gpio";
     pinctrl-1 = <&pinctrl_lpi2c3_gpio>;
     scl-gpios = <&lsio_gpio0 3 GPIO_ACTIVE_HIGH>;
-	sda-gpios = <&lsio_gpio0 4 GPIO_ACTIVE_HIGH>;
+    sda-gpios = <&lsio_gpio0 4 GPIO_ACTIVE_HIGH>;
     clock-frequency = <400000>;
 };
 
@@ -191,7 +191,7 @@
     pinctrl-0 = <&pinctrl_i2c0_mipi1>;
     pinctrl-1 = <&pinctrl_i2c0_mipi1_gpio>;
     scl-gpios = <&lsio_gpio1 20 GPIO_ACTIVE_HIGH>;
-	sda-gpios = <&lsio_gpio1 21 GPIO_ACTIVE_HIGH>;
+    sda-gpios = <&lsio_gpio1 21 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -232,7 +232,7 @@
     pinctrl-0 = <&pinctrl_i2c0_lvds0>;
     pinctrl-1 = <&pinctrl_i2c0_lvds0_gpio>;
     scl-gpios = <&lsio_gpio1 6 GPIO_ACTIVE_HIGH>;
-	sda-gpios = <&lsio_gpio1 7 GPIO_ACTIVE_HIGH>;
+    sda-gpios = <&lsio_gpio1 7 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -366,7 +366,7 @@
     pinctrl-0 = <&pinctrl_i2c1_lvds0>;
     pinctrl-1 = <&pinctrl_i2c1_lvds0_gpio>;
     scl-gpios = <&lsio_gpio1 8 GPIO_ACTIVE_HIGH>;
-	sda-gpios = <&lsio_gpio1 9 GPIO_ACTIVE_HIGH>;
+    sda-gpios = <&lsio_gpio1 9 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -384,7 +384,7 @@
     pinctrl-0 = <&pinctrl_i2c0_lvds1>;
     pinctrl-1 = <&pinctrl_i2c0_lvds1_gpio>;
     scl-gpios = <&lsio_gpio1 12 GPIO_ACTIVE_HIGH>;
-	sda-gpios = <&lsio_gpio1 13 GPIO_ACTIVE_HIGH>;
+    sda-gpios = <&lsio_gpio1 13 GPIO_ACTIVE_HIGH>;
     #address-cells = <1>;
     #size-cells = <0>;
     clock-frequency = <100000>;
@@ -394,7 +394,6 @@
     pinctrl-names = "default";
     pinctrl-0 = <&pinctrl_rcugpio>, <&pinctrl_reset_moci>,
             <&pinctrl_gpio_usbh_oc_n>;
-
 
     apalis-imx8qm {
         pinctrl_rcugpio: rcugpiogrp {
