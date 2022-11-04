@@ -1,9 +1,7 @@
 [Unit]
-ConditionPathExists=|!/etc/hostname
+ConditionFileNotEmpty=|!/etc/hostname
 Wants=network-pre.target
 Before=network-pre.target
-# Make sure that ni-smartracks hostname is set before avahi-daemon registers hostname to DNS
-Before=avahi-daemon.service
 After=local-fs.target
 After=sys-subsystem-net-devices-eth0.device
 
