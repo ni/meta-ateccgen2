@@ -15,4 +15,4 @@ RDEPENDS_${PN} += " python3 python3-grpcio "
 inherit python3native
 inherit python3-dir
 
-FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR} /data/rcu-service /data/rcu-service/*"
+FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR} /data/rcu-service /data/rcu-service/config/*"
