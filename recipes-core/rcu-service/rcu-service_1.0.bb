@@ -15,4 +15,7 @@ do_install() {
          install -m 0755 rcu-service ${D}${bindir}
          install -d ${D}/${systemd_unitdir}/system
          install -m 0644 ${S}/rcu-service.service ${D}/${systemd_unitdir}/system
+         install -d ${D}/data/rcu-service
+         install -m 0644 ${WORKDIR}/mfgconfig.json ${D}/data/rcu-service/config
 }
+
