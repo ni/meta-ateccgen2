@@ -25,6 +25,7 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
     udev-ni-rules \
     keyutils \
     cifs-utils \
+    rcu-config \
 "
 
 SUMMARY_packagegroup-devel-ni-cli = "Tools useful during SmartRacks RCU development"
