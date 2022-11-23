@@ -156,7 +156,7 @@ index 00000000..b2ae311
 + * 3:2      GINx[1:0]    01 = 2x Integral Gain.
 + * 1:0      GPRx[1:0]    01 = 2x Proportional Gain.
 + */
-+#define REG_GAIN_VALUE   0x15
++#define REG_GAIN_VALUE   0x14
 +
 +/* Fan Spin Up Configuration Registers at 36H, 46H and 56H (Section 6.17)
 + * bit      Field        Value
@@ -172,7 +172,7 @@ index 00000000..b2ae311
 + * 7:6      -            -
 + * 5:0      FxMS[5:0]    00 0101 = Fan Drive Max Step size is 5.
 + */
-+#define REG_FAN_MAX_STEP_VALUE   0x05
++#define REG_FAN_MAX_STEP_VALUE   0x01
 +
 +/* Fan Minimum Drive Register at 38H, 48H and 58H (Section 6.19)
 + * bit      Field        Value
@@ -801,4 +801,3 @@ index 00000000..b2ae311
 +MODULE_LICENSE("GPL");
 -- 
 2.7.4
-
