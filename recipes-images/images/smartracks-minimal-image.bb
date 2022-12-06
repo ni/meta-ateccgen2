@@ -30,8 +30,6 @@ ROOTFS_POSTPROCESS_COMMAND += " add_rootfs_version;"
 IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
-CONMANPKGS ?= "connman connman-plugin-loopback connman-plugin-ethernet connman-client"
-
 # Remove conflicting packages recommended by packagegroup-base-tdx-cli
 BAD_RECOMMENDATIONS = "set-hostname udev-toradex-rules"
 
@@ -42,7 +40,6 @@ IMAGE_INSTALL += " \
     packagegroup-machine-tdx-cli \
     packagegroup-base-ni-cli \
     udev-extraconf \
-    ${CONMANPKGS} \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'timestamp-service systemd-analyze', '', d)} \
 "
 
