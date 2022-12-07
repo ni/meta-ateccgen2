@@ -8,7 +8,8 @@ LICENSE = "MIT"
 #Prefix to the resulting deployable tarball name
 export IMAGE_BASENAME = "RCU-Image"
 MACHINE_NAME = "NI-ATE-Core"
-IMAGE_NAME = "${MACHINE_NAME}_${IMAGE_BASENAME}"
+VERSION = "custom"
+IMAGE_NAME = "${MACHINE_NAME}_${IMAGE_BASENAME}_${VERSION}"
 
 # Copy Licenses to image /usr/share/common-license
 COPY_LIC_MANIFEST ?= "1"
