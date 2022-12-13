@@ -277,6 +277,24 @@
         compatible = "dallas,ds3232";
         reg = <0x68>;
     };
+    
+    /* Onboard ADC ADS7830 at 0x48 */
+    ads7830_1: ads@48 {
+        compatible = "ti,ads7830";
+        reg = <0x48>;
+    };
+
+    /* Onboard ADC ADS7830 at 0x4a */
+    ads7830_2: ads@4a {
+        compatible = "ti,ads7830";
+        reg = <0x4a>;
+    };
+
+    /* Onboard ADC ADS7830 at 0x4b */
+    ads7830_3: ads@4b {
+        compatible = "ti,ads7830";
+        reg = <0x4b>;
+    };
 
     /* Onboard Temperature Sensor TMP1075 */
     temp_i2c: temp@4F {
