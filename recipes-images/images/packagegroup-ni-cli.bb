@@ -26,6 +26,7 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
     keyutils \
     cifs-utils \
     rcu-config \
+    jq \
 "
 
 SUMMARY_packagegroup-devel-ni-cli = "Tools useful during SmartRacks RCU development"
