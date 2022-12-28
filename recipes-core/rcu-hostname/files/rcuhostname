@@ -2,36 +2,34 @@
 
 # This script is responsible for reading the RCU serial number and setting the RCU hostname accordingly. Paired with avahi-daemon which enables mDNS, this provides an option for clients to communicate with the RCU just by knowing its serial number (instead of IP address).
 
-# Verify RCU Carrier EEPROM checksum
-EEPROM_CHECKSUM=0x$(hexdump -v -e '1/1 "%02x"' /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom -s 1 -n 4)
-EEPROM_CRC32_GEN=$(python3 -c "import binascii; print(hex(binascii.crc32(b'$(hexdump -v -e '1/1 "\x%02x"' /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom -s 5 -n 981)')))")
+hostname=null
 
-# Plan is to set hostname based on RCU Carrier S/N if EEPROM checksum is valid
-if [ $EEPROM_CHECKSUM == $EEPROM_CRC32_GEN ]; then
-    echo "EEPROM checksum valid!"
-else
-    echo "EEPROM checksum invalid"
+# Try to grab custom hostname from mfgconfig.json or .rackconfig.json
+if [ -f /data/rcu-service/config/.rackconfig.json ]; then
+    hostname=$(jq -r .SETTINGS[0].Hostname /data/rcu-service/config/.rackconfig.json)
+elif [ if /data/rcu-service/config/mfgconfig.json ]; then
+    hostname=$(jq -r .SETTINGS[0].Hostname /data/rcu-service/config/mfgconfig.json)
 fi
 
-rcuserialpath=/usr/bin/rcu-serial
-tdxserialpath=/proc/device-tree/serial-number
+# If custom hostname does not exist in JSON config file, try to grab RCU Carrier Module S/N from EEPROM
+if [[ $hostname = null ]]; then
 
-#set serial to Apalis SOM serial number
-if [ -f ${tdxserialpath} ]; then
-    serial=$(tr -d '\0' <${tdxserialpath})
+    # If RCU Carrier EEPROM is accessible, verify RCU Carrier EEPROM checksum
+    if [ -f /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom ]; then
+
+        EEPROM_CHECKSUM=0x$(hexdump -v -e '1/1 "%02x"' /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom -s 1 -n 4)
+        EEPROM_CRC32_GEN=$(python3 -c "import binascii; print(hex(binascii.crc32(b'$(hexdump -v -e '1/1 "\x%02x"' /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom -s 5 -n 981)')))")
+
+        # If RCU Carrier EEPROM checksum is valid, read RCU Carrier Module S/N and form hostname
+        if [ $EEPROM_CHECKSUM == $EEPROM_CRC32_GEN ]; then
+            hostname="ni-rmx-1010x-"$(hexdump -v -e '1/1 "%02x"' /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom -s 412 -n 4)
+        else
+            hostname="ni-rmx-1010x"
+        fi
+    else
+        hostname="ni-rmx-1010x"
+    fi
 fi
-
-#if RCU serial number exists, we prefer the RCU serial number
-if [ -f ${rcuserialpath} ]; then
-    serial=$(tr -d '\0' <${rcuserialpath})
-fi
-
-#if serial number is still empty
-if [ -z "$serial" -a "$serial" != " "  ]; then
-    serial="EMPTYSERIAL"
-fi
-
-hostname="NI-SmartRacks-"${serial}
 
 if [ -f /usr/bin/hostnamectl ]; then
     /usr/bin/hostnamectl set-hostname ${hostname}
