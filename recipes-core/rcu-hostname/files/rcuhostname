@@ -2,9 +2,17 @@
 
 # This script is responsible for reading the RCU serial number and setting the RCU hostname accordingly. Paired with avahi-daemon which enables mDNS, this provides an option for clients to communicate with the RCU just by knowing its serial number (instead of IP address).
 
-# TODO: 
-# 1. Change RCU serial placeholder path
-# 2. Alter rcuhostname service to include option for clients to customize hostname 
+# Verify RCU Carrier EEPROM checksum
+EEPROM_CHECKSUM=0x$(hexdump -v -e '1/1 "%02x"' /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom -s 1 -n 4)
+EEPROM_CRC32_GEN=$(python3 -c "import binascii; print(hex(binascii.crc32(b'$(hexdump -v -e '1/1 "\x%02x"' /sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom -s 5 -n 981)')))")
+
+# Plan is to set hostname based on RCU Carrier S/N if EEPROM checksum is valid
+if [ $EEPROM_CHECKSUM == $EEPROM_CRC32_GEN ]; then
+    echo "EEPROM checksum valid!"
+else
+    echo "EEPROM checksum invalid"
+fi
+
 rcuserialpath=/usr/bin/rcu-serial
 tdxserialpath=/proc/device-tree/serial-number
 
