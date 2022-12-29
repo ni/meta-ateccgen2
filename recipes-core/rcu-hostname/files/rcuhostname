@@ -4,7 +4,7 @@
 
 hostname=null
 
-# Try to grab custom hostname from mfgconfig.json or .rackconfig.json
+# Try to grab custom hostname from .rackconfig.json
 if [ -f /data/rcu-service/config/.rackconfig.json ]; then
     hostname=$(jq -r .SETTINGS[0].Hostname /data/rcu-service/config/.rackconfig.json)
 fi
