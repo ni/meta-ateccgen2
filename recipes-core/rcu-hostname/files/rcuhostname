@@ -12,10 +12,11 @@ fi
 # If custom hostname does not exist in JSON config file, try to grab RCU Carrier Module S/N from EEPROM
 if [[ $hostname = null ]]; then
 
-    # If RCU Carrier EEPROM is accessible, verify RCU Carrier EEPROM checksum
+    # If RCU Carrier EEPROM is accessible and EEPROM revision is expected, verify RCU Carrier EEPROM checksum
     EEPROM_SYSFS_PATH=/sys/devices/platform/bus@56240000/56246000.i2c/i2c-*/*-0050/eeprom
+    EEPROM_REV_REQ=1
 
-    if [ -f $EEPROM_SYSFS_PATH ]; then
+    if [ -f $EEPROM_SYSFS_PATH  ] && [ $(hexdump -v -e '1/1 "%d"' $EEPROM_SYSFS_PATH -s 0 -n 1) = $EEPROM_REV_REQ ] ; then
 
         # EEPROM checksum stored at offset 1 byte, total 4 bytes ( -s 1 -n 4 )
         EEPROM_CHECKSUM=0x$(hexdump -v -e '1/1 "%02x"' $EEPROM_SYSFS_PATH -s 1 -n 4)
