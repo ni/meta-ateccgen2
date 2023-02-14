@@ -20,7 +20,6 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
     vsftpd \
     rcu-hostname \
     coreutils \
-    rcu-service \
     rcu-image-version \
     rcu-state-scripts \
     udev-ni-rules \
