@@ -31,6 +31,5 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
 
 SUMMARY_packagegroup-devel-ni-cli = "Tools useful during SmartRacks RCU development"
 RRECOMMENDS_packagegroup-devel-ni-cli = "\
-    rcu-service-python-test-client \
     gdb \
 "
