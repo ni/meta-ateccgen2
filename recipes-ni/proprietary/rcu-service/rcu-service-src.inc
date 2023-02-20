@@ -5,7 +5,7 @@ LICENSE = "Proprietary"
 LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=705b07e5952bd7c88df79f29e927c36d"
 
 SRC_URI = " \
-    git://github.com/ni/rcu-service.git;branch=dev/hatsyrei/add-placeholder-license;protocol=https \
+    git://github.com/ni/rcu-service.git;branch=main;protocol=https \
 "
 
 # TODO: Assign to a fixed revision after release
