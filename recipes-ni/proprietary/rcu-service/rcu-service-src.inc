@@ -2,11 +2,10 @@
 # If EXTERNALSRC was specified, it will take precedence of SRC_URI and SRCREV
 
 LICENSE = "Proprietary"
-LIC_FILES_CHKSUM = "file://${WORKDIR}/software_license_agreement_en.pdf;md5=68a1854f3d645a0fdb1d13d35c8cf393"
+LIC_FILES_CHKSUM = "file://${S}/LICENSE;md5=705b07e5952bd7c88df79f29e927c36d"
 
 SRC_URI = " \
-    git://github.com/ni/rcu-service.git;branch=main;protocol=https \
-    https://www.ni.com/content/dam/web/pdfs/legal/software_license_agreement_en.pdf;md5sum=68a1854f3d645a0fdb1d13d35c8cf393 \
+    git://github.com/ni/rcu-service.git;branch=dev/hatsyrei/add-placeholder-license;protocol=https \
 "
 
 # TODO: Assign to a fixed revision after release
