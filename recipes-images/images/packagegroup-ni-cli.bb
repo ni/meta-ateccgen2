@@ -20,7 +20,6 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
     vsftpd \
     rcu-hostname \
     coreutils \
-    rcu-service \
     rcu-image-version \
     rcu-state-scripts \
     udev-ni-rules \
@@ -32,6 +31,5 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
 
 SUMMARY_packagegroup-devel-ni-cli = "Tools useful during SmartRacks RCU development"
 RRECOMMENDS_packagegroup-devel-ni-cli = "\
-    rcu-service-python-test-client \
     gdb \
 "
