@@ -1,16 +1,16 @@
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
     file://eth0.network \
     file://eth1.network \
 "
 
-PACKAGECONFIG_append = " networkd"
+PACKAGECONFIG:append = " networkd"
 
-do_install_append() {
+do_install:append() {
 
     # We install actual eth0 and eth1 network configuration files into persistent data partition
     # allowing these settings to persist across Mender updates
