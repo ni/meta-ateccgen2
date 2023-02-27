@@ -24,6 +24,6 @@ do_install:append() {
     ln -s -r ${D}/data/systemd/network/eth1.network ${D}/etc/systemd/network/eth1.network
 }
 
-FILES_${PN} += " \
+FILES:${PN} += " \
     /data/systemd/network/* \
 "

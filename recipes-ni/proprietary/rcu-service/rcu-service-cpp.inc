@@ -17,7 +17,7 @@ EXTRA_OECMAKE = " \
 # Now that cmake locates gPRC installation in sysroot-native, the linker looks for _GRPC_GRPCPP, _REFLECTION .so files in sysroot-native lib directory
 # However, compiling RCU Service for ARM-based target requires these .so files to be built for aarch64
 # Hence, we solve this by copying the five aarch64 .so files below from target sysroot to sysroot-native, replacing their x86 counterpart. 
-do_configure_prepend() {
+do_configure:prepend() {
          rm -rf ${WORKDIR}/recipe-sysroot/usr/lib/cmake/grpc
          cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc++_reflection.so.1.24.3 ${WORKDIR}/recipe-sysroot-native/usr/lib/
          cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc++.so.1.24.3 ${WORKDIR}/recipe-sysroot-native/usr/lib/

@@ -6,7 +6,7 @@ require rcu-service-cpp.inc
 
 inherit systemd
 SYSTEMD_AUTO_ENABLE = "enable"
-SYSTEMD_SERVICE_${PN} = "rcu-service.service"
+SYSTEMD_SERVICE:${PN} = "rcu-service.service"
 
 do_install() {
          install -d ${D}${bindir}
