@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# Script which resets RCU IP address configuration for both eth0 and eth1
+# This is done by
+# 1) Removing eth0 and eth1 network configuration files from /data/systemd/network
+# 2) Recreating those files with default eth0 and eth1 configuration
+# 3) Restarting systemd-networkd for changes to take effect
+
+rm /data/systemd/network/eth0.network
+rm /data/systemd/network/eth1.network
+
+echo "
+[Match]
+Name=eth0
+
+[Network]
+DHCP=ipv4
+" > /data/systemd/network/eth0.network
+
+echo "
+
+[Match]
+Name=eth1
+
+[Network]
+Address=10.1.1.20/24
+Gateway=10.1.1.1
+DNS=10.1.1.1
+" > /data/systemd/network/eth1.network
+
+sync
+
+systemctl restart systemd-networkd
