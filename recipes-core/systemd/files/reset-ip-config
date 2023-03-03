@@ -18,7 +18,6 @@ DHCP=ipv4
 " > /data/systemd/network/eth0.network
 
 echo "
-
 [Match]
 Name=eth1
 
