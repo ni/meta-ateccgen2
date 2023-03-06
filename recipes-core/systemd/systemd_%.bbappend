@@ -14,8 +14,10 @@ do_install_append() {
 
     # We install actual eth0 and eth1 network configuration files into persistent data partition
     # allowing these settings to persist across Mender updates
+    install -d ${D}${bindir}
     install -d ${D}/data/systemd/network/
     install -d ${D}/etc/systemd/network/
+    install -m 0755 ${WORKDIR}/reset-ip-config ${D}${bindir}
     install -m 0644 ${WORKDIR}/eth0.network ${D}/data/systemd/network
     install -m 0644 ${WORKDIR}/eth1.network ${D}/data/systemd/network
 
@@ -25,5 +27,6 @@ do_install_append() {
 }
 
 FILES_${PN} += " \
+    ${bindir} \
     /data/systemd/network/* \
 "
