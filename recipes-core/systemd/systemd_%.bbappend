@@ -6,6 +6,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 SRC_URI += " \
     file://eth0.network \
     file://eth1.network \
+    file://reset-ip-config \
 "
 
 PACKAGECONFIG_append = " networkd"
