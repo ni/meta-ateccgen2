@@ -9,7 +9,7 @@ SYSTEMD_AUTO_ENABLE = "enable"
 SYSTEMD_SERVICE_${PN} = "rcu-service.service"
 
 do_configure_append() {
-    echo $NI_ATE_CORE_PRIVATE_KEY > ${S}/certs/ni_ate_core_private.key
+         echo $NI_ATE_CORE_PRIVATE_KEY > ${S}/certs/ni_ate_core_private.key
 }
 
 do_install() {
