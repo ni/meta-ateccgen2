@@ -17,8 +17,6 @@ do_install() {
          install -m 0755 rcu-service ${D}${bindir}
          install -d ${D}/${systemd_unitdir}/system
          install -m 0644 ${S}/rcu-service.service ${D}/${systemd_unitdir}/system
-         install -d ${D}/data/rcu-service/tmp
-         install -d ${D}/data/rcu-service/firmware
          install -d ${D}/${sysconfdir}/ssl/private
          install -m 0640 ${S}/certs/ni_ate_core_private.key ${D}/${sysconfdir}/ssl/private
 }
