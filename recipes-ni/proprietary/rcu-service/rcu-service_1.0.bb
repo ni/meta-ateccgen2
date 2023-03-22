@@ -17,9 +17,4 @@ do_install() {
          install -m 0640 ${S}/certs/ni_ate_core_private.key ${D}/${sysconfdir}/ssl/private
          install -d ${D}/${sysconfdir}/ssl/certs
          install -m 0644 ${S}/certs/ni_ate_core_cert.pem ${D}/${sysconfdir}/ssl/certs
-<<<<<<< HEAD
-=======
-         install -d ${D}/${sysconfdir}/ssl/private
-         install -m 0640 ${S}/certs/ni_ate_core_private.key ${D}/${sysconfdir}/ssl/private
->>>>>>> Change permissions for private key
 }
