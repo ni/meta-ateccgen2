@@ -14,7 +14,7 @@
 RACK_CONFIG_FILE_PATH="/data/rcu-service/config/.rackconfig.json"
 RACK_CONFIG_BACKUP_FILE_PATH="/data/rcu-service/config/.rackconfig-backup.json"
 # default ethernet settings
-DEFAULT_SETTING='"SETTINGS":[{"ID":"Settings","Eth0":"DHCP","Eth1":"10.1.1.20/24::10.1.1.1::10.1.1.1"}]}'
+DEFAULT_SETTING='"SETTINGS":[{"ID":"Settings","Eth0":"DHCP","Eth1":"10.1.1.20/24"}]}'
 
 validate_json_file()
 {
