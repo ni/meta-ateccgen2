@@ -5,6 +5,33 @@
 # 1) Removing eth0 and eth1 network configuration files from /data/systemd/network
 # 2) Recreating those files with default eth0 and eth1 configuration
 # 3) Restarting systemd-networkd for changes to take effect
+# 4) Making copy of .rackconfig.json to .rackconfig-backup.json
+# 5) Remove SETTINGS entry if it exists
+# 6) Add default SETTINGS entry and save to .rackconfig.json
+# 7) Revert .rackconfig.json if error.
+# 8) Remove .rackconfig-backup.json
+
+RACK_CONFIG_FILE_PATH="/data/rcu-service/config/.rackconfig.json"
+RACK_CONFIG_BACKUP_FILE_PATH="/data/rcu-service/config/.rackconfig-backup.json"
+# default ethernet settings
+DEFAULT_SETTING='"SETTINGS":[{"ID":"Settings","Eth0":"DHCP","Eth1":"10.1.1.20/24::10.1.1.1::10.1.1.1"}]}'
+
+validate_json_file()
+{
+    strVar1=$(echo $rackconfigVar | jq -c '.')
+    strVar2=$(cat $RACK_CONFIG_FILE_PATH | jq -c '.')
+    
+    if [ "$strVar1" != "$strVar2" ]; then
+        # rename backup file to original file
+        echo "update config file fails"
+        rm $RACK_CONFIG_FILE_PATH
+        mv $RACK_CONFIG_BACKUP_FILE_PATH $RACK_CONFIG_FILE_PATH
+        exit 1
+    else
+        echo "removing .rackconfig-backup.json"
+        rm $RACK_CONFIG_BACKUP_FILE_PATH
+    fi
+}
 
 rm /data/systemd/network/eth0.network
 rm /data/systemd/network/eth1.network
@@ -12,7 +39,6 @@ rm /data/systemd/network/eth1.network
 echo "
 [Match]
 Name=eth0
-
 [Network]
 DHCP=ipv4
 " > /data/systemd/network/eth0.network
@@ -20,7 +46,6 @@ DHCP=ipv4
 echo "
 [Match]
 Name=eth1
-
 [Network]
 Address=10.1.1.20/24
 " > /data/systemd/network/eth1.network
@@ -28,3 +53,27 @@ Address=10.1.1.20/24
 sync
 
 systemctl restart systemd-networkd
+
+cp $RACK_CONFIG_FILE_PATH $RACK_CONFIG_BACKUP_FILE_PATH
+rackconfigVar=$(cat $RACK_CONFIG_BACKUP_FILE_PATH | jq '.')
+settingVar=$(cat $RACK_CONFIG_BACKUP_FILE_PATH | jq '.SETTINGS')
+
+# check if "SETTINGS" exists
+if [ ! -z "$settingVar" ]; then
+    # "SETTINGS" exists, then remove it from rackconfig.json file
+    rackconfigWithoutSettingsVar=$(jq 'del(.SETTINGS)' $RACK_CONFIG_BACKUP_FILE_PATH)
+    rackconfigVar=$rackconfigWithoutSettingsVar
+fi
+
+# remove last character ']'
+rackconfigVar="${rackconfigVar%?}"
+rackconfigVar="$rackconfigVar"", "
+rackconfigVar=$rackconfigVar$DEFAULT_SETTING
+
+# write to json file
+echo $rackconfigVar | jq '.' > $RACK_CONFIG_FILE_PATH
+
+sync
+
+validate_json_file
+
