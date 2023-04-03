@@ -13,7 +13,7 @@ SRCREV = "${AUTOREV}"
 
 S = "${WORKDIR}/git"
 
-DEPENDS += " python3-grpcio-tools-native"
+DEPENDS += " python3-grpcio-tools-native virtual/crypt "
 RDEPENDS_${PN} += " python3 python3-grpcio "
 inherit python3native
 inherit python3-dir
