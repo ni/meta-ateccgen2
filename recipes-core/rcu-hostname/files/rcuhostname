@@ -19,7 +19,7 @@ if [[ $hostname = null ]]; then
     if [ -f $EEPROM_SYSFS_PATH  ] && [ $(hexdump -v -e '1/1 "%d"' $EEPROM_SYSFS_PATH -s 0 -n 1) = $EEPROM_REV_REQ ] ; then
 
         # EEPROM checksum stored at offset 1, total 4 bytes ( -s 1 -n 4 )
-        EEPROM_CHECKSUM=$printf "%d" 0x$(hexdump -v -e '1/1 "%02x"' $EEPROM_SYSFS_PATH -s 1 -n 4))
+        EEPROM_CHECKSUM=$(printf "%d" 0x$(hexdump -v -e '1/1 "%02x"' $EEPROM_SYSFS_PATH -s 1 -n 4))
 
         # Generate CRC32 from EEPROM content, starting at offset 5, total 981 bytes ( -s 5 -n 981 )
         # 1 byte at offset 5 stores the number of datasets present in the EEPROM. The expected number of datasets in RCU Carrier EEPROM is 5.
