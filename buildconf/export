@@ -10,14 +10,14 @@ fi
 . ./oe-init-build-env ${BUILDDIR}
 
 echo ""
-echo "NI SmartRacks targets are:"
-echo "    smartracks-minimal-image"
+echo "NI ATE Core Configurations Gen 2 targets are:"
+echo "    ateccgen2-minimal-image"
 echo ""
 echo "To build an image, execute: 'bitbake <supported_image_target>'"
 
 if [ $FIRST_TIME -eq 1 ]; then
 	mkdir -p conf
-	cp ../layers/meta-smartracks/buildconf/*.conf conf/
+	cp ../layers/meta-ateccgen2/buildconf/*.conf conf/
 	cat ../layers/meta-mender-community/templates/local.conf.append >> conf/local.conf
 	cat ../layers/meta-mender-community/meta-mender-toradex-nxp/templates/local.conf.append  >> conf/local.conf
 	sed -i 's/MENDER_STORAGE_TOTAL_SIZE_MB_apalis-imx8 = "2048"/MENDER_STORAGE_TOTAL_SIZE_MB_apalis-imx8 = "4096"/g' conf/local.conf
