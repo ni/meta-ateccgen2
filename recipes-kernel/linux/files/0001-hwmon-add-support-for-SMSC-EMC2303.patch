@@ -110,11 +110,11 @@ index 00000000..b2ae311
 +#include <linux/of.h>
 +
 +/*
-+ * Initial Register values for SmartRacks.
++ * Initial Register values for NI ATE Core Configurations Gen 2.
 + * Values provided by Mechanical Engineer. Refer to the following link:
 + * https://nio365.sharepoint.com/sites/SmartRack/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FSmartRack%2FShared+Documents%2F3_Mechanical%2FThermal%2FV%26V%2F16U%2Ffan+control%2FVI%2FEMC+2303+boka+fan+config+file%2Ffan+setting+9GV+%283+fans%29+ver003.txt&parent=%2Fsites%2FSmartRack%2FShared+Documents%2F3_Mechanical%2FThermal%2FV%26V%2F16U%2Ffan+control%2FVI%2FEMC+2303+boka+fan+config+file&isSPOFile=1&OR=Teams-HL&CT=1640669588127&sourceId=&params=%7B%22AppName%22%3A%22Teams-Desktop%22%2C%22AppVersion%22%3A%2227%2F21110108719%22%7D
 + *
-+ * Register description below are only based on SmartRacks specific configuration. For full
++ * Register description below are only based on NI ATE Core Configurations Gen 2 specific configuration. For full
 + * description of each register's function, please refer to the datasheet.
 + */
 +
@@ -256,7 +256,7 @@ index 00000000..b2ae311
 +#define SEL_FAN(fan, reg) (reg + fan * 0x10)
 +
 +/*
-+ * Below is the fan configuration used in SmartRacks:
++ * Below is the fan configuration used in NI ATE Core Configurations Gen 2:
 + *
 + * TACH edges         = 5
 + * No. of poles       = 2

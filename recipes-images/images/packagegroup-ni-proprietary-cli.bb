@@ -1,4 +1,4 @@
-SUMMARY = "SmartRacks packagegroups which provide proprietary cmdline releated packages"
+SUMMARY = "NI ATE Core Configurations Gen 2 packagegroups which provide proprietary cmdline releated packages"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -15,12 +15,12 @@ RDEPENDS_packagegroup-ni-proprietary-cli = "\
     packagegroup-devel-ni-proprietary-cli \
 "
 
-SUMMARY_packagegroup-base-ni-proprietary-cli = "Proprietary packages preinstalled into SmartRacks RCU image"
+SUMMARY_packagegroup-base-ni-proprietary-cli = "Proprietary packages preinstalled into NI ATE Core Configurations Gen 2 RCU image"
 RRECOMMENDS_packagegroup-base-ni-proprietary-cli = "\
     rcu-service \
 "
 
-SUMMARY_packagegroup-devel-ni-proprietary-cli = "Proprietary tools useful during SmartRacks RCU development"
+SUMMARY_packagegroup-devel-ni-proprietary-cli = "Proprietary tools useful during NI ATE Core Configurations Gen 2 RCU development"
 RRECOMMENDS_packagegroup-devel-ni-proprietary-cli = "\
     rcu-service-python-test-client \
 "
