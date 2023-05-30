@@ -17,7 +17,7 @@ index 42700e4571..4b087e36dd 100644
  CONFIG_OF_SYSTEM_SETUP=y
  CONFIG_USE_PREBOOT=y
 -CONFIG_PREBOOT="setenv fdtfile ${soc}-apalis${variant}-${fdt_board}.dtb"
-+CONFIG_PREBOOT="setenv fdtfile imx8-apalis-ateccgen2.dtb"
++CONFIG_PREBOOT="setenv fdtfile imx8-apalis-smartracks.dtb"
  CONFIG_SYS_EXTRA_OPTIONS="IMX_CONFIG=board/toradex/apalis-imx8/apalis-imx8-imximage.cfg"
  CONFIG_BOOTDELAY=1
  CONFIG_LOG=y
