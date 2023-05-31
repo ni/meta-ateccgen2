@@ -6,14 +6,14 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
     file://ateccgen2.cfg \
-    file://imx8-apalis-ateccgen2.dtsi \
-    file://imx8-apalis-ateccgen2.dts \
+    file://imx8-apalis-smartracks.dtsi \
+    file://imx8-apalis-smartracks.dts \
     file://add-support-for-diodes-pi4ioe5v96248.patch \
     file://0001-hwmon-add-support-for-SMSC-EMC2303.patch \
     "
 
 # Inject NI ATE Core Configurations Gen 2 custom board device tree to kernel source device tree location
 do_configure_prepend() {
-    cp ${WORKDIR}/imx8-apalis-ateccgen2.dtsi ${WORKDIR}/git/arch/arm64/boot/dts/freescale
-    cp ${WORKDIR}/imx8-apalis-ateccgen2.dts ${WORKDIR}/git/arch/arm64/boot/dts/freescale
+    cp ${WORKDIR}/imx8-apalis-smartracks.dtsi ${WORKDIR}/git/arch/arm64/boot/dts/freescale
+    cp ${WORKDIR}/imx8-apalis-smartracks.dts ${WORKDIR}/git/arch/arm64/boot/dts/freescale
 }
