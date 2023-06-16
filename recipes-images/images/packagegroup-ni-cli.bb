@@ -1,4 +1,4 @@
-SUMMARY = "SmartRacks packagegroups which provide cmdline releated packages"
+SUMMARY = "NI ATE Core Configurations Gen 2 packagegroups which provide cmdline releated packages"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
@@ -15,7 +15,7 @@ RDEPENDS_packagegroup-ni-cli = "\
     packagegroup-devel-ni-cli \
 "
 
-SUMMARY_packagegroup-base-ni-cli = "Packages preinstalled into SmartRacks RCU image"
+SUMMARY_packagegroup-base-ni-cli = "Packages preinstalled into NI ATE Core Configurations Gen 2 RCU image"
 RRECOMMENDS_packagegroup-base-ni-cli = "\
     vsftpd \
     rcu-hostname \
@@ -29,7 +29,7 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
     jq \
 "
 
-SUMMARY_packagegroup-devel-ni-cli = "Tools useful during SmartRacks RCU development"
+SUMMARY_packagegroup-devel-ni-cli = "Tools useful during NI ATE Core Configurations Gen 2 RCU development"
 RRECOMMENDS_packagegroup-devel-ni-cli = "\
     gdb \
 "
