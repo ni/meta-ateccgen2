@@ -1,9 +1,9 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 # vsftpd service availability is handled using udev rules
-SYSTEMD_AUTO_ENABLE_${PN} = "disable"
+SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
-do_install_append(){
+do_install:append(){
 
     install -d ${D}${localstatedir}/lib/ftp
     chown -R nobody:nogroup ${D}${localstatedir}/lib/ftp

@@ -1,17 +1,5 @@
-From 0ea27d53b126c75c15445d7bcca99fb8c913ea35 Mon Sep 17 00:00:00 2001
-From: wkoe <wilson.koe@ni.com>
-Date: Sun, 20 Feb 2022 23:22:35 -0800
-Subject: [PATCH] add support for diodes pi4ioe5v96248
-
-Signed-off-by: wkoe <wilson.koe@ni.com>
----
- drivers/gpio/gpio-pcf857x.c | 115 +++++++++++++++++++++++++++---------
- 1 file changed, 88 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/gpio/gpio-pcf857x.c b/drivers/gpio/gpio-pcf857x.c
-index abcc8c0136c4..e57ef7ad995e 100644
---- a/drivers/gpio/gpio-pcf857x.c
-+++ b/drivers/gpio/gpio-pcf857x.c
+--- a/drivers/gpio/gpio-pcf857x.c	2023-02-27 16:36:17.202629415 +0800
++++ b/drivers/gpio/gpio-pcf857x.c	2023-02-27 16:37:52.478914581 +0800
 @@ -17,6 +17,7 @@
  #include <linux/of_device.h>
  #include <linux/slab.h>
@@ -20,7 +8,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  
  
  static const struct i2c_device_id pcf857x_id[] = {
-@@ -33,6 +34,7 @@ static const struct i2c_device_id pcf857x_id[] = {
+@@ -33,6 +34,7 @@
  	{ "pca9675", 16 },
  	{ "max7328", 8 },
  	{ "max7329", 8 },
@@ -28,7 +16,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  	{ }
  };
  MODULE_DEVICE_TABLE(i2c, pcf857x_id);
-@@ -52,6 +54,7 @@ static const struct of_device_id pcf857x_of_table[] = {
+@@ -52,6 +54,7 @@
  	{ .compatible = "nxp,pca9675" },
  	{ .compatible = "maxim,max7328" },
  	{ .compatible = "maxim,max7329" },
@@ -36,7 +24,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  	{ }
  };
  MODULE_DEVICE_TABLE(of, pcf857x_of_table);
-@@ -74,31 +77,40 @@ struct pcf857x {
+@@ -74,31 +77,40 @@
  	struct irq_chip		irqchip;
  	struct i2c_client	*client;
  	struct mutex		lock;		/* protect 'out' */
@@ -86,7 +74,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  {
  	u8 buf[2] = { word & 0xff, word >> 8, };
  	int status;
-@@ -107,7 +119,7 @@ static int i2c_write_le16(struct i2c_client *client, unsigned word)
+@@ -107,7 +119,7 @@
  	return (status < 0) ? status : 0;
  }
  
@@ -95,7 +83,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  {
  	u8 buf[2];
  	int status;
-@@ -115,7 +127,33 @@ static int i2c_read_le16(struct i2c_client *client)
+@@ -115,7 +127,33 @@
  	status = i2c_master_recv(client, buf, 2);
  	if (status < 0)
  		return status;
@@ -130,7 +118,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  }
  
  /*-------------------------------------------------------------------------*/
-@@ -126,7 +164,7 @@ static int pcf857x_input(struct gpio_chip *chip, unsigned offset)
+@@ -126,7 +164,7 @@
  	int		status;
  
  	mutex_lock(&gpio->lock);
@@ -139,7 +127,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  	status = gpio->write(gpio->client, gpio->out);
  	mutex_unlock(&gpio->lock);
  
-@@ -136,16 +174,17 @@ static int pcf857x_input(struct gpio_chip *chip, unsigned offset)
+@@ -136,16 +174,17 @@
  static int pcf857x_get(struct gpio_chip *chip, unsigned offset)
  {
  	struct pcf857x	*gpio = gpiochip_get_data(chip);
@@ -161,7 +149,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  	int		status;
  
  	mutex_lock(&gpio->lock);
-@@ -169,17 +208,19 @@ static void pcf857x_set(struct gpio_chip *chip, unsigned offset, int value)
+@@ -169,17 +208,19 @@
  static irqreturn_t pcf857x_irq(int irq, void *data)
  {
  	struct pcf857x  *gpio = data;
@@ -185,10 +173,18 @@ index abcc8c0136c4..e57ef7ad995e 100644
  	mutex_unlock(&gpio->lock);
  
  	for_each_set_bit(i, &change, gpio->chip.ngpio)
-@@ -204,14 +245,14 @@ static void pcf857x_irq_enable(struct irq_data *data)
+@@ -196,35 +237,30 @@
+ static int pcf857x_irq_set_wake(struct irq_data *data, unsigned int on)
  {
  	struct pcf857x *gpio = irq_data_get_irq_chip_data(data);
+-
+ 	return irq_set_irq_wake(gpio->client->irq, on);
+ }
  
+ static void pcf857x_irq_enable(struct irq_data *data)
+ {
+ 	struct pcf857x *gpio = irq_data_get_irq_chip_data(data);
+-
 -	gpio->irq_enabled |= (1 << data->hwirq);
 +	gpio->irq_enabled |= (1ULL << data->hwirq);
  }
@@ -196,13 +192,26 @@ index abcc8c0136c4..e57ef7ad995e 100644
  static void pcf857x_irq_disable(struct irq_data *data)
  {
  	struct pcf857x *gpio = irq_data_get_irq_chip_data(data);
- 
+-
 -	gpio->irq_enabled &= ~(1 << data->hwirq);
 +	gpio->irq_enabled &= ~(1ULL << data->hwirq);
  }
  
  static void pcf857x_irq_bus_lock(struct irq_data *data)
-@@ -236,11 +277,20 @@ static int pcf857x_probe(struct i2c_client *client,
+ {
+ 	struct pcf857x *gpio = irq_data_get_irq_chip_data(data);
+-
+ 	mutex_lock(&gpio->lock);
+ }
+ 
+ static void pcf857x_irq_bus_sync_unlock(struct irq_data *data)
+ {
+ 	struct pcf857x *gpio = irq_data_get_irq_chip_data(data);
+-
+ 	mutex_unlock(&gpio->lock);
+ }
+ 
+@@ -236,11 +272,20 @@
  	struct pcf857x_platform_data	*pdata = dev_get_platdata(&client->dev);
  	struct device_node		*np = client->dev.of_node;
  	struct pcf857x			*gpio;
@@ -225,7 +234,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  	else if (pdata)
  		n_latch = pdata->n_latch;
  	else
-@@ -301,7 +351,17 @@ static int pcf857x_probe(struct i2c_client *client,
+@@ -301,7 +346,17 @@
  
  		/* fail if there's no chip present */
  		else
@@ -244,7 +253,7 @@ index abcc8c0136c4..e57ef7ad995e 100644
  
  	} else {
  		dev_dbg(&client->dev, "unsupported number of gpios\n");
-@@ -311,7 +371,8 @@ static int pcf857x_probe(struct i2c_client *client,
+@@ -311,7 +366,8 @@
  	if (status < 0)
  		goto fail;
  
@@ -254,15 +263,12 @@ index abcc8c0136c4..e57ef7ad995e 100644
  
  	gpio->client = client;
  	i2c_set_clientdata(client, gpio);
-@@ -332,7 +393,7 @@ static int pcf857x_probe(struct i2c_client *client,
+@@ -332,7 +388,7 @@
  	 * reset state.  Otherwise it flags pins to be driven low.
  	 */
  	gpio->out = ~n_latch;
 -	gpio->status = gpio->read(gpio->client);
 +	gpio->status = gpio->read(gpio->client, &value);
  
- 	status = devm_gpiochip_add_data(&client->dev, &gpio->chip, gpio);
- 	if (status < 0)
--- 
-2.17.1
-
+ 	/* Enable irqchip if we have an interrupt */
+ 	if (client->irq) {

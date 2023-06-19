@@ -1,8 +1,8 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 # This .cfg file is applied on top of the Toradex defconfig
 # as specified in the linux-toradex recipe in meta-toradex-nxp
-# https://git.toradex.com/cgit/meta-toradex-nxp.git/tree/recipes-kernel/linux/linux-toradex_5.4-2.3.x.bb?h=dunfell-5.x.y
+# https://git.toradex.com/cgit/meta-toradex-nxp.git/tree/recipes-kernel/linux/linux-toradex_5.15-2.1.x.bb?h=kirkstone-6.x.y
 
 SRC_URI += " \
     file://ateccgen2.cfg \
@@ -13,7 +13,7 @@ SRC_URI += " \
     "
 
 # Inject NI ATE Core Configurations Gen 2 custom board device tree to kernel source device tree location
-do_configure_prepend() {
+do_configure:prepend() {
     cp ${WORKDIR}/imx8-apalis-smartracks.dtsi ${WORKDIR}/git/arch/arm64/boot/dts/freescale
     cp ${WORKDIR}/imx8-apalis-smartracks.dts ${WORKDIR}/git/arch/arm64/boot/dts/freescale
 }

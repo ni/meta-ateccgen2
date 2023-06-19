@@ -5,7 +5,7 @@ SRC_URI = "\
     file://mfgconfig.json \
 "
 
-FILES_${PN} += "/data/rcu-service/* "
+FILES:${PN} += "/data/rcu-service/* "
 
 do_install () {
     install -d ${D}/data/rcu-service/config

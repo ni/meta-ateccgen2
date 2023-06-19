@@ -10,13 +10,13 @@ PACKAGES += " \
     packagegroup-devel-ni-cli \
 "
 
-RDEPENDS_packagegroup-ni-cli = "\
+RDEPENDS:packagegroup-ni-cli = "\
     packagegroup-base-ni-cli \
     packagegroup-devel-ni-cli \
 "
 
 SUMMARY_packagegroup-base-ni-cli = "Packages preinstalled into NI ATE Core Configurations Gen 2 RCU image"
-RRECOMMENDS_packagegroup-base-ni-cli = "\
+RRECOMMENDS:packagegroup-base-ni-cli = "\
     vsftpd \
     rcu-hostname \
     coreutils \
@@ -30,6 +30,6 @@ RRECOMMENDS_packagegroup-base-ni-cli = "\
 "
 
 SUMMARY_packagegroup-devel-ni-cli = "Tools useful during NI ATE Core Configurations Gen 2 RCU development"
-RRECOMMENDS_packagegroup-devel-ni-cli = "\
+RRECOMMENDS:packagegroup-devel-ni-cli = "\
     gdb \
 "

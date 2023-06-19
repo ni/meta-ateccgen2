@@ -14,7 +14,7 @@ COPY_LIC_DIRS ?= "1"
 
 # Configure base image root account default password
 inherit extrausers
-EXTRA_USERS_PARAMS = "usermod -P ni root;"
+EXTRA_USERS_PARAMS = "usermod -p $6$8fnflVsupDVBSQbB$4xgecuvZxzpoDMAOs9QAQAykaKA.xF8kSthsvkdkHjkPnoKvwjQLetNEePT.ZTBFdwAIii0XzbwNrRiRDJZ.q1 root;"
 
 add_rootfs_version () {
     printf "${DISTRO_NAME} ${DISTRO_VERSION} (${DISTRO_CODENAME}) \\\n \\\l\n" > ${IMAGE_ROOTFS}/etc/issue
@@ -41,5 +41,5 @@ IMAGE_INSTALL += " \
 "
 
 # Required to append protobuf and grpc dependencies to SDK
-TOOLCHAIN_HOST_TASK_append += " nativesdk-protobuf-compiler nativesdk-grpc-dev nativesdk-python3-grpcio-tools nativesdk-make "
-TOOLCHAIN_TARGET_TASK_append += " python3-grpcio-tools "
+TOOLCHAIN_HOST_TASK:append = " nativesdk-protobuf-compiler nativesdk-grpc-dev nativesdk-python3-grpcio-tools nativesdk-make "
+TOOLCHAIN_TARGET_TASK:append = " python3-grpcio-tools "
