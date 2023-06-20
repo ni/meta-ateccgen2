@@ -19,9 +19,13 @@ EXTRA_OECMAKE = " \
 # Hence, we solve this by copying the five aarch64 .so files below from target sysroot to sysroot-native, replacing their x86 counterpart. 
 do_configure:prepend() {
          rm -rf ${WORKDIR}/recipe-sysroot/usr/lib/cmake/grpc
-         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc++_reflection.so.1.24.3 ${WORKDIR}/recipe-sysroot-native/usr/lib/
-         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc++.so.1.24.3 ${WORKDIR}/recipe-sysroot-native/usr/lib/
-         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc.so.6.0.0 ${WORKDIR}/recipe-sysroot-native/usr/lib/
-         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgpr.so.6.0.0 ${WORKDIR}/recipe-sysroot-native/usr/lib/
-         cp ${WORKDIR}/recipe-sysroot/usr/lib/libaddress_sorting.so.6.0.0 ${WORKDIR}/recipe-sysroot-native/usr/lib/
+         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc++_reflection.so.*.*.* ${WORKDIR}/recipe-sysroot-native/usr/lib/
+         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc++.so.*.*.* ${WORKDIR}/recipe-sysroot-native/usr/lib/
+         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgrpc.so.*.*.* ${WORKDIR}/recipe-sysroot-native/usr/lib/
+         cp ${WORKDIR}/recipe-sysroot/usr/lib/libgpr.so.*.*.* ${WORKDIR}/recipe-sysroot-native/usr/lib/
+         cp ${WORKDIR}/recipe-sysroot/usr/lib/libaddress_sorting.so.*.*.* ${WORKDIR}/recipe-sysroot-native/usr/lib/
+
+         # Only required for Kirkstone builds for some reason
+         # Suppress cp errors if file does not exist on Dunfell
+         cp ${WORKDIR}/recipe-sysroot/usr/lib/libupb.so.*.*.* ${WORKDIR}/recipe-sysroot-native/usr/lib/ || true
 }
