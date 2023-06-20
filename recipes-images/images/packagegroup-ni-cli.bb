@@ -15,7 +15,7 @@ RDEPENDS:packagegroup-ni-cli = "\
     packagegroup-devel-ni-cli \
 "
 
-SUMMARY_packagegroup-base-ni-cli = "Packages preinstalled into NI ATE Core Configurations Gen 2 RCU image"
+SUMMARY:packagegroup-base-ni-cli = "Packages preinstalled into NI ATE Core Configurations Gen 2 RCU image"
 RRECOMMENDS:packagegroup-base-ni-cli = "\
     vsftpd \
     rcu-hostname \
@@ -29,7 +29,7 @@ RRECOMMENDS:packagegroup-base-ni-cli = "\
     jq \
 "
 
-SUMMARY_packagegroup-devel-ni-cli = "Tools useful during NI ATE Core Configurations Gen 2 RCU development"
+SUMMARY:packagegroup-devel-ni-cli = "Tools useful during NI ATE Core Configurations Gen 2 RCU development"
 RRECOMMENDS:packagegroup-devel-ni-cli = "\
     gdb \
 "

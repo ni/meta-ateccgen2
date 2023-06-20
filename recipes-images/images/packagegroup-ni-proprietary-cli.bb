@@ -16,11 +16,11 @@ RDEPENDS:packagegroup-ni-proprietary-cli = "\
 "
 
 SUMMARY:packagegroup-base-ni-proprietary-cli = "Proprietary packages preinstalled into NI ATE Core Configurations Gen 2 RCU image"
-RRECOMMENDS_packagegroup-base-ni-proprietary-cli = "\
+RRECOMMENDS:packagegroup-base-ni-proprietary-cli = "\
     rcu-service \
 "
 
 SUMMARY:packagegroup-devel-ni-proprietary-cli = "Proprietary tools useful during NI ATE Core Configurations Gen 2 RCU development"
-RRECOMMENDS_packagegroup-devel-ni-proprietary-cli = "\
+RRECOMMENDS:packagegroup-devel-ni-proprietary-cli = "\
     rcu-service-python-test-client \
 "
