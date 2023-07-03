@@ -10,12 +10,12 @@ SRC_URI += " \
     file://rcu-hostname.service \
 "
 
-FILES_${PN} = " \
+FILES:${PN} = " \
     ${bindir} \
     ${systemd_system_unitdir} \
 "
 
-SYSTEMD_SERVICE_${PN} = " \
+SYSTEMD_SERVICE:${PN} = " \
     rcu-hostname.service \
 "
 

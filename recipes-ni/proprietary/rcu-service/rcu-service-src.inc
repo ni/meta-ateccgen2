@@ -18,4 +18,4 @@ RDEPENDS_${PN} += " python3 python3-grpcio "
 inherit python3native
 inherit python3-dir
 
-FILES_${PN} += "${PYTHON_SITEPACKAGES_DIR}"
+FILES:${PN} += "${PYTHON_SITEPACKAGES_DIR}"
