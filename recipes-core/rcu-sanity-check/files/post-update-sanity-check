@@ -1,0 +1,15 @@
+#!/bin/sh
+
+#rm /data/rcu-service/firmware/rcu-update-staged
+
+# TODO: Check if network is up
+# TODO: Check if rcu-service is active
+
+# If sanity check completes successfully, mender commit and set flag
+#mender commit
+#touch /data/rcu-service/firmware/rcu-update-success
+
+# If sanity check fails, mender rollback, set flag and reboot
+#mender rollback
+#touch /data/rcu-service/firmware/rcu-update-failed
+#reboot

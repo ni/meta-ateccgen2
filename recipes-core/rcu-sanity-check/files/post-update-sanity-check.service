@@ -1,0 +1,11 @@
+[Unit]
+Description=Service to run RCU sanity check
+After=network.target
+ConditionPathExists=/data/rcu-service/firmware/rcu-update-staged
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/post-update-sanity-check
+
+[Install]
+WantedBy=multi-user.target

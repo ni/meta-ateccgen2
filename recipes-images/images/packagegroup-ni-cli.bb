@@ -22,6 +22,7 @@ RRECOMMENDS:packagegroup-base-ni-cli = "\
     coreutils \
     rcu-image-version \
     rcu-state-scripts \
+    rcu-sanity-check \
     udev-ni-rules \
     keyutils \
     cifs-utils \
