@@ -27,6 +27,7 @@ RRECOMMENDS:packagegroup-base-ni-cli = "\
     cifs-utils \
     rcu-config \
     jq \
+    python3 \
 "
 
 SUMMARY:packagegroup-devel-ni-cli = "Tools useful during NI ATE Core Configurations Gen 2 RCU development"
