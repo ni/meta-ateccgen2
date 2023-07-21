@@ -35,6 +35,8 @@ sleep 2
 if [ -d /mnt/etc ]; then
     cp /etc/ssl/private/* /mnt/etc/ssl/private
     echo "Copied private keys to new root partition" >&2
+    cp /etc/ssl/certs/ni_ate_core_cert.pem /mnt/etc/ssl/certs/ni_ate_core_cert.pem
+    echo "Copied public key cert to new root partition" >&2
 else
     echo "Failed to find /etc on new root partition" >&2
     umount $newroot
