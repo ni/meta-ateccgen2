@@ -8,11 +8,13 @@ inherit systemd
 SRC_URI += " \
     file://post-update-sanity-check \
     file://post-update-sanity-check.service \
+    file://rcu-mender-image-firstboot \
 "
 
 FILES:${PN} = " \
     ${bindir} \
     ${systemd_system_unitdir} \
+    ${sysconfdir} \
 "
 
 SYSTEMD_SERVICE:${PN} = " \
@@ -24,4 +26,6 @@ do_install () {
     install -m 0755 ${WORKDIR}/post-update-sanity-check ${D}${bindir}
     install -d ${D}${systemd_system_unitdir}
     install -m 0644 ${WORKDIR}/post-update-sanity-check.service ${D}${systemd_system_unitdir}
+    install -d ${D}${sysconfdir}
+    install -m 0644 ${WORKDIR}/rcu-mender-image-firstboot ${D}${sysconfdir}
 }

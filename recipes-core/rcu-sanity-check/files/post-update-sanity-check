@@ -1,15 +1,16 @@
 #!/bin/sh
 
-#rm /data/rcu-service/firmware/rcu-update-staged
+rm /data/rcu-service/firmware/update-staged
+rm /etc/rcu-mender-image-firstboot
 
-# TODO: Check if network is up
-# TODO: Check if rcu-service is active
+RCU_SERVICE_STATUS=$(systemctl is-active rcu-service)
+ETH0_STATUS=$(cat /sys/class/net/eth0/operstate)
 
-# If sanity check completes successfully, mender commit and set flag
-#mender commit
-#touch /data/rcu-service/firmware/rcu-update-success
-
-# If sanity check fails, mender rollback, set flag and reboot
-#mender rollback
-#touch /data/rcu-service/firmware/rcu-update-failed
-#reboot
+if [ "$RCU_SERVICE_STATUS" = "active" ]; then
+    mender commit
+    touch /data/rcu-service/firmware/update-succeeded
+    systemctl restart rcu-service
+else
+    mender rollback
+    touch /data/rcu-service/firmware/update-failed
+fi;

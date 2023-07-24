@@ -1,7 +1,7 @@
 [Unit]
 Description=Service to run RCU sanity check
 After=network.target
-ConditionPathExists=/data/rcu-service/firmware/rcu-update-staged
+ConditionPathExists=/etc/rcu-mender-image-firstboot
 
 [Service]
 Type=oneshot
