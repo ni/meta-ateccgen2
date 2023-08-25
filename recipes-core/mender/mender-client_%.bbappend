@@ -1,11 +1,11 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
-SRC_URI:append = " file://ateccgen2-rsa-public.key \
+SRC_URI:append = " file://ateccgen2_rsa_public.key \
                    file://mender.conf \
 "
 
 do_install:append() {
     install -d ${D}${sysconfdir}/mender
-    install -m 0644 ${WORKDIR}/ateccgen2-rsa-public.key ${D}${sysconfdir}/mender
+    install -m 0644 ${WORKDIR}/ateccgen2_rsa_public.key ${D}${sysconfdir}/mender
 }
 
 # Disable Mender to run as a system service automatically at boot as refer to 
