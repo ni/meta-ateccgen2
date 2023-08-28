@@ -5,7 +5,7 @@ require rcu-service-src.inc
 
 do_compile() {
 	python3 -m grpc_tools.protoc -I${S} --python_out=${S}/tests/python --grpc_python_out=${S}/tests/python ${S}/rcu-service.proto
-	python3 -m grpc_tools.protoc -I${S} --python_out=${S}/tests/pytest/rcu_pytest --grpc_python_out=${S}/tests/python ${S}/rcu-service.proto
+	python3 -m grpc_tools.protoc -I${S} --python_out=${S}/tests/pytest/rcu_pytest --grpc_python_out=${S}/tests/pytest/rcu_pytest ${S}/rcu-service.proto
 	cd ${S}/tests/pytest
 	python3 setup.py bdist_wheel
 }
