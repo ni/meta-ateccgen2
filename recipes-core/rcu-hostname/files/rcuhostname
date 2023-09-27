@@ -4,9 +4,9 @@
 
 hostname=null
 
-# Try to grab custom hostname from .rackconfig.json
-if [ -f /data/rcu-service/config/.rackconfig.json ]; then
-    hostname=$(jq -r .SETTINGS[0].Hostname /data/rcu-service/config/.rackconfig.json)
+# Try to grab custom hostname from .userconfig.json
+if [ -f /data/rcu-service/config/.userconfig.json ]; then
+    hostname=$(jq -r .SETTINGS[0].Hostname /data/rcu-service/config/.userconfig.json)
 fi
 
 # If custom hostname does not exist in JSON config file, try to grab RCU Carrier Module S/N from EEPROM
