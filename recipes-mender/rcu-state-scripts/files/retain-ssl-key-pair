@@ -5,13 +5,8 @@
 
 echo "$(mender show-artifact): Running $(basename "$0")" >&2
 
-# Check if fw_printenv command is available
-if [ ! -x /usr/bin/fw_printenv ]; then
-    exit 1
-fi
-
 # Check current rootfs partition
-current=$(/usr/bin/fw_printenv mender_boot_part | awk -F = '{ print $2 }')
+current=$(cat /proc/cmdline | awk -F' ' '{ gsub("root=/dev/mmcblk0p", ""); print $2 }')
 
 # Deduce target rootfs partition based on current rootfs partition number
 if [ $current = "2" ]; then
