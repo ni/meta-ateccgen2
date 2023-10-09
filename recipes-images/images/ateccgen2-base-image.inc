@@ -14,7 +14,7 @@ COPY_LIC_DIRS ?= "1"
 
 # Configure base image root account default password
 inherit extrausers
-EXTRA_USERS_PARAMS = "usermod -p $6$8fnflVsupDVBSQbB$4xgecuvZxzpoDMAOs9QAQAykaKA.xF8kSthsvkdkHjkPnoKvwjQLetNEePT.ZTBFdwAIii0XzbwNrRiRDJZ.q1 root;"
+EXTRA_USERS_PARAMS = "usermod -p \$6\$8fnflVsupDVBSQbB\$4xgecuvZxzpoDMAOs9QAQAykaKA.xF8kSthsvkdkHjkPnoKvwjQLetNEePT.ZTBFdwAIii0XzbwNrRiRDJZ.q1 root;"
 
 add_rootfs_version () {
     printf "${DISTRO_NAME} ${DISTRO_VERSION} (${DISTRO_CODENAME}) \\\n \\\l\n" > ${IMAGE_ROOTFS}/etc/issue
