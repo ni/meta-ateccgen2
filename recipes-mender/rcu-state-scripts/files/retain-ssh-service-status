@@ -6,12 +6,12 @@
 echo "$(mender show-artifact): Running $(basename "$0")" >&2
 
 # Check current rootfs partition
-current=$(cat /proc/cmdline | awk -F' ' '{ gsub("root=/dev/mmcblk0p", ""); print $2 }')
+current=$(mount | awk '$3 == "/" {print $1}')
 
 # Deduce target rootfs partition based on current rootfs partition number
-if [ $current = "2" ]; then
+if [ $current = "/dev/mmcblk0p2" ]; then
     newroot=/dev/mmcblk0p3
-elif [ $current = "3" ]; then
+elif [ $current = "/dev/mmcblk0p3" ]; then
     newroot=/dev/mmcblk0p2
 else
     echo "Unexpected current root: $current" >&2
