@@ -29,7 +29,7 @@ IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
 # Remove conflicting packages recommended by packagegroup-base-tdx-cli
-BAD_RECOMMENDATIONS = "set-hostname udev-toradex-rules"
+BAD_RECOMMENDATIONS = " set-hostname udev-toradex-rules "
 
 IMAGE_INSTALL += " \
     packagegroup-boot \
