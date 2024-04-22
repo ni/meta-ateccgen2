@@ -208,6 +208,19 @@
         gpio-line-names =
             "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
     };
+
+    /* PCA9671 16-bit IO expander on I2C3 */
+    pca9671: gpio@21 {
+        compatible = "nxp,pca9671";
+        reg = <0x21>;
+        gpio-controller;
+        #gpio-cells = <2>;
+        label = "pca9671-57226000.gpio";
+        lines-initial-states = <0x00>;
+        gpio-line-names =
+            "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7",
+            "IOXPD2_IO1_0", "IOXPD2_IO1_1", "IOXPD2_IO1_2", "IOXPD2_IO1_3", "IOXPD2_IO1_4", "IOXPD2_IO1_5", "IOXPD2_IO1_6", "IOXPD2_IO1_7";
+    };
 };
 
 /* Parent node to enable i2c0_lvds0 & i2c1_lvds0 */
