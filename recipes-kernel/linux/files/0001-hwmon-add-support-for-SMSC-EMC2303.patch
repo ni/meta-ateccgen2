@@ -494,7 +494,7 @@ index 00000000..b2ae311
 +	if (status < 0)
 +		return status;
 +
-+	if (fan->tach != 0)
++	if ((fan->tach != 0) && (fan->tach != 0x1fff))
 +		rpm = FAN_RPM_FACTOR / fan->tach;
 +	return sprintf(buf, "%d\n", rpm);
 +}
