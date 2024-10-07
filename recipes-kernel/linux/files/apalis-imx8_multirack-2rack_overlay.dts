@@ -33,9 +33,9 @@
 &i2c0_lvds0 {
 
     /* PCA9674 8-bit IO expander on I2C4 */
-    pca9674_1: gpio@20 {
+    pca9674_1: gpio@24 {
         compatible = "nxp,pca9674";
-        reg = <0x20>;
+        reg = <0x24>;
         gpio-controller;
         #gpio-cells = <2>;
         label = "pca9674-56246000-1.gpio";
@@ -46,9 +46,9 @@
     };
     
     /* PCA9674 8-bit IO expander on I2C4 */
-    pca9674_2: gpio@21 {
+    pca9674_2: gpio@25 {
         compatible = "nxp,pca9674";
-        reg = <0x21>;
+        reg = <0x25>;
         gpio-controller;
         #gpio-cells = <2>;
         label = "pca9674-56246000-2.gpio";
