@@ -39,7 +39,6 @@
         gpio-controller;
         #gpio-cells = <2>;
         label = "pca9674-56246000-1.gpio";
-        /* IO0 and IO1 has to be output high by default */
         lines-initial-states = <0x00>;
         gpio-line-names =
             "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
@@ -58,7 +57,6 @@
         gpio-controller;
         #gpio-cells = <2>;
         label = "pca9674-56246000-2.gpio";
-        /* IO0 and IO1 has to be output high by default */
         lines-initial-states = <0x00>;
         gpio-line-names =
             "IOXPD3_IO0_0", "IOXPD3_IO0_1", "IOXPD3_IO0_2", "IOXPD3_IO0_3", "IOXPD3_IO0_4", "IOXPD3_IO0_5", "IOXPD3_IO0_6", "IOXPD3_IO0_7";
