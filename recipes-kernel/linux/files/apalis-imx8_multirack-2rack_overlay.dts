@@ -42,6 +42,12 @@
         lines-initial-states = <0x00>;
         gpio-line-names =
             "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
+
+        ioxpd_debug_line {
+            gpio-hog;
+            gpios = <6 GPIO_ACTIVE_HIGH>;
+            output-high;
+        };
     };
     
     /* PCA9674 8-bit IO expander on I2C4 */
@@ -54,5 +60,11 @@
         lines-initial-states = <0x00>;
         gpio-line-names =
             "IOXPD3_IO0_0", "IOXPD3_IO0_1", "IOXPD3_IO0_2", "IOXPD3_IO0_3", "IOXPD3_IO0_4", "IOXPD3_IO0_5", "IOXPD3_IO0_6", "IOXPD3_IO0_7";
+
+        ioxpd_debug_line {
+            gpio-hog;
+            gpios = <6 GPIO_ACTIVE_HIGH>;
+            output-high;
+        };
     };
 };
