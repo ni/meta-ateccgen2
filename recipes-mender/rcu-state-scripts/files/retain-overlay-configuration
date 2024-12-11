@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# Retain /boot/overlays.txt from the current root
+#
+
+echo "$(mender show-artifact): Running $(basename "$0")" >&2
+
+# Check current rootfs partition
+current=$(mount | awk '$3 == "/" {print $1}')
+
+# Deduce target rootfs partition based on current rootfs partition number
+if [ $current = "/dev/mmcblk0p2" ]; then
+    newroot=/dev/mmcblk0p3
+elif [ $current = "/dev/mmcblk0p3" ]; then
+    newroot=/dev/mmcblk0p2
+else
+    echo "Unexpected current root: $current" >&2
+    exit 1
+fi
+
+mount $newroot /mnt
+
+if [ $? -ne 0 ]; then
+    echo "Failed to mount $newroot" >&2
+    exit 1
+fi
+
+sleep 2
+
+if [ -d /mnt/boot ]; then
+    cp /boot/overlays.txt /mnt/boot/overlays.txt
+    echo "Copied overlays.txt to new root partition" >&2
+else
+    echo "Failed to find /boot on new root partition" >&2
+    umount $newroot
+    exit 1
+fi
+
+umount $newroot
