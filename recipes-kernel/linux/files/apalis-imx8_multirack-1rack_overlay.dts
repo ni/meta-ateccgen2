@@ -15,7 +15,7 @@
 
                 /* Reg property output to pins, first in the list holds LSB */
                 i2c@1 { /* Expectation: IOXPD at 0x24 pull low */
-                    reg = <1>; /* 0 1 */
+                    reg = <1>;
                     #address-cells = <1>;
                     #size-cells = <0>;
                 };
