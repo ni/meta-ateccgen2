@@ -1,0 +1,47 @@
+#include <dt-bindings/gpio/gpio.h>
+
+/dts-v1/;
+/plugin/;
+/ {
+    fragment@102 {
+        target-path = "/";
+        __overlay__ {
+            i2cmux-56246000.i2c {
+                compatible = "i2c-mux-gpio";
+                #address-cells = <1>;
+                #size-cells = <0>;
+                mux-gpios = <&pca9674_1 7 GPIO_ACTIVE_LOW>;
+                i2c-parent = <&i2c0_lvds0>;
+
+                /* Reg property output to pins, first in the list holds LSB */
+                i2c@1 { /* Expectation: IOXPD at 0x24 pull low */
+                    reg = <1>;
+                    #address-cells = <1>;
+                    #size-cells = <0>;
+                };
+            };
+        };
+    };
+};
+
+/* RCU's I2C4 */
+&i2c0_lvds0 {
+
+    /* PCA9674 8-bit IO expander on I2C4 */
+    pca9674_1: gpio@24 {
+        compatible = "nxp,pca9674";
+        reg = <0x24>;
+        gpio-controller;
+        #gpio-cells = <2>;
+        label = "pca9674-56246000-1.gpio";
+        lines-initial-states = <0x00>;
+        gpio-line-names =
+            "IOXPD2_IO0_0", "IOXPD2_IO0_1", "IOXPD2_IO0_2", "IOXPD2_IO0_3", "IOXPD2_IO0_4", "IOXPD2_IO0_5", "IOXPD2_IO0_6", "IOXPD2_IO0_7";
+
+        ioxpd_debug_line {
+            gpio-hog;
+            gpios = <6 GPIO_ACTIVE_HIGH>;
+            output-high;
+        };
+    };
+};
