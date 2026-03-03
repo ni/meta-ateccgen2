@@ -2,7 +2,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 # This .cfg file is applied on top of the Toradex defconfig
 # as specified in the linux-toradex recipe in meta-toradex-nxp
-# https://git.toradex.com/cgit/meta-toradex-nxp.git/tree/recipes-kernel/linux/linux-toradex_5.15-2.1.x.bb?h=kirkstone-6.x.y
+# https://git.toradex.com/meta-toradex-nxp.git/tree/recipes-kernel/linux/linux-toradex_6.6-2.2.x.bb?h=scarthgap-7.x.y
 
 SRC_URI += " \
     file://ateccgen2.cfg \
