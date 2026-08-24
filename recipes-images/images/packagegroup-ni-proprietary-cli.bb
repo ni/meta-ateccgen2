@@ -15,7 +15,7 @@ RDEPENDS:packagegroup-ni-proprietary-cli = "\
     packagegroup-devel-ni-proprietary-cli \
 "
 
-SUMMARY:packagegroup-base-ni-proprietary-cli = "Proprietary packages preinstalled into NI ATE Core Configurations Gen
+SUMMARY:packagegroup-base-ni-proprietary-cli = "Proprietary packages preinstalled into NI ATE Core Configurations Gen 2 RCU image"
 RRECOMMENDS:packagegroup-base-ni-proprietary-cli = "\
     rcu-service \
     python3-grpcio \
