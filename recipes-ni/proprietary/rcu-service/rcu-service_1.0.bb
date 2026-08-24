@@ -6,7 +6,7 @@ require rcu-service-cpp.inc
 inherit systemd
 SYSTEMD_AUTO_ENABLE = "enable"
 SYSTEMD_SERVICE:${PN} = "rcu-service.service rcu-service-web.service"
-RDEPENDS_${PN} += " python3 python3-grpcio rcu-service-python-test-client "
+RDEPENDS:${PN} += " python3 python3-grpcio rcu-service-python-test-client "
 
 do_install() {
          install -d ${D}${bindir}
