@@ -1,0 +1,18 @@
+[Unit]
+Description=RCU Service Browser API
+After=network.target rcu-service.service
+Wants=rcu-service.service
+
+[Service]
+Type=simple
+Environment=RCU_SERVICE_ADDR=127.0.0.1
+Environment=RCU_SERVICE_PORT=50051
+Environment=RCU_SERVICE_CERT_PATH=/etc/ssl/certs/ni_ate_core_cert.pem
+Environment=RCU_WEB_HOST=0.0.0.0
+Environment=RCU_WEB_PORT=8080
+ExecStart=/usr/bin/rcu-service-web.py
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
