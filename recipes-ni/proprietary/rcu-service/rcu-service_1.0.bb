@@ -14,7 +14,7 @@ do_install() {
          install -m 0755 rcu-service ${D}${bindir}
          install -m 0755 ${S}/rcu-service-web.py ${D}${bindir}/rcu-service-web.py
          install -d ${D}${datadir}/rcu-service-web/templates
-         install -m 0644 ${S}/templates/*.html ${D}${datadir}/rcu-service-web/templates
+         install -m 0644 ${S}/rcu-service-web-templates/*.html ${D}${datadir}/rcu-service-web/templates
          install -d ${D}/${systemd_unitdir}/system
          install -m 0644 ${S}/rcu-service.service ${D}/${systemd_unitdir}/system
          install -m 0644 ${S}/rcu-service-web.service ${D}/${systemd_unitdir}/system
