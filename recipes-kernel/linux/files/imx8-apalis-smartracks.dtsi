@@ -3,7 +3,7 @@
 
 / {
     aliases {
-        rtc0 = &rtc_i2c;
+        rtc0 = &rtc_ds3232;
         rtc1 = &rtc;
     };
 
@@ -159,6 +159,11 @@
     clock-frequency = <400000>;
 };
 
+/* Upstream carrier RTC on Apalis I2C1; not populated on SmartRacks */
+&rtc_i2c {
+    status = "disabled";
+};
+
 /* RCU's I2C2 */
 &i2c3 {
     status = "okay";
@@ -286,7 +291,7 @@
         reg = <0x50>;
     }; 
 
-    rtc_i2c: rtc@68 {
+    rtc_ds3232: rtc@68 {
         compatible = "dallas,ds3232";
         reg = <0x68>;
     };
