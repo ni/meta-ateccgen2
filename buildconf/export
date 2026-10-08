@@ -18,7 +18,6 @@ echo "To build an image, execute: 'bitbake <supported_image_target>'"
 if [ $FIRST_TIME -eq 1 ]; then
 	mkdir -p conf
 	cp ../layers/meta-ateccgen2/buildconf/*.conf conf/
-	cat ../layers/meta-mender-community/templates/local.conf.append >> conf/local.conf
 	cat ../layers/meta-mender-community/meta-mender-toradex-nxp/templates/local.conf.append  >> conf/local.conf
 	sed -i 's/MENDER_STORAGE_TOTAL_SIZE_MB:apalis-imx8 = "2048"/MENDER_STORAGE_TOTAL_SIZE_MB:apalis-imx8 = "4096"/g' conf/local.conf
         sed -i 's/KERNEL_DEVICETREE:apalis-imx8 = "freescale\/imx8qm-apalis-v1.1-ixora-v1.2.dtb"/KERNEL_DEVICETREE:apalis-imx8 = "freescale\/imx8-apalis-smartracks.dtb"/g' conf/local.conf

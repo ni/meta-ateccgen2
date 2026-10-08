@@ -25,6 +25,9 @@ do_install:append() {
     # Create symlinks in /etc/systemd/network which point to those files in /data
     ln -s -r ${D}/data/systemd/network/eth0.network ${D}/etc/systemd/network/eth0.network
     ln -s -r ${D}/data/systemd/network/eth1.network ${D}/etc/systemd/network/eth1.network
+
+    # Keep kernel names eth0/eth1; newer systemd renames them to end0/end1
+    ln -sf /dev/null ${D}${sysconfdir}/systemd/network/99-default.link
 }
 
 FILES:${PN} += " \
