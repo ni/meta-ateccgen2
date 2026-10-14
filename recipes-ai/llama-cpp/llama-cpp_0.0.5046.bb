@@ -5,7 +5,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://LICENSE;md5=1539dadbedb60aa18519febfeab70632"
 
 SRC_URI = "git://github.com/ggml-org/llama.cpp.git;protocol=https;nobranch=1"
-SRCREV = "b11609"
+SRCREV = "fcac19079f3f2985fe74ed845f0880e7e9a8030a"
 
 S = "${WORKDIR}/git"
 
