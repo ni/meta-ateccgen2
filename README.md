@@ -15,7 +15,10 @@ llama.cpp
 -----------
 
 Both the minimal and proprietary images include the CPU-only llama.cpp tools
-`llama-cli`, `llama-server`, and `llama-quantize`, pinned to upstream build b5046.
+`llama-cli`, `llama-server`, and `llama-quantize`, using a 0.6.0-dev snapshot
+pinned to commit `fcac19079f3f2985fe74ed845f0880e7e9a8030a`.
+HTTPS support and the embedded web UI are disabled; the HTTP API remains available.
+The build does not download prebuilt web UI assets.
 No model weights are bundled, and the server is not started automatically.
 Provide a GGUF model with a license and memory footprint suitable for the target.
 
