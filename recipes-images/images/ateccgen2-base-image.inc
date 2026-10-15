@@ -36,6 +36,7 @@ IMAGE_INSTALL += " \
     packagegroup-basic \
     packagegroup-base-tdx-cli \
     packagegroup-machine-tdx-cli \
+    llama-cpp \
     udev-extraconf \
     ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', 'timestamp-service systemd-analyze', '', d)} \
 "
