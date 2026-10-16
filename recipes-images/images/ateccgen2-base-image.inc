@@ -42,4 +42,4 @@ IMAGE_INSTALL += " \
 
 # Required to append protobuf and grpc dependencies to SDK
 TOOLCHAIN_HOST_TASK:append = " nativesdk-protobuf-compiler nativesdk-grpc-dev nativesdk-python3-grpcio-tools nativesdk-make "
-TOOLCHAIN_TARGET_TASK:append = " python3-grpcio-tools "
+TOOLCHAIN_TARGET_TASK:append = " python3-grpcio-tools protobuf-dev protobuf-staticdev grpc-dev libgpiod-dev "
