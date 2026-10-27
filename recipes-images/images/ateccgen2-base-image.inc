@@ -25,6 +25,19 @@ add_rootfs_version () {
 # add the rootfs version to the welcome banner
 ROOTFS_POSTPROCESS_COMMAND += " add_rootfs_version;"
 
+# Kernel 6.6 installs DTBs under /boot/freescale/, but the boot.scr already on
+# deployed devices loads /boot/<dtb> from the rootfs. Copy it to the legacy path
+# so Mender updates boot instead of rolling back.
+link_dtb_for_legacy_bootscript () {
+    dtb=imx8-apalis-smartracks.dtb
+    if [ -f ${IMAGE_ROOTFS}/boot/freescale/$dtb ]; then
+        cp ${IMAGE_ROOTFS}/boot/freescale/$dtb ${IMAGE_ROOTFS}/boot/$dtb
+    else
+        bbfatal "$dtb not found in ${IMAGE_ROOTFS}/boot/freescale"
+    fi
+}
+ROOTFS_POSTPROCESS_COMMAND += " link_dtb_for_legacy_bootscript;"
+
 IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
