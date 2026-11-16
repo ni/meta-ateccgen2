@@ -38,6 +38,30 @@ link_dtb_for_legacy_bootscript () {
 }
 ROOTFS_POSTPROCESS_COMMAND += " link_dtb_for_legacy_bootscript;"
 
+# Mender copies /etc/passwd verbatim on downgrade, and kirkstone only has /home/root.
+# Keep the real home in /root and expose it as /home/root so passwd is valid on both images.
+use_home_root_for_root () {
+    install -d -m 0755 ${IMAGE_ROOTFS}/home
+    [ -e ${IMAGE_ROOTFS}/home/root ] || ln -s ../root ${IMAGE_ROOTFS}/home/root
+    sed -i 's#^\(root:[^:]*:0:0:[^:]*:\)[^:]*:#\1/home/root:#' ${IMAGE_ROOTFS}/etc/passwd
+}
+ROOTFS_POSTPROCESS_COMMAND += " use_home_root_for_root;"
+
+# base-files only adds the sbin dirs to root's PATH for its own ROOT_HOME, not /home/root
+add_sbin_to_root_path () {
+    install -d ${IMAGE_ROOTFS}${sysconfdir}/profile.d
+    cat > ${IMAGE_ROOTFS}${sysconfdir}/profile.d/root-sbin-path.sh <<'EOF'
+if [ "$(id -u)" = "0" ]; then
+    case ":$PATH:" in
+        *:/sbin:*) ;;
+        *) PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin" ;;
+    esac
+    export PATH
+fi
+EOF
+}
+ROOTFS_POSTPROCESS_COMMAND += " add_sbin_to_root_path;"
+
 IMAGE_LINGUAS = "en-us"
 #IMAGE_LINGUAS = "de-de fr-fr en-gb en-us pt-br es-es kn-in ml-in ta-in"
 
