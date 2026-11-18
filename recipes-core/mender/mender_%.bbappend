@@ -2,6 +2,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI:append = " file://ateccgen2_rsa_public.key \
                    file://mender.conf \
                    file://rcu-mender-image-firstboot \
+                   file://0001-Save-pending-commit-state-as-version-1.patch \
 "
 
 do_install:append() {
