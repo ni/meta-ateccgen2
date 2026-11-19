@@ -1,0 +1,56 @@
+From 10ca7ff5c7072703aee65a91bbb9b947f7b07cd1 Mon Sep 17 00:00:00 2001
+From: NI ATE Core <noreply@ni.com>
+Date: Tue, 17 Nov 2026 16:08:14 +0800
+Subject: [PATCH] Save the pending commit state of standalone installs as
+ version 1
+
+Mender 4.x and later save the standalone state data of an installed Artifact that waits for its commit as version 2 data. The Mender 3.x (Go) client only restores version 1 data and fails to commit with 'Incompatible version stored in database.' This prevents an update that downgrades from a Mender 5.x image to a Mender 3.x image from being committed.
+
+Version 1 data is equivalent to the state 'installed, waiting for commit', and is still restored by Mender 4.x and later. Save that one state (not failed and not rolled back) as version 1, so the commit works with either client. All other states keep being saved as version 2.
+
+Upstream-Status: Inappropriate [NI specific downgrade compatibility]
+---
+ src/mender-update/standalone/standalone.cpp | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/src/mender-update/standalone/standalone.cpp b/src/mender-update/standalone/standalone.cpp
+index da10055..430273e 100644
+--- a/src/mender-update/standalone/standalone.cpp
++++ b/src/mender-update/standalone/standalone.cpp
+@@ -159,9 +159,18 @@ error::Error SaveStateData(database::KeyValueDatabase &db, const StateData &data
+ 
+ error::Error SaveStateData(database::Transaction &txn, const StateData &data) {
+ 	StateDataKeys keys;
++
++	// An installed Artifact waiting for its commit is the only state that has an equivalent in
++	// version 1 data. Save it as version 1, so that it can also be committed by the Mender 3.x
++	// client, which only understands version 1 and fails with "Incompatible version stored in
++	// database" otherwise. This is needed to commit an update that downgrades the client.
++	const bool save_as_version_1 =
++		data.in_state == StateData::kBeforeStateArtifactCommit_Enter and not data.failed
++		and not data.rolled_back;
++
+ 	stringstream ss;
+ 	ss << "{";
+-	ss << "\"" << keys.version << "\":" << data.version;
++	ss << "\"" << keys.version << "\":" << (save_as_version_1 ? 1 : data.version);
+ 
+ 	ss << ",";
+ 	ss << "\"" << keys.artifact_name << "\":\"" << json::EscapeString(data.artifact_name) << "\"";
+@@ -210,11 +219,13 @@ error::Error SaveStateData(database::Transaction &txn, const StateData &data) {
+ 		ss << "]";
+ 	}
+ 
+-	ss << R"(,")" << keys.in_state << R"(":")" << data.in_state << R"(")";
++	if (not save_as_version_1) {
++		ss << R"(,")" << keys.in_state << R"(":")" << data.in_state << R"(")";
+ 
+-	ss << R"(,")" << keys.failed << R"(":)" << (data.failed ? "true" : "false");
++		ss << R"(,")" << keys.failed << R"(":)" << (data.failed ? "true" : "false");
+ 
+-	ss << R"(,")" << keys.rolled_back << R"(":)" << (data.rolled_back ? "true" : "false");
++		ss << R"(,")" << keys.rolled_back << R"(":)" << (data.rolled_back ? "true" : "false");
++	}
+ 
+ 	ss << "}";
+ 
